@@ -1,0 +1,107 @@
+package com.miaxis.face.manager;
+
+import com.miaxis.face.app.App;
+import com.miaxis.face.bean.Config;
+import com.miaxis.face.bean.IDCardRecord;
+import com.miaxis.face.constant.Constants;
+import com.miaxis.face.greendao.gen.IDCardRecordDao;
+import com.miaxis.face.presenter.AdvertisePresenter;
+import com.miaxis.face.service.ClearService;
+import com.miaxis.face.service.UpLoadRecordService;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
+public class TaskManager {
+
+    private TaskManager() {
+    }
+
+    public static TaskManager getInstance () {
+        return SingletonHolder.instance;
+    }
+
+    private static class SingletonHolder {
+        private static final TaskManager instance = new TaskManager();
+    }
+
+    /** ================================ 静态内部类单例 ================================ **/
+
+    public static final int GROUP_SIZE = 100;
+
+    private static Timer timer;
+    public static TimerTask timerTask;
+
+    public void init() {
+        startTask();
+    }
+
+    private void initTask() {
+        timer = new Timer(true);
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                Config config = ConfigManager.getInstance().getConfig();
+//                if (config.getNetFlag()) {
+//                    upLoad();
+//                }
+                if (config.getAdvertisementMode() == Constants.ADVERTISEMENT_NET || config.getAdvertisementMode() == Constants.ADVERTISEMENT_NET_AND_LOCAL) {
+                    AdvertisePresenter.downloadAdvertiseUrl(config.getAdvertisementUrl());
+                }
+                ClearService.startActionClear(App.getInstance());
+            }
+        };
+    }
+
+    private void startTask() {
+        Config config = ConfigManager.getInstance().getConfig();
+        initTask();
+        Date start = new Date();
+        start.setHours(Integer.parseInt(config.getUpTime().split(" : ")[0]));
+        start.setMinutes(Integer.parseInt(config.getUpTime().split(" : ")[1]));
+        long tStart = start.getTime();
+        long t1 = new Date().getTime();
+        if (tStart < t1) {
+            start.setDate(new Date().getDate() + 1);
+        }
+        timer.schedule(timerTask, start, Constants.TASK_DELAY);
+    }
+
+    public void reSetTimer() {
+        Config config = ConfigManager.getInstance().getConfig();
+        timerTask.cancel();
+        initTask();
+        timer.cancel();
+        timer.purge();
+        timer = new Timer();
+        Date start = new Date();
+        start.setHours(Integer.parseInt(config.getUpTime().split(" : ")[0]));
+        start.setMinutes(Integer.parseInt(config.getUpTime().split(" : ")[1]));
+        start.setSeconds(0);
+        long tStart = start.getTime();
+        long t1 = new Date().getTime();
+        if (tStart < t1) {
+            start.setDate(new Date().getDate() + 1);
+        }
+        timer.schedule(timerTask, start, Constants.TASK_DELAY);
+    }
+
+    private void upLoad() {
+        IDCardRecordDao recordDao = DaoManager.getInstance().getDaoSession().getIDCardRecordDao();
+        long count = recordDao.count();
+        long page = (count % GROUP_SIZE == 0) ? count / GROUP_SIZE : (count / GROUP_SIZE + 1);
+        for (int i = 0; i < page; i++) {
+            List<IDCardRecord> recordList = recordDao.queryBuilder().offset(i * GROUP_SIZE).limit(GROUP_SIZE).orderAsc(IDCardRecordDao.Properties.Id).list();
+            for (int j = 0; j < recordList.size(); j++) {
+                IDCardRecord record = recordList.get(j);
+                if (!record.isUpload()) {
+//                    RecordManager.getInstance().uploadRecord();
+//                    UpLoadRecordService.startActionUpLoad(App.getInstance(), record, ConfigManager.getInstance().getConfig());
+                }
+            }
+        }
+    }
+
+}
