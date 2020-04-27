@@ -24,10 +24,10 @@ public class BaseAPI {
     }
 
     public static void rebuildRetrofit() {
-        OkHttpClient okHttpClient = new OkHttpClient.Builder().
-                connectTimeout(5, TimeUnit.SECONDS).
-                readTimeout(5, TimeUnit.SECONDS).
-                writeTimeout(5, TimeUnit.SECONDS)
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(5, TimeUnit.SECONDS)
+                .readTimeout(5, TimeUnit.SECONDS)
+                .writeTimeout(5, TimeUnit.SECONDS)
                 .build();
         retrofit = RETROFIT_BUILDER
                 .client(okHttpClient)

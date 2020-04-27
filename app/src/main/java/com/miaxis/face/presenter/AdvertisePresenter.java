@@ -68,7 +68,7 @@ public class AdvertisePresenter {
                             e.printStackTrace();
                         }
                     }
-                }, throwable -> Log.e("asd", "error"));
+                }, throwable -> Log.e("asd", "下载广告失败"));
     }
 
     public void loadAdvertisement(Integer mode, Consumer<List<Advertisement>> consumer, Consumer<Throwable> error) {
@@ -92,7 +92,7 @@ public class AdvertisePresenter {
                 .doOnNext(advertisements -> {
                     if (advertisements.isEmpty()) {
                         Advertisement advertisement = new Advertisement.Builder()
-                                .title("")
+                                .title("请放身份证或轻击屏幕以唤醒系统")
                                 .url("file:///android_asset/default/default_picture.jpg")
                                 .delayTime(5)
                                 .build();

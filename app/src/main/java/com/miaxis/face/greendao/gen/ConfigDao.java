@@ -29,33 +29,32 @@ public class ConfigDao extends AbstractDao<Config, Long> {
         public final static Property UploadRecordUrl1 = new Property(2, String.class, "uploadRecordUrl1", false, "UPLOAD_RECORD_URL1");
         public final static Property UploadRecordUrl2 = new Property(3, String.class, "uploadRecordUrl2", false, "UPLOAD_RECORD_URL2");
         public final static Property AdvertisementUrl = new Property(4, String.class, "advertisementUrl", false, "ADVERTISEMENT_URL");
-        public final static Property DeviceSerialNumber = new Property(5, String.class, "deviceSerialNumber", false, "DEVICE_SERIAL_NUMBER");
-        public final static Property Account = new Property(6, String.class, "account", false, "ACCOUNT");
-        public final static Property ClientId = new Property(7, String.class, "clientId", false, "CLIENT_ID");
-        public final static Property Encrypt = new Property(8, boolean.class, "encrypt", false, "ENCRYPT");
-        public final static Property VerifyMode = new Property(9, int.class, "verifyMode", false, "VERIFY_MODE");
-        public final static Property NetFlag = new Property(10, boolean.class, "netFlag", false, "NET_FLAG");
-        public final static Property ResultFlag = new Property(11, boolean.class, "resultFlag", false, "RESULT_FLAG");
-        public final static Property SaveLocalFlag = new Property(12, boolean.class, "saveLocalFlag", false, "SAVE_LOCAL_FLAG");
-        public final static Property DocumentFlag = new Property(13, boolean.class, "documentFlag", false, "DOCUMENT_FLAG");
-        public final static Property LivenessFlag = new Property(14, boolean.class, "livenessFlag", false, "LIVENESS_FLAG");
-        public final static Property QueryFlag = new Property(15, boolean.class, "queryFlag", false, "QUERY_FLAG");
-        public final static Property WhiteFlag = new Property(16, boolean.class, "whiteFlag", false, "WHITE_FLAG");
-        public final static Property BlackFlag = new Property(17, boolean.class, "blackFlag", false, "BLACK_FLAG");
-        public final static Property GatherFingerFlag = new Property(18, int.class, "gatherFingerFlag", false, "GATHER_FINGER_FLAG");
-        public final static Property AdvertiseFlag = new Property(19, boolean.class, "advertiseFlag", false, "ADVERTISE_FLAG");
-        public final static Property AdvertisementMode = new Property(20, int.class, "advertisementMode", false, "ADVERTISEMENT_MODE");
-        public final static Property VerifyScore = new Property(21, float.class, "verifyScore", false, "VERIFY_SCORE");
-        public final static Property MaskVerifyScore = new Property(22, float.class, "maskVerifyScore", false, "MASK_VERIFY_SCORE");
+        public final static Property HeartBeatUrl = new Property(5, String.class, "heartBeatUrl", false, "HEART_BEAT_URL");
+        public final static Property DeviceSerialNumber = new Property(6, String.class, "deviceSerialNumber", false, "DEVICE_SERIAL_NUMBER");
+        public final static Property Account = new Property(7, String.class, "account", false, "ACCOUNT");
+        public final static Property ClientId = new Property(8, String.class, "clientId", false, "CLIENT_ID");
+        public final static Property Encrypt = new Property(9, boolean.class, "encrypt", false, "ENCRYPT");
+        public final static Property VerifyMode = new Property(10, int.class, "verifyMode", false, "VERIFY_MODE");
+        public final static Property NetFlag = new Property(11, boolean.class, "netFlag", false, "NET_FLAG");
+        public final static Property ResultFlag = new Property(12, boolean.class, "resultFlag", false, "RESULT_FLAG");
+        public final static Property SaveLocalFlag = new Property(13, boolean.class, "saveLocalFlag", false, "SAVE_LOCAL_FLAG");
+        public final static Property DocumentFlag = new Property(14, boolean.class, "documentFlag", false, "DOCUMENT_FLAG");
+        public final static Property LivenessFlag = new Property(15, boolean.class, "livenessFlag", false, "LIVENESS_FLAG");
+        public final static Property QueryFlag = new Property(16, boolean.class, "queryFlag", false, "QUERY_FLAG");
+        public final static Property WhiteFlag = new Property(17, boolean.class, "whiteFlag", false, "WHITE_FLAG");
+        public final static Property BlackFlag = new Property(18, boolean.class, "blackFlag", false, "BLACK_FLAG");
+        public final static Property GatherFingerFlag = new Property(19, int.class, "gatherFingerFlag", false, "GATHER_FINGER_FLAG");
+        public final static Property AdvertiseFlag = new Property(20, boolean.class, "advertiseFlag", false, "ADVERTISE_FLAG");
+        public final static Property AdvertisementMode = new Property(21, int.class, "advertisementMode", false, "ADVERTISEMENT_MODE");
+        public final static Property VerifyScore = new Property(22, float.class, "verifyScore", false, "VERIFY_SCORE");
         public final static Property QualityScore = new Property(23, int.class, "qualityScore", false, "QUALITY_SCORE");
         public final static Property LivenessQualityScore = new Property(24, int.class, "livenessQualityScore", false, "LIVENESS_QUALITY_SCORE");
-        public final static Property MaskScore = new Property(25, int.class, "maskScore", false, "MASK_SCORE");
-        public final static Property TitleStr = new Property(26, String.class, "titleStr", false, "TITLE_STR");
-        public final static Property Password = new Property(27, String.class, "password", false, "PASSWORD");
-        public final static Property UpTime = new Property(28, String.class, "upTime", false, "UP_TIME");
-        public final static Property IntervalTime = new Property(29, int.class, "intervalTime", false, "INTERVAL_TIME");
-        public final static Property OrgName = new Property(30, String.class, "orgName", false, "ORG_NAME");
-        public final static Property AdvertiseDelayTime = new Property(31, int.class, "advertiseDelayTime", false, "ADVERTISE_DELAY_TIME");
+        public final static Property TitleStr = new Property(25, String.class, "titleStr", false, "TITLE_STR");
+        public final static Property Password = new Property(26, String.class, "password", false, "PASSWORD");
+        public final static Property UpTime = new Property(27, String.class, "upTime", false, "UP_TIME");
+        public final static Property IntervalTime = new Property(28, int.class, "intervalTime", false, "INTERVAL_TIME");
+        public final static Property OrgName = new Property(29, String.class, "orgName", false, "ORG_NAME");
+        public final static Property AdvertiseDelayTime = new Property(30, int.class, "advertiseDelayTime", false, "ADVERTISE_DELAY_TIME");
     }
 
 
@@ -76,33 +75,32 @@ public class ConfigDao extends AbstractDao<Config, Long> {
                 "\"UPLOAD_RECORD_URL1\" TEXT," + // 2: uploadRecordUrl1
                 "\"UPLOAD_RECORD_URL2\" TEXT," + // 3: uploadRecordUrl2
                 "\"ADVERTISEMENT_URL\" TEXT," + // 4: advertisementUrl
-                "\"DEVICE_SERIAL_NUMBER\" TEXT," + // 5: deviceSerialNumber
-                "\"ACCOUNT\" TEXT," + // 6: account
-                "\"CLIENT_ID\" TEXT," + // 7: clientId
-                "\"ENCRYPT\" INTEGER NOT NULL ," + // 8: encrypt
-                "\"VERIFY_MODE\" INTEGER NOT NULL ," + // 9: verifyMode
-                "\"NET_FLAG\" INTEGER NOT NULL ," + // 10: netFlag
-                "\"RESULT_FLAG\" INTEGER NOT NULL ," + // 11: resultFlag
-                "\"SAVE_LOCAL_FLAG\" INTEGER NOT NULL ," + // 12: saveLocalFlag
-                "\"DOCUMENT_FLAG\" INTEGER NOT NULL ," + // 13: documentFlag
-                "\"LIVENESS_FLAG\" INTEGER NOT NULL ," + // 14: livenessFlag
-                "\"QUERY_FLAG\" INTEGER NOT NULL ," + // 15: queryFlag
-                "\"WHITE_FLAG\" INTEGER NOT NULL ," + // 16: whiteFlag
-                "\"BLACK_FLAG\" INTEGER NOT NULL ," + // 17: blackFlag
-                "\"GATHER_FINGER_FLAG\" INTEGER NOT NULL ," + // 18: gatherFingerFlag
-                "\"ADVERTISE_FLAG\" INTEGER NOT NULL ," + // 19: advertiseFlag
-                "\"ADVERTISEMENT_MODE\" INTEGER NOT NULL ," + // 20: advertisementMode
-                "\"VERIFY_SCORE\" REAL NOT NULL ," + // 21: verifyScore
-                "\"MASK_VERIFY_SCORE\" REAL NOT NULL ," + // 22: maskVerifyScore
+                "\"HEART_BEAT_URL\" TEXT," + // 5: heartBeatUrl
+                "\"DEVICE_SERIAL_NUMBER\" TEXT," + // 6: deviceSerialNumber
+                "\"ACCOUNT\" TEXT," + // 7: account
+                "\"CLIENT_ID\" TEXT," + // 8: clientId
+                "\"ENCRYPT\" INTEGER NOT NULL ," + // 9: encrypt
+                "\"VERIFY_MODE\" INTEGER NOT NULL ," + // 10: verifyMode
+                "\"NET_FLAG\" INTEGER NOT NULL ," + // 11: netFlag
+                "\"RESULT_FLAG\" INTEGER NOT NULL ," + // 12: resultFlag
+                "\"SAVE_LOCAL_FLAG\" INTEGER NOT NULL ," + // 13: saveLocalFlag
+                "\"DOCUMENT_FLAG\" INTEGER NOT NULL ," + // 14: documentFlag
+                "\"LIVENESS_FLAG\" INTEGER NOT NULL ," + // 15: livenessFlag
+                "\"QUERY_FLAG\" INTEGER NOT NULL ," + // 16: queryFlag
+                "\"WHITE_FLAG\" INTEGER NOT NULL ," + // 17: whiteFlag
+                "\"BLACK_FLAG\" INTEGER NOT NULL ," + // 18: blackFlag
+                "\"GATHER_FINGER_FLAG\" INTEGER NOT NULL ," + // 19: gatherFingerFlag
+                "\"ADVERTISE_FLAG\" INTEGER NOT NULL ," + // 20: advertiseFlag
+                "\"ADVERTISEMENT_MODE\" INTEGER NOT NULL ," + // 21: advertisementMode
+                "\"VERIFY_SCORE\" REAL NOT NULL ," + // 22: verifyScore
                 "\"QUALITY_SCORE\" INTEGER NOT NULL ," + // 23: qualityScore
                 "\"LIVENESS_QUALITY_SCORE\" INTEGER NOT NULL ," + // 24: livenessQualityScore
-                "\"MASK_SCORE\" INTEGER NOT NULL ," + // 25: maskScore
-                "\"TITLE_STR\" TEXT," + // 26: titleStr
-                "\"PASSWORD\" TEXT," + // 27: password
-                "\"UP_TIME\" TEXT," + // 28: upTime
-                "\"INTERVAL_TIME\" INTEGER NOT NULL ," + // 29: intervalTime
-                "\"ORG_NAME\" TEXT," + // 30: orgName
-                "\"ADVERTISE_DELAY_TIME\" INTEGER NOT NULL );"); // 31: advertiseDelayTime
+                "\"TITLE_STR\" TEXT," + // 25: titleStr
+                "\"PASSWORD\" TEXT," + // 26: password
+                "\"UP_TIME\" TEXT," + // 27: upTime
+                "\"INTERVAL_TIME\" INTEGER NOT NULL ," + // 28: intervalTime
+                "\"ORG_NAME\" TEXT," + // 29: orgName
+                "\"ADVERTISE_DELAY_TIME\" INTEGER NOT NULL );"); // 30: advertiseDelayTime
     }
 
     /** Drops the underlying database table. */
@@ -136,60 +134,63 @@ public class ConfigDao extends AbstractDao<Config, Long> {
             stmt.bindString(5, advertisementUrl);
         }
  
+        String heartBeatUrl = entity.getHeartBeatUrl();
+        if (heartBeatUrl != null) {
+            stmt.bindString(6, heartBeatUrl);
+        }
+ 
         String deviceSerialNumber = entity.getDeviceSerialNumber();
         if (deviceSerialNumber != null) {
-            stmt.bindString(6, deviceSerialNumber);
+            stmt.bindString(7, deviceSerialNumber);
         }
  
         String account = entity.getAccount();
         if (account != null) {
-            stmt.bindString(7, account);
+            stmt.bindString(8, account);
         }
  
         String clientId = entity.getClientId();
         if (clientId != null) {
-            stmt.bindString(8, clientId);
+            stmt.bindString(9, clientId);
         }
-        stmt.bindLong(9, entity.getEncrypt() ? 1L: 0L);
-        stmt.bindLong(10, entity.getVerifyMode());
-        stmt.bindLong(11, entity.getNetFlag() ? 1L: 0L);
-        stmt.bindLong(12, entity.getResultFlag() ? 1L: 0L);
-        stmt.bindLong(13, entity.getSaveLocalFlag() ? 1L: 0L);
-        stmt.bindLong(14, entity.getDocumentFlag() ? 1L: 0L);
-        stmt.bindLong(15, entity.getLivenessFlag() ? 1L: 0L);
-        stmt.bindLong(16, entity.getQueryFlag() ? 1L: 0L);
-        stmt.bindLong(17, entity.getWhiteFlag() ? 1L: 0L);
-        stmt.bindLong(18, entity.getBlackFlag() ? 1L: 0L);
-        stmt.bindLong(19, entity.getGatherFingerFlag());
-        stmt.bindLong(20, entity.getAdvertiseFlag() ? 1L: 0L);
-        stmt.bindLong(21, entity.getAdvertisementMode());
-        stmt.bindDouble(22, entity.getVerifyScore());
-        stmt.bindDouble(23, entity.getMaskVerifyScore());
+        stmt.bindLong(10, entity.getEncrypt() ? 1L: 0L);
+        stmt.bindLong(11, entity.getVerifyMode());
+        stmt.bindLong(12, entity.getNetFlag() ? 1L: 0L);
+        stmt.bindLong(13, entity.getResultFlag() ? 1L: 0L);
+        stmt.bindLong(14, entity.getSaveLocalFlag() ? 1L: 0L);
+        stmt.bindLong(15, entity.getDocumentFlag() ? 1L: 0L);
+        stmt.bindLong(16, entity.getLivenessFlag() ? 1L: 0L);
+        stmt.bindLong(17, entity.getQueryFlag() ? 1L: 0L);
+        stmt.bindLong(18, entity.getWhiteFlag() ? 1L: 0L);
+        stmt.bindLong(19, entity.getBlackFlag() ? 1L: 0L);
+        stmt.bindLong(20, entity.getGatherFingerFlag());
+        stmt.bindLong(21, entity.getAdvertiseFlag() ? 1L: 0L);
+        stmt.bindLong(22, entity.getAdvertisementMode());
+        stmt.bindDouble(23, entity.getVerifyScore());
         stmt.bindLong(24, entity.getQualityScore());
         stmt.bindLong(25, entity.getLivenessQualityScore());
-        stmt.bindLong(26, entity.getMaskScore());
  
         String titleStr = entity.getTitleStr();
         if (titleStr != null) {
-            stmt.bindString(27, titleStr);
+            stmt.bindString(26, titleStr);
         }
  
         String password = entity.getPassword();
         if (password != null) {
-            stmt.bindString(28, password);
+            stmt.bindString(27, password);
         }
  
         String upTime = entity.getUpTime();
         if (upTime != null) {
-            stmt.bindString(29, upTime);
+            stmt.bindString(28, upTime);
         }
-        stmt.bindLong(30, entity.getIntervalTime());
+        stmt.bindLong(29, entity.getIntervalTime());
  
         String orgName = entity.getOrgName();
         if (orgName != null) {
-            stmt.bindString(31, orgName);
+            stmt.bindString(30, orgName);
         }
-        stmt.bindLong(32, entity.getAdvertiseDelayTime());
+        stmt.bindLong(31, entity.getAdvertiseDelayTime());
     }
 
     @Override
@@ -217,60 +218,63 @@ public class ConfigDao extends AbstractDao<Config, Long> {
             stmt.bindString(5, advertisementUrl);
         }
  
+        String heartBeatUrl = entity.getHeartBeatUrl();
+        if (heartBeatUrl != null) {
+            stmt.bindString(6, heartBeatUrl);
+        }
+ 
         String deviceSerialNumber = entity.getDeviceSerialNumber();
         if (deviceSerialNumber != null) {
-            stmt.bindString(6, deviceSerialNumber);
+            stmt.bindString(7, deviceSerialNumber);
         }
  
         String account = entity.getAccount();
         if (account != null) {
-            stmt.bindString(7, account);
+            stmt.bindString(8, account);
         }
  
         String clientId = entity.getClientId();
         if (clientId != null) {
-            stmt.bindString(8, clientId);
+            stmt.bindString(9, clientId);
         }
-        stmt.bindLong(9, entity.getEncrypt() ? 1L: 0L);
-        stmt.bindLong(10, entity.getVerifyMode());
-        stmt.bindLong(11, entity.getNetFlag() ? 1L: 0L);
-        stmt.bindLong(12, entity.getResultFlag() ? 1L: 0L);
-        stmt.bindLong(13, entity.getSaveLocalFlag() ? 1L: 0L);
-        stmt.bindLong(14, entity.getDocumentFlag() ? 1L: 0L);
-        stmt.bindLong(15, entity.getLivenessFlag() ? 1L: 0L);
-        stmt.bindLong(16, entity.getQueryFlag() ? 1L: 0L);
-        stmt.bindLong(17, entity.getWhiteFlag() ? 1L: 0L);
-        stmt.bindLong(18, entity.getBlackFlag() ? 1L: 0L);
-        stmt.bindLong(19, entity.getGatherFingerFlag());
-        stmt.bindLong(20, entity.getAdvertiseFlag() ? 1L: 0L);
-        stmt.bindLong(21, entity.getAdvertisementMode());
-        stmt.bindDouble(22, entity.getVerifyScore());
-        stmt.bindDouble(23, entity.getMaskVerifyScore());
+        stmt.bindLong(10, entity.getEncrypt() ? 1L: 0L);
+        stmt.bindLong(11, entity.getVerifyMode());
+        stmt.bindLong(12, entity.getNetFlag() ? 1L: 0L);
+        stmt.bindLong(13, entity.getResultFlag() ? 1L: 0L);
+        stmt.bindLong(14, entity.getSaveLocalFlag() ? 1L: 0L);
+        stmt.bindLong(15, entity.getDocumentFlag() ? 1L: 0L);
+        stmt.bindLong(16, entity.getLivenessFlag() ? 1L: 0L);
+        stmt.bindLong(17, entity.getQueryFlag() ? 1L: 0L);
+        stmt.bindLong(18, entity.getWhiteFlag() ? 1L: 0L);
+        stmt.bindLong(19, entity.getBlackFlag() ? 1L: 0L);
+        stmt.bindLong(20, entity.getGatherFingerFlag());
+        stmt.bindLong(21, entity.getAdvertiseFlag() ? 1L: 0L);
+        stmt.bindLong(22, entity.getAdvertisementMode());
+        stmt.bindDouble(23, entity.getVerifyScore());
         stmt.bindLong(24, entity.getQualityScore());
         stmt.bindLong(25, entity.getLivenessQualityScore());
-        stmt.bindLong(26, entity.getMaskScore());
  
         String titleStr = entity.getTitleStr();
         if (titleStr != null) {
-            stmt.bindString(27, titleStr);
+            stmt.bindString(26, titleStr);
         }
  
         String password = entity.getPassword();
         if (password != null) {
-            stmt.bindString(28, password);
+            stmt.bindString(27, password);
         }
  
         String upTime = entity.getUpTime();
         if (upTime != null) {
-            stmt.bindString(29, upTime);
+            stmt.bindString(28, upTime);
         }
-        stmt.bindLong(30, entity.getIntervalTime());
+        stmt.bindLong(29, entity.getIntervalTime());
  
         String orgName = entity.getOrgName();
         if (orgName != null) {
-            stmt.bindString(31, orgName);
+            stmt.bindString(30, orgName);
         }
-        stmt.bindLong(32, entity.getAdvertiseDelayTime());
+        stmt.bindLong(31, entity.getAdvertiseDelayTime());
     }
 
     @Override
@@ -286,33 +290,32 @@ public class ConfigDao extends AbstractDao<Config, Long> {
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // uploadRecordUrl1
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // uploadRecordUrl2
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // advertisementUrl
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // deviceSerialNumber
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // account
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // clientId
-            cursor.getShort(offset + 8) != 0, // encrypt
-            cursor.getInt(offset + 9), // verifyMode
-            cursor.getShort(offset + 10) != 0, // netFlag
-            cursor.getShort(offset + 11) != 0, // resultFlag
-            cursor.getShort(offset + 12) != 0, // saveLocalFlag
-            cursor.getShort(offset + 13) != 0, // documentFlag
-            cursor.getShort(offset + 14) != 0, // livenessFlag
-            cursor.getShort(offset + 15) != 0, // queryFlag
-            cursor.getShort(offset + 16) != 0, // whiteFlag
-            cursor.getShort(offset + 17) != 0, // blackFlag
-            cursor.getInt(offset + 18), // gatherFingerFlag
-            cursor.getShort(offset + 19) != 0, // advertiseFlag
-            cursor.getInt(offset + 20), // advertisementMode
-            cursor.getFloat(offset + 21), // verifyScore
-            cursor.getFloat(offset + 22), // maskVerifyScore
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // heartBeatUrl
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // deviceSerialNumber
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // account
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // clientId
+            cursor.getShort(offset + 9) != 0, // encrypt
+            cursor.getInt(offset + 10), // verifyMode
+            cursor.getShort(offset + 11) != 0, // netFlag
+            cursor.getShort(offset + 12) != 0, // resultFlag
+            cursor.getShort(offset + 13) != 0, // saveLocalFlag
+            cursor.getShort(offset + 14) != 0, // documentFlag
+            cursor.getShort(offset + 15) != 0, // livenessFlag
+            cursor.getShort(offset + 16) != 0, // queryFlag
+            cursor.getShort(offset + 17) != 0, // whiteFlag
+            cursor.getShort(offset + 18) != 0, // blackFlag
+            cursor.getInt(offset + 19), // gatherFingerFlag
+            cursor.getShort(offset + 20) != 0, // advertiseFlag
+            cursor.getInt(offset + 21), // advertisementMode
+            cursor.getFloat(offset + 22), // verifyScore
             cursor.getInt(offset + 23), // qualityScore
             cursor.getInt(offset + 24), // livenessQualityScore
-            cursor.getInt(offset + 25), // maskScore
-            cursor.isNull(offset + 26) ? null : cursor.getString(offset + 26), // titleStr
-            cursor.isNull(offset + 27) ? null : cursor.getString(offset + 27), // password
-            cursor.isNull(offset + 28) ? null : cursor.getString(offset + 28), // upTime
-            cursor.getInt(offset + 29), // intervalTime
-            cursor.isNull(offset + 30) ? null : cursor.getString(offset + 30), // orgName
-            cursor.getInt(offset + 31) // advertiseDelayTime
+            cursor.isNull(offset + 25) ? null : cursor.getString(offset + 25), // titleStr
+            cursor.isNull(offset + 26) ? null : cursor.getString(offset + 26), // password
+            cursor.isNull(offset + 27) ? null : cursor.getString(offset + 27), // upTime
+            cursor.getInt(offset + 28), // intervalTime
+            cursor.isNull(offset + 29) ? null : cursor.getString(offset + 29), // orgName
+            cursor.getInt(offset + 30) // advertiseDelayTime
         );
         return entity;
     }
@@ -324,33 +327,32 @@ public class ConfigDao extends AbstractDao<Config, Long> {
         entity.setUploadRecordUrl1(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setUploadRecordUrl2(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setAdvertisementUrl(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setDeviceSerialNumber(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setAccount(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setClientId(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setEncrypt(cursor.getShort(offset + 8) != 0);
-        entity.setVerifyMode(cursor.getInt(offset + 9));
-        entity.setNetFlag(cursor.getShort(offset + 10) != 0);
-        entity.setResultFlag(cursor.getShort(offset + 11) != 0);
-        entity.setSaveLocalFlag(cursor.getShort(offset + 12) != 0);
-        entity.setDocumentFlag(cursor.getShort(offset + 13) != 0);
-        entity.setLivenessFlag(cursor.getShort(offset + 14) != 0);
-        entity.setQueryFlag(cursor.getShort(offset + 15) != 0);
-        entity.setWhiteFlag(cursor.getShort(offset + 16) != 0);
-        entity.setBlackFlag(cursor.getShort(offset + 17) != 0);
-        entity.setGatherFingerFlag(cursor.getInt(offset + 18));
-        entity.setAdvertiseFlag(cursor.getShort(offset + 19) != 0);
-        entity.setAdvertisementMode(cursor.getInt(offset + 20));
-        entity.setVerifyScore(cursor.getFloat(offset + 21));
-        entity.setMaskVerifyScore(cursor.getFloat(offset + 22));
+        entity.setHeartBeatUrl(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setDeviceSerialNumber(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setAccount(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setClientId(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setEncrypt(cursor.getShort(offset + 9) != 0);
+        entity.setVerifyMode(cursor.getInt(offset + 10));
+        entity.setNetFlag(cursor.getShort(offset + 11) != 0);
+        entity.setResultFlag(cursor.getShort(offset + 12) != 0);
+        entity.setSaveLocalFlag(cursor.getShort(offset + 13) != 0);
+        entity.setDocumentFlag(cursor.getShort(offset + 14) != 0);
+        entity.setLivenessFlag(cursor.getShort(offset + 15) != 0);
+        entity.setQueryFlag(cursor.getShort(offset + 16) != 0);
+        entity.setWhiteFlag(cursor.getShort(offset + 17) != 0);
+        entity.setBlackFlag(cursor.getShort(offset + 18) != 0);
+        entity.setGatherFingerFlag(cursor.getInt(offset + 19));
+        entity.setAdvertiseFlag(cursor.getShort(offset + 20) != 0);
+        entity.setAdvertisementMode(cursor.getInt(offset + 21));
+        entity.setVerifyScore(cursor.getFloat(offset + 22));
         entity.setQualityScore(cursor.getInt(offset + 23));
         entity.setLivenessQualityScore(cursor.getInt(offset + 24));
-        entity.setMaskScore(cursor.getInt(offset + 25));
-        entity.setTitleStr(cursor.isNull(offset + 26) ? null : cursor.getString(offset + 26));
-        entity.setPassword(cursor.isNull(offset + 27) ? null : cursor.getString(offset + 27));
-        entity.setUpTime(cursor.isNull(offset + 28) ? null : cursor.getString(offset + 28));
-        entity.setIntervalTime(cursor.getInt(offset + 29));
-        entity.setOrgName(cursor.isNull(offset + 30) ? null : cursor.getString(offset + 30));
-        entity.setAdvertiseDelayTime(cursor.getInt(offset + 31));
+        entity.setTitleStr(cursor.isNull(offset + 25) ? null : cursor.getString(offset + 25));
+        entity.setPassword(cursor.isNull(offset + 26) ? null : cursor.getString(offset + 26));
+        entity.setUpTime(cursor.isNull(offset + 27) ? null : cursor.getString(offset + 27));
+        entity.setIntervalTime(cursor.getInt(offset + 28));
+        entity.setOrgName(cursor.isNull(offset + 29) ? null : cursor.getString(offset + 29));
+        entity.setAdvertiseDelayTime(cursor.getInt(offset + 30));
      }
     
     @Override

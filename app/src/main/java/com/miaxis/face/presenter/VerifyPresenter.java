@@ -2,6 +2,8 @@ package com.miaxis.face.presenter;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.hardware.Camera;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -13,9 +15,12 @@ import com.miaxis.face.bean.Config;
 import com.miaxis.face.bean.IDCardRecord;
 import com.miaxis.face.bean.MxRGBImage;
 import com.miaxis.face.bean.PhotoFaceFeature;
+import com.miaxis.face.bean.Task;
+import com.miaxis.face.bean.TaskResult;
 import com.miaxis.face.bean.Undocumented;
 import com.miaxis.face.bean.WhiteItem;
 import com.miaxis.face.manager.AmapManager;
+import com.miaxis.face.manager.CameraManager;
 import com.miaxis.face.manager.CardManager;
 import com.miaxis.face.manager.ConfigManager;
 import com.miaxis.face.manager.DaoManager;
@@ -23,7 +28,9 @@ import com.miaxis.face.manager.FaceManager;
 import com.miaxis.face.manager.FingerManager;
 import com.miaxis.face.manager.GpioManager;
 import com.miaxis.face.manager.RecordManager;
+import com.miaxis.face.manager.ServerManager;
 import com.miaxis.face.manager.SoundManager;
+import com.miaxis.face.manager.TTSManager;
 import com.miaxis.face.manager.ToastManager;
 import com.miaxis.face.model.IDCardRecordModel;
 import com.miaxis.face.util.FileUtil;
@@ -36,8 +43,6 @@ import java.lang.ref.WeakReference;
 import java.util.Date;
 import java.util.List;
 
-import static com.miaxis.face.manager.FingerManager.FingerVerifyResult.NO_FINGER_FEATURE;
-import static com.miaxis.face.manager.FingerManager.FingerVerifyResult.VERIFY_FAILED;
 import static com.miaxis.face.manager.FingerManager.FingerVerifyResult.VERIFY_SUCCESS;
 
 public class VerifyPresenter {
@@ -50,13 +55,16 @@ public class VerifyPresenter {
 
     private volatile boolean hasCardEvent = false;
     private volatile boolean undocumentedFlag = false;
+    private volatile boolean taskFlag = false;
 
     private IDCardRecord idCardRecord;
     private Undocumented undocumented;
+    private Task task;
 
     private boolean faceDone = false;
     private boolean fingerDone = false;
     private boolean undocumentedDone = false;
+    private boolean taskDone = false;
 
     private List<WhiteItem> whiteItemList;
 
@@ -105,7 +113,7 @@ public class VerifyPresenter {
     }
 
     private CardManager.OnCardReadListener cardListener = (cardStatus, idCardRecord) -> {
-        if (undocumentedFlag) return;
+        if (undocumentedFlag || taskFlag) return;
         switch (cardStatus) {
             case NoCard:
                 onNoCard();
@@ -128,6 +136,8 @@ public class VerifyPresenter {
             fingerDone = false;
             undocumentedDone = false;
             undocumentedFlag = false;
+            taskDone = false;
+            taskFlag = false;
             if (handler != null) {
                 handler.removeMessages(UNDOCUMENTED_DELAY);
             }
@@ -218,9 +228,8 @@ public class VerifyPresenter {
                 SoundManager.getInstance().playSound(SoundManager.PLEASE_BLINK);
             }
             PhotoFaceFeature cardFaceFeature = FaceManager.getInstance().getCardFaceFeatureByBitmapPosting(idCardRecord.getCardBitmap());
-            if (cardFaceFeature.getFaceFeature() != null && cardFaceFeature.getMaskFaceFeature() != null) {
+            if (cardFaceFeature.getFaceFeature() != null) {
                 idCardRecord.setCardFeature(cardFaceFeature.getFaceFeature());
-                idCardRecord.setMaskCardFeature(cardFaceFeature.getMaskFaceFeature());
                 FaceManager.getInstance().setNeedNextFeature(!config.getLivenessFlag());
                 FaceManager.getInstance().startLoop();
             } else {
@@ -257,18 +266,17 @@ public class VerifyPresenter {
 
     private FaceManager.OnFaceHandleListener faceListener = new FaceManager.OnFaceHandleListener() {
         @Override
-        public void onFeatureExtract(MxRGBImage mxRGBImage, MXFaceInfoEx mxFaceInfoEx, byte[] feature, boolean mask) {
+        public void onFeatureExtract(MxRGBImage mxRGBImage, MXFaceInfoEx mxFaceInfoEx, byte[] feature) {
             if (undocumentedFlag) {
                 onUndocumentedFeature(mxRGBImage, mxFaceInfoEx);
             } else {
-                onFaceVerify(mxRGBImage, mxFaceInfoEx, feature, mask);
+                onFaceVerify(mxRGBImage, mxFaceInfoEx, feature);
             }
         }
 
         @Override
         public void onFaceDetect(int faceNum, MXFaceInfoEx[] faceInfoExes) {
-            if (faceDone) return;
-            if (undocumentedDone) return;
+            if (faceDone || undocumentedDone || taskDone) return;
             if (view.get() != null) {
                 view.get().drawFaceRect(faceInfoExes, faceNum);
             }
@@ -308,15 +316,13 @@ public class VerifyPresenter {
         }
     };
 
-    private void onFaceVerify(MxRGBImage mxRGBImage, MXFaceInfoEx mxFaceInfoEx, byte[] feature, boolean mask) {
+    private void onFaceVerify(MxRGBImage mxRGBImage, MXFaceInfoEx mxFaceInfoEx, byte[] feature) {
         if (idCardRecord != null && idCardRecord.getCardFeature() != null) {
             float faceMatchScore = FaceManager.getInstance().matchFeature(feature, idCardRecord.getCardFeature());
-            float maskFaceMatchScore = FaceManager.getInstance().matchMaskFeature(feature, idCardRecord.getMaskCardFeature());
-            float score = Math.max(faceMatchScore, maskFaceMatchScore);
             byte[] fileImage = FaceManager.getInstance().imageEncode(mxRGBImage.getRgbImage(), mxRGBImage.getWidth(), mxRGBImage.getHeight());
             Bitmap faceBitmap = BitmapFactory.decodeByteArray(fileImage, 0, fileImage.length);
             Bitmap rectBitmap = Bitmap.createBitmap(faceBitmap, mxFaceInfoEx.x, mxFaceInfoEx.y, mxFaceInfoEx.width, mxFaceInfoEx.height);//截取
-            boolean result = mask ? score > config.getMaskScore() : score > config.getVerifyScore();
+            boolean result = faceMatchScore > config.getVerifyScore();
             FaceManager.getInstance().stopLoop();
             faceDone = true;
             idCardRecord.setFaceBitmap(faceBitmap);
@@ -510,25 +516,46 @@ public class VerifyPresenter {
         }
     }
 
-    private RecordManager.OnRecordUploadResultListener recordListener = (result, message) -> {
-        if (idCardRecord != null || undocumented != null) {
+    private RecordManager.OnRecordUploadResultListener recordListener = (result, message, playVoice, voiceText) -> {
+        if (idCardRecord != null || undocumented != null || task != null) {
             if (result) {
                 if (view.get() != null) {
                     view.get().uploadStatus("上传成功");
                 }
-                SoundManager.getInstance().playSound(SoundManager.HAS_UPLOAD);
+//                SoundManager.getInstance().playSound(SoundManager.HAS_UPLOAD);
             } else {
                 if (view.get() != null) {
                     view.get().uploadStatus("上传失败");
                 }
-                SoundManager.getInstance().playSound(SoundManager.UPLOAD_FAILED);
+//                SoundManager.getInstance().playSound(SoundManager.UPLOAD_FAILED);
+            }
+            if (playVoice) {
+                TTSManager.getInstance().playVoiceMessageFlush(voiceText);
             }
             if (undocumented != null) {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 undocumented = null;
                 undocumentedFlag = false;
                 undocumentedDone = false;
                 if (view.get() != null) {
                     view.get().undocumentedResult(2);
+                }
+            }
+            if (task != null) {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                task = null;
+                taskFlag = false;
+                taskDone = false;
+                if (view.get() != null) {
+                    view.get().onTaskResult(2);
                 }
             }
         }
@@ -629,6 +656,54 @@ public class VerifyPresenter {
                 }
             }
         });
+    }
+
+    public ServerManager.OnTaskHandleListener taskListener = task -> {
+        taskFlag = true;
+        taskDone = false;
+        this.task = task;
+        if (view.get() != null) {
+            view.get().onTaskResult(0);
+        }
+
+    };
+
+    public boolean isOnTask() {
+        return task != null;
+    }
+
+    public void handleTask() {
+        if (task != null) {
+            if (TextUtils.equals(task.getTasktype(), "1001")) {
+                handleTaskTakePicture(task);
+            } else if (TextUtils.equals(task.getTasktype(), "1002")) {
+
+            }
+        }
+    }
+
+    public void handleTaskTakePicture(Task task) {
+        if (CameraManager.getInstance().getCamera() != null) {
+            CameraManager.getInstance().getCamera().takePicture(null, null, (data, mCamera) -> {
+                mCamera.startPreview();
+                Matrix matrix = new Matrix();
+                matrix.postRotate(180);
+                Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+                String photoBase64 = FileUtil.bitmapToBase64(bitmap);
+                TaskResult taskResult = new TaskResult("0", "ok", photoBase64);
+                if (view.get() != null) {
+                    view.get().uploadStatus("上传中");
+                }
+                RecordManager.getInstance().uploadTaskOver(task, taskResult, recordListener);
+            });
+        } else {
+            if (view.get() != null) {
+                view.get().uploadStatus("上传中");
+            }
+            TaskResult taskResult = new TaskResult("1", "摄像头打开失败", "");
+            RecordManager.getInstance().uploadTaskOver(task, taskResult, recordListener);
+        }
     }
 
 }

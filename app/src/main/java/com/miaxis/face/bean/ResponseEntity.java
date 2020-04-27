@@ -10,6 +10,11 @@ public class ResponseEntity<T> {
     public ResponseEntity() {
     }
 
+    public ResponseEntity(String code, String message) {
+        this.code = code;
+        this.message = message;
+    }
+
     public ResponseEntity(String code, String message, T data) {
         this.code = code;
         this.message = message;

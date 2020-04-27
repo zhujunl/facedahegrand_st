@@ -12,6 +12,9 @@ import com.miaxis.face.bean.Config;
 import com.miaxis.face.bean.DaheResponseEntity;
 import com.miaxis.face.bean.IDCardRecord;
 import com.miaxis.face.bean.RecordDto;
+import com.miaxis.face.bean.Task;
+import com.miaxis.face.bean.TaskOver;
+import com.miaxis.face.bean.TaskResult;
 import com.miaxis.face.bean.Undocumented;
 import com.miaxis.face.net.FaceNetApi;
 import com.miaxis.face.net.UpLoadRecord;
@@ -57,6 +60,10 @@ public class RecordManager {
     private Call<DaheResponseEntity> uploadCall1;
     private Call<DaheResponseEntity> uploadCall2;
 
+    public interface OnRecordUploadResultListener {
+        void onUploadResult(boolean result, String message, boolean playVoice, String voiceText);
+    }
+
     public void cancelRequest() {
         uploading = false;
         if (uploadCall1 != null) {
@@ -70,14 +77,36 @@ public class RecordManager {
     public void uploadRecord(@NonNull IDCardRecord idCardRecord, @NonNull OnRecordUploadResultListener listener) {
         uploading = true;
         App.getInstance().getThreadExecutor().execute(() -> {
-            uploadRecordSync(idCardRecord, listener);
+            String cmd = getCmd(idCardRecord);
+            String data = makeDataJson(idCardRecord, cmd);
+            String json = makeUploadResultJson(cmd, data);
+            uploadResultSync(json, listener);
         });
     }
 
-    public void uploadRecordSync(@NonNull IDCardRecord idCardRecord, @NonNull OnRecordUploadResultListener listener) {
+    public void uploadUndocumented(@NonNull Undocumented undocumented, @NonNull OnRecordUploadResultListener listener) {
+        uploading = true;
+        App.getInstance().getThreadExecutor().execute(() -> {
+            String cmd = "NoPaper";
+            String data = makeUndocumentedDataJson(undocumented);
+            String json = makeUploadResultJson(cmd, data);
+            uploadResultSync(json, listener);
+        });
+    }
+
+    public void uploadTaskOver(@NonNull Task task, @NonNull TaskResult taskResult, @NonNull OnRecordUploadResultListener listener) {
+        uploading = true;
+        App.getInstance().getThreadExecutor().execute(() -> {
+            String cmd = "TaskOver";
+            String data = makeTaskDataJson(task, taskResult);
+            String json = makeUploadResultJson(cmd, data);
+            uploadResultSync(json, listener);
+        });
+    }
+
+    private void uploadResultSync(@NonNull String json, @NonNull OnRecordUploadResultListener listener) {
         boolean result = false;
         try {
-            String json = makeUploadJson(idCardRecord);
             Config config = ConfigManager.getInstance().getConfig();
             try {
                 if (!uploading) return;
@@ -87,7 +116,7 @@ public class RecordManager {
                 if (body != null && body.getErrCode() == 0) {
                     result = true;
                     if (!uploading) return;
-                    listener.onUploadResult(true, body.getErrMsg());
+                    listener.onUploadResult(true, body.getErrMsg(), body.isPlayVoice(), body.getVoiceText());
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -100,33 +129,27 @@ public class RecordManager {
                 if (!result && body != null && body.getErrCode() == 0) {
                     result = true;
                     if (!uploading) return;
-                    listener.onUploadResult(true, body.getErrMsg());
+                    listener.onUploadResult(true, body.getErrMsg(), body.isPlayVoice(), body.getVoiceText());
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
             if (!result) {
                 if (!uploading) return;
-                listener.onUploadResult(false, "上传失败");
+                listener.onUploadResult(false, "上传失败", true, "上传失败");
             }
         } catch (Exception e) {
             e.printStackTrace();
             if (!uploading) return;
-            listener.onUploadResult(false, e.getMessage() + "");
+            listener.onUploadResult(false, e.getMessage() + "", true, "上传失败");
         }
     }
 
-    public interface OnRecordUploadResultListener {
-        void onUploadResult(boolean result, String message);
-    }
-
-    private String makeUploadJson(IDCardRecord idCardRecord) {
+    private String makeUploadResultJson(String cmd, String data) {
         Config config = ConfigManager.getInstance().getConfig();
 
         String account = config.getAccount();
         String client = config.getClientId();
-        String cmd = getCmd(idCardRecord);
-        String data = makeDataJson(idCardRecord, cmd);
         String nonce = String.valueOf(System.currentTimeMillis());
         String timeStamp = TIME_STAMP_FORMAT.format(new Date());
         String signature = EncryptUtil.md5Decode32(cmd + account + nonce + client + timeStamp + data + SECRET_KEY);
@@ -261,90 +284,6 @@ public class RecordManager {
         return GSON.toJson(recordDto);
     }
 
-    public void uploadUndocumented(@NonNull Undocumented undocumented, @NonNull OnRecordUploadResultListener listener) {
-        uploading = true;
-        App.getInstance().getThreadExecutor().execute(() -> {
-            uploadUndocumentedSync(undocumented, listener);
-        });
-    }
-
-    private void uploadUndocumentedSync(@NonNull Undocumented undocumented, @NonNull OnRecordUploadResultListener listener) {
-        boolean result = false;
-        try {
-            String json = makeUndocumentedJson(undocumented);
-            Config config = ConfigManager.getInstance().getConfig();
-            try {
-                if (!uploading) return;
-                uploadCall1 = FaceNetApi.uploadRecord(config.getUploadRecordUrl1(), json);
-                Response<DaheResponseEntity> execute = uploadCall1.execute();
-                DaheResponseEntity body = execute.body();
-                if (body != null && body.getErrCode() == 0) {
-                    result = true;
-                    if (!uploading) return;
-                    listener.onUploadResult(true, body.getErrMsg());
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            try {
-                if (!uploading) return;
-                uploadCall2 = FaceNetApi.uploadRecord(config.getUploadRecordUrl2(), json);
-                Response<DaheResponseEntity> execute = uploadCall2.execute();
-                DaheResponseEntity body = execute.body();
-                if (!result && body != null && body.getErrCode() == 0) {
-                    result = true;
-                    if (!uploading) return;
-                    listener.onUploadResult(true, body.getErrMsg());
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            if (!result) {
-                if (!uploading) return;
-                listener.onUploadResult(false, "上传失败");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            if (!uploading) return;
-            listener.onUploadResult(false, e.getMessage() + "");
-        }
-    }
-
-    private String makeUndocumentedJson(Undocumented undocumented) {
-        Config config = ConfigManager.getInstance().getConfig();
-
-        String account = config.getAccount();
-        String client = config.getClientId();
-        String cmd = "NoPaper";
-        String data = makeUndocumentedDataJson(undocumented);
-        String nonce = String.valueOf(System.currentTimeMillis());
-        String timeStamp = TIME_STAMP_FORMAT.format(new Date());
-        String signature = EncryptUtil.md5Decode32(cmd + account + nonce + client + timeStamp + data + SECRET_KEY);
-
-        Map<String, String> param = new HashMap<>();
-        param.put("account", account);
-        param.put("client", client);
-        param.put("cmd", cmd);
-        param.put("nonce", nonce);
-        param.put("timestamp", timeStamp);
-        param.put("signatrue", signature);
-
-        if (config.getEncrypt()) {
-            String encrypt = EncryptUtil.encryptAES(data, SECRET_KEY);
-            if (encrypt == null) {
-                param.put("aes", "false");
-                param.put("data", data);
-            } else {
-                param.put("aes", "true");
-                param.put("data", encrypt);
-            }
-        } else {
-            param.put("aes", "false");
-            param.put("data", data);
-        }
-        return GSON.toJson(param);
-    }
-
     private String makeUndocumentedDataJson(Undocumented undocumented) {
         RecordDto recordDto = new RecordDto.Builder()
                 .name(undocumented.getName())
@@ -358,6 +297,41 @@ public class RecordManager {
                 .deviceSN(ConfigManager.getInstance().getConfig().getDeviceSerialNumber())
                 .build();
         return GSON.toJson(recordDto);
+    }
+
+    private String makeTaskDataJson(Task task, TaskResult taskResult) {
+        TaskOver taskOver = new TaskOver.Builder()
+                .taskid(task.getTaskid())
+                .tasktype(task.getTasktype())
+                .taskCode(taskResult.getCode())
+                .taskMsg(taskResult.getMessage())
+                .taskdata(taskResult.getTaskData())
+                .build();
+        return GSON.toJson(taskOver);
+    }
+
+    public void uploadHeartBeat(String data) {
+        try {
+            String cmd = "Heartbeat";
+            String json = makeUploadResultJson(cmd, data);
+            Config config = ConfigManager.getInstance().getConfig();
+            try {
+                uploadCall1 = FaceNetApi.uploadRecord(config.getUploadRecordUrl1(), json);
+                Response<DaheResponseEntity> execute = uploadCall1.execute();
+                DaheResponseEntity body = execute.body();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                uploadCall2 = FaceNetApi.uploadRecord(config.getUploadRecordUrl2(), json);
+                Response<DaheResponseEntity> execute = uploadCall2.execute();
+                DaheResponseEntity body = execute.body();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

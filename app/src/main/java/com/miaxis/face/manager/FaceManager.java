@@ -81,7 +81,7 @@ public class FaceManager {
     private OnFaceHandleListener faceHandleListener;
 
     public interface OnFaceHandleListener {
-        void onFeatureExtract(MxRGBImage mxRGBImage, MXFaceInfoEx mxFaceInfoEx, byte[] feature, boolean mask);
+        void onFeatureExtract(MxRGBImage mxRGBImage, MXFaceInfoEx mxFaceInfoEx, byte[] feature);
 
         void onFaceDetect(int faceNum, MXFaceInfoEx[] faceInfoExes);
 
@@ -263,28 +263,14 @@ public class FaceManager {
             Log.e("asd", "提特征中");
             Config config = ConfigManager.getInstance().getConfig();
             if (intermediary.mxFaceInfoEx.quality > config.getQualityScore()) {
-//                double pupilDistance = calculationPupilDistance(intermediary.mxFaceInfoEx);
-                boolean result = detectMask(intermediary.data, zoomWidth, zoomHeight, intermediary.mxFaceInfoEx);
-                if (result) {
-                    boolean mask = intermediary.mxFaceInfoEx.mask > ConfigManager.getInstance().getConfig().getMaskScore();
-                    byte[] feature;
-                    if (mask) {
-                        feature = extractMaskFeature(intermediary.data, zoomWidth, zoomHeight, intermediary.mxFaceInfoEx);
-                    } else {
-                        feature = extractFeature(intermediary.data, zoomWidth, zoomHeight, intermediary.mxFaceInfoEx);
+                byte[] feature = extractFeature(intermediary.data, zoomWidth, zoomHeight, intermediary.mxFaceInfoEx);
+                if (feature != null) {
+                    needNextFeature = false;
+                    if (faceHandleListener != null) {
+                        faceHandleListener.onFeatureExtract(new MxRGBImage(intermediary.data, zoomWidth, zoomHeight),
+                                intermediary.mxFaceInfoEx,
+                                feature);
                     }
-                    if (feature != null) {
-                        needNextFeature = false;
-                        if (faceHandleListener != null) {
-                            faceHandleListener.onFeatureExtract(new MxRGBImage(intermediary.data, zoomWidth, zoomHeight),
-                                    intermediary.mxFaceInfoEx,
-                                    feature,
-                                    mask);
-                        }
-                    }
-                } else {
-                    //是否戴口罩检测失败，直接丢弃
-                    Log.e("asd", "检测是否戴口罩失败");
                 }
             } else {
                 if (faceHandleListener != null) {
@@ -310,10 +296,7 @@ public class FaceManager {
             MXFaceInfoEx mxFaceInfoEx = sortMXFaceInfoEx(pFaceBuffer);
             byte[] faceFeature = extractFeature(rgbData, bitmap.getWidth(), bitmap.getHeight(), mxFaceInfoEx);
             if (faceFeature != null) {
-                byte[] maskFaceFeature = extractMaskFeatureForRegister(rgbData, bitmap.getWidth(), bitmap.getHeight(), mxFaceInfoEx);
-                if (maskFaceFeature != null) {
-                    return new PhotoFaceFeature(faceFeature, maskFaceFeature, "提取成功");
-                }
+                return new PhotoFaceFeature(faceFeature, "提取成功");
             } else {
                 message = "提取特征失败";
             }

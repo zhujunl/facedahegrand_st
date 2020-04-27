@@ -13,7 +13,9 @@ import com.miaxis.face.manager.DaoManager;
 import com.miaxis.face.manager.FaceManager;
 import com.miaxis.face.manager.FingerManager;
 import com.miaxis.face.manager.GpioManager;
+import com.miaxis.face.manager.ServerManager;
 import com.miaxis.face.manager.SoundManager;
+import com.miaxis.face.manager.TTSManager;
 import com.miaxis.face.manager.TaskManager;
 import com.miaxis.face.manager.WatchDogManager;
 import com.miaxis.face.net.FaceNetApi;
@@ -51,6 +53,7 @@ public class App extends Application {
             FingerManager.getInstance().init(this);
             ConfigManager.getInstance().checkConfig();
             FaceNetApi.rebuildRetrofit();
+            TTSManager.getInstance().init(this);
 //            AdvertManager.getInstance().init();
             TaskManager.getInstance().init();
             //TODO:定时续传日志，清理

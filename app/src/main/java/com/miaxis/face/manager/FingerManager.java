@@ -105,8 +105,8 @@ public class FingerManager {
                 }
                 if (result == 0 && verifyRun) {
                     Bitmap bitmap = mxFingerAPI.Raw2Bimap(bImgBuf, IMAGE_X_BIG, IMAGE_Y_BIG);
-                    int score0 = verifyFinger(fingerprint0, printFingerFeature);
-                    int score1 = verifyFinger(fingerprint1, printFingerFeature);
+                    int score0 = verifyFingerScore(fingerprint0, printFingerFeature);
+                    int score1 = verifyFingerScore(fingerprint1, printFingerFeature);
                     if (Math.max(score0, score1) > 40) {
                         if (verifyListener != null) {
                             verifyListener.onFingerVerify(FingerVerifyResult.VERIFY_SUCCESS,

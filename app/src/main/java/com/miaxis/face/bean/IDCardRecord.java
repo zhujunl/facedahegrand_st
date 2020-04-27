@@ -61,18 +61,28 @@ public class IDCardRecord {
     /** 现场照片路径 **/
     private String facePhotoPath;
 
-    /** 比对结果 **/
+    /** 比对模式 **/
     private int verifyMode;
+    /** 人脸比对结果 **/
     private boolean faceResult;
+    /** 指纹比对结果 **/
     private boolean fingerResult;
+    /** 人脸比对分数 **/
     private float faceScore;
+    /** 指纹比对分数 **/
     private float fingerScore;
+    /** 比对结果 **/
     private boolean verifyResult;
+    /** 比对时间 **/
     private Date verifyTime;
 
+    /** 机构名称（遗留） **/
     private String orgName;
+    /** 结果描述（遗留） **/
     private String describe;
+    /** 定位 **/
     private String location;
+    /** 上传状态 **/
     private boolean upload;
 
     /** 身份证照片Bitmap **/
@@ -84,9 +94,6 @@ public class IDCardRecord {
     /** 身份证照片人脸特征 **/
     @Transient
     private byte[] cardFeature;
-    /** 身份证照片戴口罩人脸特征 **/
-    @Transient
-    private byte[] maskCardFeature;
 
     /** 通过指纹比对的指纹 **/
     @Transient
@@ -193,7 +200,6 @@ public class IDCardRecord {
         setCardBitmap(builder.cardBitmap);
         setFaceBitmap(builder.faceBitmap);
         setCardFeature(builder.cardFeature);
-        setMaskCardFeature(builder.maskCardFeature);
         setLocaleFingerprint(builder.localeFingerprint);
         setLocaleFingerprintBitmap(builder.localeFingerprintBitmap);
         setGatherFingerprint1(builder.gatherFingerprint1);
@@ -441,14 +447,6 @@ public class IDCardRecord {
         this.cardFeature = cardFeature;
     }
 
-    public byte[] getMaskCardFeature() {
-        return maskCardFeature;
-    }
-
-    public void setMaskCardFeature(byte[] maskCardFeature) {
-        this.maskCardFeature = maskCardFeature;
-    }
-
     public String getLocaleFingerprint() {
         return localeFingerprint;
     }
@@ -534,7 +532,6 @@ public class IDCardRecord {
         private Bitmap cardBitmap;
         private Bitmap faceBitmap;
         private byte[] cardFeature;
-        private byte[] maskCardFeature;
         private String localeFingerprint;
         private Bitmap localeFingerprintBitmap;
         private String gatherFingerprint1;
@@ -722,11 +719,6 @@ public class IDCardRecord {
 
         public Builder cardFeature(byte[] val) {
             cardFeature = val;
-            return this;
-        }
-
-        public Builder maskCardFeature(byte[] val) {
-            maskCardFeature = val;
             return this;
         }
 

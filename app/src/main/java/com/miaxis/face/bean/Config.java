@@ -28,6 +28,7 @@ public class Config implements Serializable {
     private String uploadRecordUrl1;
     private String uploadRecordUrl2;
     private String advertisementUrl;
+    private String heartBeatUrl;
 
     private String deviceSerialNumber;
     private String account;
@@ -48,10 +49,8 @@ public class Config implements Serializable {
     private int advertisementMode;
 
     private float verifyScore;
-    private float maskVerifyScore;
     private int qualityScore;
     private int livenessQualityScore;
-    private int maskScore;
 
     private String titleStr;
     private String password;
@@ -60,23 +59,23 @@ public class Config implements Serializable {
     private int intervalTime;
     private String orgName;
     private int advertiseDelayTime;
-    @Generated(hash = 2091216551)
+    @Generated(hash = 88704120)
     public Config(long id, String updateUrl, String uploadRecordUrl1,
-            String uploadRecordUrl2, String advertisementUrl,
+            String uploadRecordUrl2, String advertisementUrl, String heartBeatUrl,
             String deviceSerialNumber, String account, String clientId,
             boolean encrypt, int verifyMode, boolean netFlag, boolean resultFlag,
             boolean saveLocalFlag, boolean documentFlag, boolean livenessFlag,
             boolean queryFlag, boolean whiteFlag, boolean blackFlag,
             int gatherFingerFlag, boolean advertiseFlag, int advertisementMode,
-            float verifyScore, float maskVerifyScore, int qualityScore,
-            int livenessQualityScore, int maskScore, String titleStr,
-            String password, String upTime, int intervalTime, String orgName,
-            int advertiseDelayTime) {
+            float verifyScore, int qualityScore, int livenessQualityScore,
+            String titleStr, String password, String upTime, int intervalTime,
+            String orgName, int advertiseDelayTime) {
         this.id = id;
         this.updateUrl = updateUrl;
         this.uploadRecordUrl1 = uploadRecordUrl1;
         this.uploadRecordUrl2 = uploadRecordUrl2;
         this.advertisementUrl = advertisementUrl;
+        this.heartBeatUrl = heartBeatUrl;
         this.deviceSerialNumber = deviceSerialNumber;
         this.account = account;
         this.clientId = clientId;
@@ -94,10 +93,8 @@ public class Config implements Serializable {
         this.advertiseFlag = advertiseFlag;
         this.advertisementMode = advertisementMode;
         this.verifyScore = verifyScore;
-        this.maskVerifyScore = maskVerifyScore;
         this.qualityScore = qualityScore;
         this.livenessQualityScore = livenessQualityScore;
-        this.maskScore = maskScore;
         this.titleStr = titleStr;
         this.password = password;
         this.upTime = upTime;
@@ -115,6 +112,7 @@ public class Config implements Serializable {
         setUploadRecordUrl1(builder.uploadRecordUrl1);
         setUploadRecordUrl2(builder.uploadRecordUrl2);
         setAdvertisementUrl(builder.advertisementUrl);
+        setHeartBeatUrl(builder.heartBeatUrl);
         setDeviceSerialNumber(builder.deviceSerialNumber);
         setAccount(builder.account);
         setClientId(builder.clientId);
@@ -132,10 +130,8 @@ public class Config implements Serializable {
         setAdvertiseFlag(builder.advertiseFlag);
         setAdvertisementMode(builder.advertisementMode);
         setVerifyScore(builder.verifyScore);
-        setMaskVerifyScore(builder.maskVerifyScore);
         setQualityScore(builder.qualityScore);
         setLivenessQualityScore(builder.livenessQualityScore);
-        setMaskScore(builder.maskScore);
         setTitleStr(builder.titleStr);
         setPassword(builder.password);
         setUpTime(builder.upTime);
@@ -173,6 +169,12 @@ public class Config implements Serializable {
     }
     public void setAdvertisementUrl(String advertisementUrl) {
         this.advertisementUrl = advertisementUrl;
+    }
+    public String getHeartBeatUrl() {
+        return this.heartBeatUrl;
+    }
+    public void setHeartBeatUrl(String heartBeatUrl) {
+        this.heartBeatUrl = heartBeatUrl;
     }
     public String getDeviceSerialNumber() {
         return this.deviceSerialNumber;
@@ -276,12 +278,6 @@ public class Config implements Serializable {
     public void setVerifyScore(float verifyScore) {
         this.verifyScore = verifyScore;
     }
-    public float getMaskVerifyScore() {
-        return this.maskVerifyScore;
-    }
-    public void setMaskVerifyScore(float maskVerifyScore) {
-        this.maskVerifyScore = maskVerifyScore;
-    }
     public int getQualityScore() {
         return this.qualityScore;
     }
@@ -293,12 +289,6 @@ public class Config implements Serializable {
     }
     public void setLivenessQualityScore(int livenessQualityScore) {
         this.livenessQualityScore = livenessQualityScore;
-    }
-    public int getMaskScore() {
-        return this.maskScore;
-    }
-    public void setMaskScore(int maskScore) {
-        this.maskScore = maskScore;
     }
     public String getTitleStr() {
         return this.titleStr;
@@ -343,6 +333,7 @@ public class Config implements Serializable {
         private String uploadRecordUrl1;
         private String uploadRecordUrl2;
         private String advertisementUrl;
+        private String heartBeatUrl;
         private String deviceSerialNumber;
         private String account;
         private String clientId;
@@ -360,10 +351,8 @@ public class Config implements Serializable {
         private boolean advertiseFlag;
         private int advertisementMode;
         private float verifyScore;
-        private float maskVerifyScore;
         private int qualityScore;
         private int livenessQualityScore;
-        private int maskScore;
         private String titleStr;
         private String password;
         private String upTime;
@@ -396,6 +385,11 @@ public class Config implements Serializable {
 
         public Builder advertisementUrl(String val) {
             advertisementUrl = val;
+            return this;
+        }
+
+        public Builder heartBeatUrl(String val) {
+            heartBeatUrl = val;
             return this;
         }
 
@@ -484,11 +478,6 @@ public class Config implements Serializable {
             return this;
         }
 
-        public Builder maskVerifyScore(float val) {
-            maskVerifyScore = val;
-            return this;
-        }
-
         public Builder qualityScore(int val) {
             qualityScore = val;
             return this;
@@ -496,11 +485,6 @@ public class Config implements Serializable {
 
         public Builder livenessQualityScore(int val) {
             livenessQualityScore = val;
-            return this;
-        }
-
-        public Builder maskScore(int val) {
-            maskScore = val;
             return this;
         }
 

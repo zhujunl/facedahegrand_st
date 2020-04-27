@@ -180,7 +180,6 @@ public class CameraManager {
                     Thread.sleep(1000);
                     if (monitorFlag) {
                         long cur = System.currentTimeMillis();
-                        Log.e("asd", "监视器运转");
                         if ((cur - lastCameraCallBackTime) >= ConfigManager.getInstance().getConfig().getIntervalTime() * 1000) {
                             if (listener != null) {
                                 listener.onCameraError();

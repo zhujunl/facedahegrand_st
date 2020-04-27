@@ -14,6 +14,8 @@ import com.miaxis.face.app.Face_App;
 import com.miaxis.face.event.InitCWEvent;
 import com.miaxis.face.event.ReInitEvent;
 import com.miaxis.face.manager.GpioManager;
+import com.miaxis.face.manager.ServerManager;
+import com.miaxis.face.manager.ToastManager;
 import com.miaxis.face.util.LogUtil;
 import com.miaxis.face.view.custom.GifView;
 
@@ -58,14 +60,21 @@ public class LoadingActivity extends BaseActivity {
         initWindow();
         initTitle();
         gifLoading.setMovieResource(R.raw.loading);
-        new Thread(() -> {
+        App.getInstance().getThreadExecutor().execute(() -> {
             App.getInstance().initApplication((result, message) -> {
                 runOnUiThread(() -> {
                     if (result) {
-                        tvLoading.setText("初始化算法成功");
-                        LogUtil.writeLog("初始化算法成功");
-                        startActivity(new Intent(this, VerifyActivity.class));
-                        finish();
+                        tvLoading.setText("初始化算法成功，正在启动Http服务");
+                        App.getInstance().getThreadExecutor().execute(() -> {
+                            ServerManager.getInstance().startServer(25841, () -> {
+                                runOnUiThread(() -> {
+                                    ToastManager.toast("创建Http服务成功");
+                                    tvLoading.setText("初始化成功");
+                                    startActivity(new Intent(this, VerifyActivity.class));
+                                    finish();
+                                });
+                            });
+                        });
                     } else {
                         tvLoading.setText(message);
                         LogUtil.writeLog(message);
@@ -73,7 +82,7 @@ public class LoadingActivity extends BaseActivity {
                     }
                 });
             });
-        }).start();
+        });
     }
 
     void initTitle() {

@@ -43,7 +43,6 @@ import com.miaxis.face.util.MyUtil;
 import com.miaxis.face.util.PatternUtil;
 import com.miaxis.face.view.fragment.UpdateDialog;
 
-
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -75,6 +74,12 @@ public class SettingActivity extends BaseActivity {
     EditText etUploadUrl2;
     @BindView(R.id.et_advertisement_url)
     EditText etAdvertisementUrl;
+    @BindView(R.id.et_heart_beat_url)
+    EditText etHeartBeatUrl;
+    @BindView(R.id.tv_device_serial)
+    TextView tvDeviceSerial;
+    @BindView(R.id.et_client_id)
+    EditText etClientId;
     @BindView(R.id.s_verify_mode)
     Spinner sVerifyMode;
     @BindView(R.id.rb_net_on)
@@ -89,6 +94,14 @@ public class SettingActivity extends BaseActivity {
     RadioButton rbResultOff;
     @BindView(R.id.rg_result)
     RadioGroup rgResult;
+    @BindView(R.id.rb_gather_on_one)
+    RadioButton rbGatherOnOne;
+    @BindView(R.id.rb_gather_on_two)
+    RadioButton rbGatherOnTwo;
+    @BindView(R.id.rb_gather_off)
+    RadioButton rbGatherOff;
+    @BindView(R.id.rg_gather)
+    RadioGroup rgGather;
     @BindView(R.id.rb_save_local_on)
     RadioButton rbSaveLocalOn;
     @BindView(R.id.rb_save_local_off)
@@ -119,16 +132,20 @@ public class SettingActivity extends BaseActivity {
     RadioButton rbAdvertiseOff;
     @BindView(R.id.rg_advertise)
     RadioGroup rgAdvertise;
+    @BindView(R.id.rb_advertise_local)
+    RadioButton rbAdvertiseLocal;
+    @BindView(R.id.rb_advertise_net)
+    RadioButton rbAdvertiseNet;
+    @BindView(R.id.rb_advertise_net_and_local)
+    RadioButton rbAdvertiseNetAndLocal;
+    @BindView(R.id.rg_advertise_mode)
+    RadioGroup rgAdvertiseMode;
     @BindView(R.id.et_verify_score)
     EditText etVerifyScore;
-    @BindView(R.id.et_mask_verify_score)
-    EditText etMaskVerifyScore;
     @BindView(R.id.et_quality_score)
     EditText etQualityScore;
     @BindView(R.id.et_liveness_quality_score)
     EditText etLivenessQualityScore;
-    @BindView(R.id.et_mask_score)
-    EditText etMaskScore;
     @BindView(R.id.tv_select_time)
     TextView tvSelectTime;
     @BindView(R.id.btn_clear_now)
@@ -145,14 +162,6 @@ public class SettingActivity extends BaseActivity {
     EditText etPwd;
     @BindView(R.id.et_advertise_delay_time)
     EditText etAdvertiseDelayTime;
-    @BindView(R.id.rb_advertise_local)
-    RadioButton rbAdvertiseLocal;
-    @BindView(R.id.rb_advertise_net)
-    RadioButton rbAdvertiseNet;
-    @BindView(R.id.rb_advertise_net_and_local)
-    RadioButton rbAdvertiseNetAndLocal;
-    @BindView(R.id.rg_advertise_mode)
-    RadioGroup rgAdvertiseMode;
     @BindView(R.id.btn_white_manage)
     Button btnWhiteManage;
     @BindView(R.id.btn_black_manage)
@@ -165,18 +174,6 @@ public class SettingActivity extends BaseActivity {
     Button btnCancelConfig;
     @BindView(R.id.btn_exit)
     Button btnExit;
-    @BindView(R.id.tv_device_serial)
-    TextView tvDeviceSerial;
-    @BindView(R.id.et_client_id)
-    EditText etClientId;
-    @BindView(R.id.rb_gather_on_one)
-    RadioButton rbGatherOnOne;
-    @BindView(R.id.rb_gather_on_two)
-    RadioButton rbGatherOnTwo;
-    @BindView(R.id.rb_gather_off)
-    RadioButton rbGatherOff;
-    @BindView(R.id.rg_gather)
-    RadioGroup rgGather;
 
     private Config config;
     private UpdateDialog updateDialog;
@@ -243,6 +240,7 @@ public class SettingActivity extends BaseActivity {
         etUploadUrl1.setText(config.getUploadRecordUrl1());
         etUploadUrl2.setText(config.getUploadRecordUrl2());
         etAdvertisementUrl.setText(config.getAdvertisementUrl());
+        etHeartBeatUrl.setText(config.getHeartBeatUrl());
         tvDeviceSerial.setText(config.getDeviceSerialNumber());
         etClientId.setText(config.getClientId());
         if (hasFingerDevice) {
@@ -268,10 +266,8 @@ public class SettingActivity extends BaseActivity {
         rbGatherOnTwo.setChecked(config.getGatherFingerFlag() == 1);
         rbGatherOff.setChecked(config.getGatherFingerFlag() == 2);
         etVerifyScore.setText(String.valueOf(config.getVerifyScore()));
-        etMaskVerifyScore.setText(String.valueOf(config.getMaskVerifyScore()));
         etQualityScore.setText(String.valueOf(config.getQualityScore()));
         etLivenessQualityScore.setText(String.valueOf(config.getLivenessQualityScore()));
-        etMaskScore.setText(String.valueOf(config.getMaskScore()));
         tvSelectTime.setText(config.getUpTime());
         etMonitorInterval.setText(String.valueOf(config.getIntervalTime()));
         etTitleStr.setText(config.getTitleStr());
@@ -322,6 +318,7 @@ public class SettingActivity extends BaseActivity {
         config.setUploadRecordUrl1(etUploadUrl1.getText().toString());
         config.setUploadRecordUrl2(etUploadUrl2.getText().toString());
         config.setAdvertisementUrl(etAdvertisementUrl.getText().toString());
+        config.setHeartBeatUrl(etHeartBeatUrl.getText().toString());
         config.setClientId(etClientId.getText().toString());
         config.setNetFlag(rbNetOn.isChecked());
         config.setResultFlag(rbResultOn.isChecked());
@@ -331,10 +328,8 @@ public class SettingActivity extends BaseActivity {
         config.setQueryFlag(rbQueryOn.isChecked());
         config.setAdvertiseFlag(rbAdvertiseOn.isChecked());
         config.setVerifyScore(Float.parseFloat(etVerifyScore.getText().toString()));
-        config.setMaskVerifyScore(Float.parseFloat(etMaskVerifyScore.getText().toString()));
         config.setQualityScore(Integer.parseInt(etQualityScore.getText().toString()));
         config.setLivenessQualityScore(Integer.parseInt(etLivenessQualityScore.getText().toString()));
-        config.setMaskScore(Integer.parseInt(etMaskScore.getText().toString()));
         config.setTitleStr(etTitleStr.getText().toString());
         config.setPassword(etPwd.getText().toString());
         config.setUpTime(tvSelectTime.getText().toString());

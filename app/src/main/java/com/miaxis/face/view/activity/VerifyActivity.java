@@ -49,6 +49,7 @@ import com.miaxis.face.manager.CardManager;
 import com.miaxis.face.manager.ConfigManager;
 import com.miaxis.face.manager.FaceManager;
 import com.miaxis.face.manager.GpioManager;
+import com.miaxis.face.manager.ServerManager;
 import com.miaxis.face.manager.ToastManager;
 import com.miaxis.face.manager.WatchDogManager;
 import com.miaxis.face.presenter.VerifyPresenter;
@@ -163,6 +164,10 @@ public class VerifyActivity extends BaseActivity {
         AdvertManager.getInstance().updateAdvertise();
         initWithConfig();
         WatchDogManager.getInstance().startANRWatchDog();
+        ServerManager.getInstance().startHeartBeat();
+        if (presenter != null) {
+            ServerManager.getInstance().setListener(presenter.taskListener);
+        }
         EventBus.getDefault().register(this);
     }
 
@@ -185,6 +190,8 @@ public class VerifyActivity extends BaseActivity {
         super.onStop();
         CardManager.getInstance().closeReadCard();
         EventBus.getDefault().unregister(this);
+        ServerManager.getInstance().stopHeartBeat();
+        ServerManager.getInstance().setListener(null);
         WatchDogManager.getInstance().stopANRWatchDog();
     }
 
@@ -197,6 +204,7 @@ public class VerifyActivity extends BaseActivity {
         }
         tvCamera.setDrawingCacheEnabled(false);
         CameraManager.getInstance().closeCamera();
+        ServerManager.getInstance().stopServer();
         asyncHandler.removeCallbacks(advertiseRunnable);
         GpioManager.getInstance().closeLed();
         unregisterReceiver(timeReceiver);
@@ -212,6 +220,7 @@ public class VerifyActivity extends BaseActivity {
     }
 
     protected void initView() {
+        etPwd.setHint(ServerManager.getInstance().getHost());
         tvCamera.getViewTreeObserver().addOnGlobalLayoutListener(globalListener);
         rsvRect.bringToFront();
     }
@@ -240,6 +249,8 @@ public class VerifyActivity extends BaseActivity {
         public void onCameraOpen(Camera.Size previewSize, String message) {
             if (previewSize == null) {
                 ToastManager.toast("摄像头打开失败");
+                controlAdvertDialog(true);
+                controlAdvertDialog(false);
             } else {
                 int rootWidth = flCameraRoot.getWidth();
                 int rootHeight = flCameraRoot.getHeight() * previewSize.width / previewSize.height;
@@ -247,83 +258,92 @@ public class VerifyActivity extends BaseActivity {
                 resetLayoutParams(rsvRect, rootWidth, rootHeight);
                 rsvRect.setRootSize(rootWidth, rootHeight);
                 rsvRect.setZoomRate((float) rootWidth / FaceManager.zoomWidth);
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                    try {
+                        if (advertiseDialog != null) {
+                            advertiseDialog.dismiss();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }, 500);
+            }
+            if (presenter != null && presenter.isOnTask()) {
+                presenter.handleTask();
             }
         }
 
         @Override
         public void onCameraError() {
-            try {
-                while (advertiseLock.isLocked()) {
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+            runOnUiThread(() -> {
+                try {
+                    while (advertiseLock.isLocked()) {
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
+                    advertiseLock.lock();
+                    Log.e("asd", "开始修复摄像头卡顿");
+                    CameraManager.getInstance().closeCamera();
+                    GpioManager.getInstance().closeCameraGpio();
+                    Thread.sleep(800);
+                    GpioManager.getInstance().openCameraGpio();
+                    CameraManager.getInstance().openCamera(tvCamera, cameraListener);
+                    Log.e("asd", "结束修复摄像头卡顿");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    advertiseLock.unlock();
                 }
-                advertiseLock.lock();
-                Log.e("asd", "开始修复摄像头卡顿");
-                CameraManager.getInstance().closeCamera();
-                GpioManager.getInstance().closeCameraGpio();
-                Thread.sleep(800);
-                GpioManager.getInstance().openCameraGpio();
-                CameraManager.getInstance().openCamera(tvCamera, cameraListener);
-                Log.e("asd", "结束修复摄像头卡顿");
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } finally {
-                advertiseLock.unlock();
-            }
+            });
         }
     };
 
-    private void controlAdvertDialog(boolean show) {
-        if (show) {
-            try {
-                if (advertiseLock.isLocked()) {
-                    return;
-                }
-                advertiseLock.lock();
-                advertiseDialog.show(getSupportFragmentManager(), "ad");
+    public void controlAdvertDialog(boolean show) {
+        runOnUiThread(() -> {
+            if (show) {
                 try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                CameraManager.getInstance().closeCamera();
-                GpioManager.getInstance().closeCameraGpio();
-                Thread.sleep(800);
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                advertiseLock.unlock();
-            }
-        } else {
-            if (System.currentTimeMillis() - cameraOpenTime < 3000) return;
-            try {
-                while (advertiseLock.isLocked()) {
+                    if (advertiseLock.isLocked()) {
+                        return;
+                    }
+                    advertiseLock.lock();
+                    advertiseDialog.show(getSupportFragmentManager(), "ad");
                     try {
-                        Thread.sleep(100);
+                        Thread.sleep(500);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+                    CameraManager.getInstance().closeCamera();
+                    GpioManager.getInstance().closeCameraGpio();
+                    Thread.sleep(800);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    advertiseLock.unlock();
                 }
-                advertiseLock.lock();
-                GpioManager.getInstance().openCameraGpio();
-                CameraManager.getInstance().openCamera(tvCamera, cameraListener);
-                cameraOpenTime = System.currentTimeMillis();
-                new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                    try {
-                        advertiseDialog.dismiss();
-                    } catch (Exception e) {
-                        e.printStackTrace();
+            } else {
+                if (System.currentTimeMillis() - cameraOpenTime < 3000) return;
+                try {
+                    while (advertiseLock.isLocked()) {
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
-                }, 1000);
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                advertiseLock.unlock();
+                    advertiseLock.lock();
+                    GpioManager.getInstance().openCameraGpio();
+                    CameraManager.getInstance().openCamera(tvCamera, cameraListener);
+                    cameraOpenTime = System.currentTimeMillis();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    advertiseLock.unlock();
+                }
             }
-        }
+        });
     }
 
     public void onCardEvent(CardManager.CardStatus cardStatus, IDCardRecord idCardRecord) {
@@ -467,6 +487,30 @@ public class VerifyActivity extends BaseActivity {
             ivFaceBox.setVisibility(View.INVISIBLE);
             tvUploadHint.setText(message);
             tvUploadHint.setVisibility(View.VISIBLE);
+        });
+    }
+
+    public void onTaskResult(int status) {
+        runOnUiThread(() -> {
+            if (status == 0) {
+                advertiseFlag = false;
+                asyncHandler.removeCallbacks(advertiseRunnable);
+                tvPass.setVisibility(View.INVISIBLE);
+                if (CameraManager.getInstance().getCamera() == null) {
+                    controlAdvertDialog(false);
+                } else {
+                    if (presenter != null) {
+                        presenter.handleTask();
+                    }
+                }
+            } else if (status == 1) {
+                tvUploadHint.setVisibility(View.VISIBLE);
+            } else {
+                tvPass.setVisibility(View.VISIBLE);
+                tvUploadHint.setVisibility(View.INVISIBLE);
+                advertiseFlag = true;
+                sendAdvertiseDelaySignal();
+            }
         });
     }
 

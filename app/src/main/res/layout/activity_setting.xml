@@ -25,36 +25,20 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/gray_dark" />
+            <View style="@style/HorizontalLine" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp">
+            <LinearLayout style="@style/SettingItem">
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="3"
-                    android:gravity="center"
+                <TextView style="@style/SettingName"
                     android:text="版本号"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                    android:layout_weight="3"/>
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
                 <TextView
                     android:id="@+id/tv_version"
@@ -66,10 +50,7 @@
                     android:textColor="@color/dark"
                     android:textSize="20sp" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
                 <Button
                     android:id="@+id/btn_update"
@@ -82,224 +63,115 @@
                     android:textColor="@color/orange"
                     android:textSize="20sp" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/gray_dark" />
+            <View style="@style/HorizontalLine" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp">
+            <LinearLayout style="@style/SettingItem">
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="版本更新URL"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                <TextView style="@style/SettingName"
+                    android:text="版本更新URL" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
                 <EditText
                     android:id="@+id/et_update_url"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@color/white"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                    style="@style/SettingEditItem" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/gray_dark" />
+            <View style="@style/HorizontalLine" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp">
+            <LinearLayout style="@style/SettingItem">
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="日志上传URL1"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                <TextView style="@style/SettingName"
+                    android:text="日志上传URL1" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
                 <EditText
                     android:id="@+id/et_upload_url_1"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@color/white"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                    style="@style/SettingEditItem" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/gray_dark" />
+            <View style="@style/HorizontalLine" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp">
+            <LinearLayout style="@style/SettingItem">
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="日志上传URL2"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                <TextView style="@style/SettingName"
+                    android:text="日志上传URL2" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
                 <EditText
                     android:id="@+id/et_upload_url_2"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@color/white"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                    style="@style/SettingEditItem" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/gray_dark" />
+            <View style="@style/HorizontalLine" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp">
+            <LinearLayout style="@style/SettingItem">
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="广告更新URL"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                <TextView style="@style/SettingName"
+                    android:text="广告更新URL" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
                 <EditText
                     android:id="@+id/et_advertisement_url"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@color/white"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                    style="@style/SettingEditItem" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/gray_dark" />
+            <View style="@style/HorizontalLine" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp">
+            <LinearLayout style="@style/SettingItem">
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="设备序列号"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                <TextView style="@style/SettingName"
+                    android:text="心跳URL" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
+
+                <EditText
+                    android:id="@+id/et_heart_beat_url"
+                    style="@style/SettingEditItem" />
+
+                <View style="@style/VerticalLine" />
+
+            </LinearLayout>
+
+            <View style="@style/HorizontalLine" />
+
+            <LinearLayout style="@style/SettingItem">
+
+                <View style="@style/VerticalLine" />
+
+                <TextView style="@style/SettingName"
+                    android:text="设备序列号" />
+
+                <View style="@style/VerticalLine" />
 
                 <TextView
                     android:id="@+id/tv_device_serial"
@@ -312,86 +184,39 @@
                     android:textColor="@color/dark"
                     android:textSize="20sp" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/gray_dark" />
+            <View style="@style/HorizontalLine" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp">
+            <LinearLayout style="@style/SettingItem">
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="单位编码"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                <TextView style="@style/SettingName"
+                    android:text="单位编码" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
                 <EditText
                     android:id="@+id/et_client_id"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@color/white"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                    style="@style/SettingEditItem" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/gray_dark" />
+            <View style="@style/HorizontalLine" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp">
+            <LinearLayout style="@style/SettingItem">
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="验证模式"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                <TextView style="@style/SettingName"
+                    android:text="验证模式" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
                 <Spinner
                     android:id="@+id/s_verify_mode"
@@ -400,1008 +225,428 @@
                     android:layout_gravity="center"
                     android:layout_weight="1" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/gray_dark" />
+            <View style="@style/HorizontalLine" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp">
+            <LinearLayout style="@style/SettingItem">
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="网络开关"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                <TextView style="@style/SettingName"
+                    android:text="网络开关" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
                 <RadioGroup
                     android:id="@+id/rg_net"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@color/white"
-                    android:gravity="center"
-                    android:orientation="horizontal">
+                    style="@style/SettingRadioGroup">
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                    <View style="@style/SpaceBody" />
 
                     <RadioButton
                         android:id="@+id/rb_net_on"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="联网"
-                        android:textColor="@color/dark" />
+                        style="@style/SettingRadioItem"
+                        android:text="联网" />
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                    <View style="@style/SpaceBody" />
 
                     <RadioButton
                         android:id="@+id/rb_net_off"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="单机"
-                        android:textColor="@color/dark" />
+                        style="@style/SettingRadioItem"
+                        android:text="单机" />
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                    <View style="@style/SpaceBody" />
 
                 </RadioGroup>
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/gray_dark" />
+            <View style="@style/HorizontalLine" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp">
+            <LinearLayout style="@style/SettingItem">
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="上传日志配置"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                <TextView style="@style/SettingName"
+                    android:text="上传日志配置" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
                 <RadioGroup
                     android:id="@+id/rg_result"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@color/white"
-                    android:gravity="center"
-                    android:orientation="horizontal">
+                    style="@style/SettingRadioGroup">
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                    <View style="@style/SpaceBody" />
 
                     <RadioButton
                         android:id="@+id/rb_result_on"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="成功 + 失败"
-                        android:textColor="@color/dark" />
+                        style="@style/SettingRadioItem"
+                        android:text="成功 + 失败" />
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                    <View style="@style/SpaceBody" />
 
                     <RadioButton
                         android:id="@+id/rb_result_off"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="仅限成功"
-                        android:textColor="@color/dark" />
+                        style="@style/SettingRadioItem"
+                        android:text="仅限成功" />
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                    <View style="@style/SpaceBody" />
 
                 </RadioGroup>
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/gray_dark" />
+            <View style="@style/HorizontalLine" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp">
+            <LinearLayout style="@style/SettingItem">
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="补全指纹信息"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                <TextView style="@style/SettingName"
+                    android:text="补全指纹信息" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
                 <RadioGroup
                     android:id="@+id/rg_gather"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@color/white"
-                    android:gravity="center"
-                    android:orientation="horizontal">
+                    style="@style/SettingRadioGroup">
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                    <View style="@style/SpaceBody" />
 
                     <RadioButton
                         android:id="@+id/rb_gather_on_one"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:text="采集1"
-                        android:textColor="@color/dark" />
+                        style="@style/SettingRadioItem"
+                        android:text="采集1" />
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                    <View style="@style/SpaceBody" />
 
                     <RadioButton
                         android:id="@+id/rb_gather_on_two"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:text="采集2"
-                        android:textColor="@color/dark" />
+                        style="@style/SettingRadioItem"
+                        android:text="采集2" />
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                    <View style="@style/SpaceBody" />
 
                     <RadioButton
                         android:id="@+id/rb_gather_off"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:text="不采集"
-                        android:textColor="@color/dark" />
+                        style="@style/SettingRadioItem"
+                        android:text="不采集" />
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                    <View style="@style/SpaceBody" />
 
                 </RadioGroup>
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/gray_dark" />
+            <View style="@style/HorizontalLine" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp">
+            <LinearLayout style="@style/SettingItem">
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="本地日志存储"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                <TextView style="@style/SettingName"
+                    android:text="本地日志存储" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
                 <RadioGroup
                     android:id="@+id/rg_save_local"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@color/white"
-                    android:gravity="center"
-                    android:orientation="horizontal">
+                    style="@style/SettingRadioGroup">
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                    <View style="@style/SpaceBody" />
 
                     <RadioButton
                         android:id="@+id/rb_save_local_on"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="开启"
-                        android:textColor="@color/dark" />
+                        style="@style/SettingRadioItem"
+                        android:text="开启" />
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                    <View style="@style/SpaceBody" />
 
                     <RadioButton
                         android:id="@+id/rb_save_local_off"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="关闭"
-                        android:textColor="@color/dark" />
+                        style="@style/SettingRadioItem"
+                        android:text="关闭" />
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                    <View style="@style/SpaceBody" />
 
                 </RadioGroup>
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/gray_dark" />
+            <View style="@style/HorizontalLine" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp">
+            <LinearLayout style="@style/SettingItem">
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="无证入住"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                <TextView style="@style/SettingName"
+                    android:text="无证入住" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
                 <RadioGroup
                     android:id="@+id/rg_document"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@color/white"
-                    android:gravity="center"
-                    android:orientation="horizontal">
+                    style="@style/SettingRadioGroup">
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                    <View style="@style/SpaceBody" />
 
                     <RadioButton
                         android:id="@+id/rb_document_on"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="开启"
-                        android:textColor="@color/dark" />
+                        style="@style/SettingRadioItem"
+                        android:text="开启" />
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                    <View style="@style/SpaceBody" />
 
                     <RadioButton
                         android:id="@+id/rb_document_off"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="关闭"
-                        android:textColor="@color/dark" />
+                        style="@style/SettingRadioItem"
+                        android:text="关闭" />
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                    <View style="@style/SpaceBody" />
 
                 </RadioGroup>
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/gray_dark" />
+            <View style="@style/HorizontalLine" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp">
+            <LinearLayout style="@style/SettingItem">
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="眨眼活体识别"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                <TextView style="@style/SettingName"
+                    android:text="眨眼活体识别" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
                 <RadioGroup
                     android:id="@+id/rg_liveness"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@color/white"
-                    android:gravity="center"
-                    android:orientation="horizontal">
+                    style="@style/SettingRadioGroup">
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                    <View style="@style/SpaceBody" />
 
                     <RadioButton
                         android:id="@+id/rb_liveness_on"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="开启"
-                        android:textColor="@color/dark" />
+                        style="@style/SettingRadioItem"
+                        android:text="开启" />
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                    <View style="@style/SpaceBody" />
 
                     <RadioButton
                         android:id="@+id/rb_liveness_off"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="关闭"
-                        android:textColor="@color/dark" />
+                        style="@style/SettingRadioItem"
+                        android:text="关闭" />
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                    <View style="@style/SpaceBody" />
 
                 </RadioGroup>
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/gray_dark" />
+            <View style="@style/HorizontalLine" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp">
+            <LinearLayout style="@style/SettingItem">
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="查询记录"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                <TextView style="@style/SettingName"
+                    android:text="查询记录" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
                 <RadioGroup
                     android:id="@+id/rg_query"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@color/white"
-                    android:gravity="center"
-                    android:orientation="horizontal">
+                    style="@style/SettingRadioGroup">
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                    <View style="@style/SpaceBody" />
 
                     <RadioButton
                         android:id="@+id/rb_query_on"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="允许"
-                        android:textColor="@color/dark" />
+                        style="@style/SettingRadioItem"
+                        android:text="允许" />
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                    <View style="@style/SpaceBody" />
 
                     <RadioButton
                         android:id="@+id/rb_query_off"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="不允许"
-                        android:textColor="@color/dark" />
+                        style="@style/SettingRadioItem"
+                        android:text="不允许" />
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                    <View style="@style/SpaceBody" />
 
                 </RadioGroup>
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/gray_dark" />
+            <View style="@style/HorizontalLine" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp">
+            <LinearLayout style="@style/SettingItem">
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="广告开关"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                <TextView style="@style/SettingName"
+                    android:text="广告开关" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
                 <RadioGroup
                     android:id="@+id/rg_advertise"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@color/white"
-                    android:gravity="center"
-                    android:orientation="horizontal">
+                    style="@style/SettingRadioGroup">
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                    <View style="@style/SpaceBody" />
 
                     <RadioButton
                         android:id="@+id/rb_advertise_on"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="开启"
-                        android:textColor="@color/dark" />
+                        style="@style/SettingRadioItem"
+                        android:text="开启" />
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                    <View style="@style/SpaceBody" />
 
                     <RadioButton
                         android:id="@+id/rb_advertise_off"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="关闭"
-                        android:textColor="@color/dark" />
+                        style="@style/SettingRadioItem"
+                        android:text="关闭" />
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                    <View style="@style/SpaceBody" />
 
                 </RadioGroup>
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/gray_dark" />
+            <View style="@style/HorizontalLine" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp">
+            <LinearLayout style="@style/SettingItem">
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="广告来源"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                <TextView style="@style/SettingName"
+                    android:text="广告来源" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
                 <RadioGroup
                     android:id="@+id/rg_advertise_mode"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@color/white"
-                    android:gravity="center"
-                    android:orientation="horizontal">
+                    style="@style/SettingRadioGroup">
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                    <View style="@style/SpaceBody" />
 
                     <RadioButton
                         android:id="@+id/rb_advertise_local"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:text="本地"
-                        android:textColor="@color/dark" />
+                        style="@style/SettingRadioItem"
+                        android:text="本地" />
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                    <View style="@style/SpaceBody" />
 
                     <RadioButton
                         android:id="@+id/rb_advertise_net"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:text="网络"
-                        android:textColor="@color/dark" />
+                        style="@style/SettingRadioItem"
+                        android:text="网络" />
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                    <View style="@style/SpaceBody" />
 
                     <RadioButton
                         android:id="@+id/rb_advertise_net_and_local"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:text="本地 + 网络"
-                        android:textColor="@color/dark" />
+                        style="@style/SettingRadioItem"
+                        android:text="本地 + 网络" />
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                    <View style="@style/SpaceBody" />
 
                 </RadioGroup>
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/gray_dark" />
+            <View style="@style/HorizontalLine" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp">
+            <LinearLayout style="@style/SettingItem">
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="比对阈值"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                <TextView style="@style/SettingName"
+                    android:text="比对阈值" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
                 <EditText
                     android:id="@+id/et_verify_score"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@color/white"
-                    android:gravity="center"
-                    android:inputType="numberDecimal"
-                    android:singleLine="true"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                    style="@style/SettingEditItem"
+                    android:inputType="numberDecimal" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/gray_dark" />
+            <View style="@style/HorizontalLine" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp">
+            <LinearLayout style="@style/SettingItem">
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="戴口罩比对阈值"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                <TextView style="@style/SettingName"
+                    android:text="质量阈值" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
-
-                <EditText
-                    android:id="@+id/et_mask_verify_score"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@color/white"
-                    android:gravity="center"
-                    android:inputType="numberDecimal"
-                    android:singleLine="true"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
-
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/gray_dark" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp">
-
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="质量阈值"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
-
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
                 <EditText
                     android:id="@+id/et_quality_score"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@color/white"
-                    android:gravity="center"
-                    android:inputType="number"
-                    android:singleLine="true"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                    style="@style/SettingEditItem"
+                    android:inputType="number" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/gray_dark" />
+            <View style="@style/HorizontalLine" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp">
+            <LinearLayout style="@style/SettingItem">
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="活体质量过滤阈值"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                <TextView style="@style/SettingName"
+                    android:text="活体质量过滤阈值" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
                 <EditText
                     android:id="@+id/et_liveness_quality_score"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@color/white"
-                    android:gravity="center"
-                    android:inputType="numberDecimal"
-                    android:singleLine="true"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                    style="@style/SettingEditItem"
+                    android:inputType="numberDecimal" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/gray_dark" />
+            <View style="@style/HorizontalLine" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp">
+            <LinearLayout style="@style/SettingItem">
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="口罩检测阈值"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
-
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
-
-                <EditText
-                    android:id="@+id/et_mask_score"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@color/white"
-                    android:gravity="center"
-                    android:inputType="numberDecimal"
-                    android:singleLine="true"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
-
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/gray_dark" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp">
-
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="3"
-                    android:gravity="center"
+                <TextView style="@style/SettingName"
                     android:text="续传时间"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                    android:layout_weight="3"/>
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
                 <TextView
                     android:id="@+id/tv_select_time"
@@ -1413,10 +658,7 @@
                     android:hint="点击选择时间"
                     android:textSize="20sp" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
                 <Button
                     android:id="@+id/btn_clear_now"
@@ -1429,40 +671,20 @@
                     android:textColor="@color/orange"
                     android:textSize="20sp" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/gray_dark" />
+            <View style="@style/HorizontalLine" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp">
+            <LinearLayout style="@style/SettingItem">
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="比对数目 （未上传数目 / 总数）"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                <TextView style="@style/SettingName"
+                    android:text="比对数目 （未上传数目 / 总数）" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
                 <TextView
                     android:id="@+id/tv_result_count"
@@ -1474,253 +696,113 @@
                     android:hint="正在计算..."
                     android:textSize="20sp" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/gray_dark" />
+            <View style="@style/HorizontalLine" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp">
+            <LinearLayout style="@style/SettingItem">
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="监控间隔"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                <TextView style="@style/SettingName"
+                    android:text="监控间隔" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
                 <EditText
                     android:id="@+id/et_monitor_interval"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@color/white"
-                    android:gravity="center"
-                    android:inputType="numberDecimal"
-                    android:singleLine="true"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                    style="@style/SettingEditItem"
+                    android:inputType="numberDecimal" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/gray_dark" />
+            <View style="@style/HorizontalLine" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp">
+            <LinearLayout style="@style/SettingItem">
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="提示文字"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                <TextView style="@style/SettingName"
+                    android:text="提示文字" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
                 <EditText
                     android:id="@+id/et_title_str"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@color/white"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                    style="@style/SettingEditItem" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/gray_dark" />
+            <View style="@style/HorizontalLine" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp">
+            <LinearLayout style="@style/SettingItem">
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="机构名称"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                <TextView style="@style/SettingName"
+                    android:text="机构名称" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
                 <EditText
                     android:id="@+id/et_org_name"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@color/white"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                    style="@style/SettingEditItem" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/gray_dark" />
+            <View style="@style/HorizontalLine" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp">
+            <LinearLayout style="@style/SettingItem">
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
                 <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="密码"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                    style="@style/SettingName"
+                    android:text="密码" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
                 <EditText
                     android:id="@+id/et_pwd"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@color/white"
+                    style="@style/SettingEditItem"
                     android:digits="0123456789"
-                    android:gravity="center"
                     android:inputType="number"
-                    android:maxLength="6"
-                    android:singleLine="true"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                    android:maxLength="6" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/gray_dark" />
+            <View style="@style/HorizontalLine" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp">
+            <LinearLayout style="@style/SettingItem">
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="广告显示延迟（秒）"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                <TextView style="@style/SettingName"
+                    android:text="广告显示延迟（秒）" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
                 <EditText
                     android:id="@+id/et_advertise_delay_time"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@color/white"
+                   style="@style/SettingEditItem"
                     android:digits="0123456789"
-                    android:gravity="center"
-                    android:inputType="number"
-                    android:singleLine="true"
-                    android:textColor="@color/dark"
-                    android:textSize="20sp" />
+                    android:inputType="number" />
 
-                <View
-                    android:layout_width="1px"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_dark" />
+                <View style="@style/VerticalLine" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/gray_dark" />
+            <View style="@style/HorizontalLine" />
 
         </LinearLayout>
 

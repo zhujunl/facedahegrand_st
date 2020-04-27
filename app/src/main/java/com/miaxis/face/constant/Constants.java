@@ -60,6 +60,7 @@ public class Constants {
     public static final String DEFAULT_UPLOAD_URL_1 = "";
     public static final String DEFAULT_UPLOAD_URL_2 = "";
     public static final String DEFAULT_ADVERTISEMENT_URL = "";
+    public static final String DEFAULT_HEART_BEAT_URL = "";
     public static final int DEFAULT_VERIFY_MODE = VERIFY_MODE_FACE_ONLY;
     public static final String DEFAULT_ACCOUNT = "zjzz";
     public static final String DEFAULT_CLIENT_ID = "33983298";
@@ -75,10 +76,8 @@ public class Constants {
     public static final boolean DEFAULT_BLACK_FLAG = false;
     public static final boolean DEFAULT_ADVERTISE_FLAG = true;
     public static final float DEFAULT_VERIFY_SCORE = 0.70f;
-    public static final float DEFAULT_MASK_VERIFY_SCORE = 0.70f;
     public static final int DEFAULT_QUALITY_SCORE = 50;
     public static final int DEFAULT_LIVENESS_QUALITY_SCORE = 25;
-    public static final int DEFAULT_MASK_SCORE = 40;
     public static final String DEFAULT_TITLE_STR = "";
     public static final String DEFAULT_PASSWORD = "666666";
     public static final String DEFAULT_UPTIME = "3 : 00";
