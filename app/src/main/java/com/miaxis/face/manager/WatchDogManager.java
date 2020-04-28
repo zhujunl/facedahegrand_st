@@ -102,7 +102,7 @@ public class WatchDogManager {
             Looper.loop();
         }).start();
         Thread.sleep(1000);
-        restartApp();
+//        restartApp();
     }
 
     private void restartApp() {

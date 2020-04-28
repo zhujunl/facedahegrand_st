@@ -10,6 +10,7 @@ android {
         versionCode 10
         versionName "1.1.0_River_ST"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -67,6 +68,9 @@ dependencies {
     implementation 'com.jakewharton.rxbinding2:rxbinding:2.1.1'
     implementation 'com.jakewharton.rxbinding2:rxbinding-appcompat-v7:2.1.1'
     implementation 'com.github.anrwatchdog:anrwatchdog:1.4.0'
+    implementation 'org.apache.commons:commons-lang3:3.7'
+    //Multidex
+    implementation 'androidx.multidex:multidex:2.0.1'
     implementation files('src/main/libs/SM80FingerAPI.jar')
     implementation files('src/main/libs/IDCard_HID_Driver.jar')
     implementation files('src/main/libs/AMap_Location_V4.5.0_20190121.jar')

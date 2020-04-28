@@ -68,7 +68,7 @@ public class CrashExceptionManager implements Thread.UncaughtExceptionHandler {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        restartApp();
+//        restartApp();
     }
 
     private void restartApp() {

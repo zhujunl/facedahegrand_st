@@ -3,6 +3,7 @@ package com.miaxis.face.app;
 import android.app.Application;
 
 import androidx.annotation.NonNull;
+import androidx.multidex.MultiDex;
 
 import com.liulishuo.filedownloader.FileDownloader;
 import com.miaxis.face.manager.AdvertManager;
@@ -34,6 +35,7 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
+        MultiDex.install(this);
     }
 
     public static App getInstance() {

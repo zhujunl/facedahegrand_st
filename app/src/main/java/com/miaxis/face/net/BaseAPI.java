@@ -24,11 +24,13 @@ public class BaseAPI {
     }
 
     public static void rebuildRetrofit() {
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .connectTimeout(5, TimeUnit.SECONDS)
                 .readTimeout(5, TimeUnit.SECONDS)
-                .writeTimeout(5, TimeUnit.SECONDS)
-                .build();
+                .writeTimeout(5, TimeUnit.SECONDS);
+        builder.sslSocketFactory(SSLSocketClient.getSSLSocketFactory());
+        builder.hostnameVerifier(SSLSocketClient.getHostnameVerifier());
+        OkHttpClient okHttpClient = builder.build();
         retrofit = RETROFIT_BUILDER
                 .client(okHttpClient)
                 .baseUrl("http://192.168.5.110:8080/")

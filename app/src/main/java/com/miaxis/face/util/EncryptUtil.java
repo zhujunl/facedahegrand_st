@@ -46,7 +46,7 @@ public class EncryptUtil {
         return hex.toString();
     }
 
-    public static String encryptAES(String key, String cleartext) {
+    public static String encryptAES(String cleartext, String key) {
         if (TextUtils.isEmpty(cleartext)) {
             return null;
         }

@@ -25,7 +25,7 @@ public class DeviceUtil {
             Class<?> c = Class.forName("android.os.SystemProperties");
             Method get =c.getMethod("get", String.class);
             String serial = (String)get.invoke(c, "ro.serialno");
-            return serial;
+            return serial.trim();
         } catch (Exception e) {
             e.printStackTrace();
         }

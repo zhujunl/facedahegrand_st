@@ -309,7 +309,9 @@ public class VerifyActivity extends BaseActivity {
                         return;
                     }
                     advertiseLock.lock();
-                    advertiseDialog.show(getSupportFragmentManager(), "ad");
+                    if (!advertiseDialog.isAdded()) {
+                        advertiseDialog.show(getSupportFragmentManager(), "ad");
+                    }
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException e) {

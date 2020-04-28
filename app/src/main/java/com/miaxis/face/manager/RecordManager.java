@@ -1,12 +1,13 @@
 package com.miaxis.face.manager;
 
 import android.text.TextUtils;
-import android.util.Base64;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
-import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.miaxis.face.app.App;
 import com.miaxis.face.bean.Config;
 import com.miaxis.face.bean.DaheResponseEntity;
@@ -17,22 +18,15 @@ import com.miaxis.face.bean.TaskOver;
 import com.miaxis.face.bean.TaskResult;
 import com.miaxis.face.bean.Undocumented;
 import com.miaxis.face.net.FaceNetApi;
-import com.miaxis.face.net.UpLoadRecord;
 import com.miaxis.face.util.EncryptUtil;
 import com.miaxis.face.util.FileUtil;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RecordManager {
 
@@ -52,8 +46,9 @@ public class RecordManager {
      **/
 
     private static final SimpleDateFormat TIME_STAMP_FORMAT = new SimpleDateFormat("yyyyMMddHHmmss", Locale.CHINA);
-    private static final Gson GSON = new Gson();
+    private static final Gson GSON = new GsonBuilder().create();
     private static final String SECRET_KEY = "4af450e4dd333efd975f6901229d130ea74b2fad";
+    private static final String SIGN_KEY = "dhmyyjtforhotel2017";
 
     private volatile boolean uploading = false;
 
@@ -113,6 +108,10 @@ public class RecordManager {
                 uploadCall1 = FaceNetApi.uploadRecord(config.getUploadRecordUrl1(), json);
                 Response<DaheResponseEntity> execute = uploadCall1.execute();
                 DaheResponseEntity body = execute.body();
+                if (body != null) {
+                    Log.e("asd", json);
+                    Log.e("asd", body.getErrMsg());
+                }
                 if (body != null && body.getErrCode() == 0) {
                     result = true;
                     if (!uploading) return;
@@ -152,29 +151,27 @@ public class RecordManager {
         String client = config.getClientId();
         String nonce = String.valueOf(System.currentTimeMillis());
         String timeStamp = TIME_STAMP_FORMAT.format(new Date());
-        String signature = EncryptUtil.md5Decode32(cmd + account + nonce + client + timeStamp + data + SECRET_KEY);
-
-        Map<String, String> param = new HashMap<>();
-        param.put("account", account);
-        param.put("client", client);
-        param.put("cmd", cmd);
-        param.put("nonce", nonce);
-        param.put("timestamp", timeStamp);
-        param.put("signatrue", signature);
-
-        if (config.getEncrypt()) {
+        boolean ase = false;
+        if (true || config.getEncrypt()) {
             String encrypt = EncryptUtil.encryptAES(data, SECRET_KEY);
-            if (encrypt == null) {
-                param.put("aes", "false");
-                param.put("data", data);
-            } else {
-                param.put("aes", "true");
-                param.put("data", encrypt);
+            if (encrypt != null) {
+                ase = true;
+                data = encrypt;
             }
-        } else {
-            param.put("aes", "false");
-            param.put("data", data);
         }
+        String sign = cmd + account + nonce + client + timeStamp + data + SIGN_KEY;
+        String signature = EncryptUtil.md5Decode32(sign);
+
+        JsonObject param = new JsonObject();
+        param.addProperty("account", account);
+        param.addProperty("client", client);
+        param.addProperty("cmd", cmd);
+        param.addProperty("nonce", nonce);
+        param.addProperty("timestamp", timeStamp);
+        param.addProperty("signatrue", signature);
+        param.addProperty("data", data);
+        param.addProperty("aes", ase);
+
         return GSON.toJson(param);
     }
 
