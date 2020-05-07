@@ -4,6 +4,7 @@ import com.miaxis.face.bean.Advertisement;
 import com.miaxis.face.bean.DaheResponse;
 import com.miaxis.face.bean.DaheResponseEntity;
 import com.miaxis.face.bean.ResponseEntity;
+import com.miaxis.face.bean.UpdateData;
 
 import java.util.List;
 
@@ -24,6 +25,10 @@ public class FaceNetApi extends BaseAPI {
 
     public static Call<ResponseEntity<List<Advertisement>>> downImageList(String url) {
         return getFaceNet().downImageList(url);
+    }
+
+    public static Call<ResponseEntity<UpdateData>> downUpdateVersion(String url) {
+        return getFaceNet().downUpdateVersion(url);
     }
 
 }

@@ -25,10 +25,8 @@ public class Config implements Serializable {
     @Id
     private long id;
     private String updateUrl;
-    private String uploadRecordUrl1;
-    private String uploadRecordUrl2;
+    private String uploadRecordUrl;
     private String advertisementUrl;
-    private String heartBeatUrl;
 
     private String deviceSerialNumber;
     private String account;
@@ -59,23 +57,21 @@ public class Config implements Serializable {
     private int intervalTime;
     private String orgName;
     private int advertiseDelayTime;
-    @Generated(hash = 88704120)
-    public Config(long id, String updateUrl, String uploadRecordUrl1,
-            String uploadRecordUrl2, String advertisementUrl, String heartBeatUrl,
-            String deviceSerialNumber, String account, String clientId,
-            boolean encrypt, int verifyMode, boolean netFlag, boolean resultFlag,
-            boolean saveLocalFlag, boolean documentFlag, boolean livenessFlag,
-            boolean queryFlag, boolean whiteFlag, boolean blackFlag,
-            int gatherFingerFlag, boolean advertiseFlag, int advertisementMode,
-            float verifyScore, int qualityScore, int livenessQualityScore,
-            String titleStr, String password, String upTime, int intervalTime,
-            String orgName, int advertiseDelayTime) {
+    @Generated(hash = 764626670)
+    public Config(long id, String updateUrl, String uploadRecordUrl,
+            String advertisementUrl, String deviceSerialNumber, String account,
+            String clientId, boolean encrypt, int verifyMode, boolean netFlag,
+            boolean resultFlag, boolean saveLocalFlag, boolean documentFlag,
+            boolean livenessFlag, boolean queryFlag, boolean whiteFlag,
+            boolean blackFlag, int gatherFingerFlag, boolean advertiseFlag,
+            int advertisementMode, float verifyScore, int qualityScore,
+            int livenessQualityScore, String titleStr, String password,
+            String upTime, int intervalTime, String orgName,
+            int advertiseDelayTime) {
         this.id = id;
         this.updateUrl = updateUrl;
-        this.uploadRecordUrl1 = uploadRecordUrl1;
-        this.uploadRecordUrl2 = uploadRecordUrl2;
+        this.uploadRecordUrl = uploadRecordUrl;
         this.advertisementUrl = advertisementUrl;
-        this.heartBeatUrl = heartBeatUrl;
         this.deviceSerialNumber = deviceSerialNumber;
         this.account = account;
         this.clientId = clientId;
@@ -109,10 +105,8 @@ public class Config implements Serializable {
     private Config(Builder builder) {
         setId(builder.id);
         setUpdateUrl(builder.updateUrl);
-        setUploadRecordUrl1(builder.uploadRecordUrl1);
-        setUploadRecordUrl2(builder.uploadRecordUrl2);
+        setUploadRecordUrl(builder.uploadRecordUrl);
         setAdvertisementUrl(builder.advertisementUrl);
-        setHeartBeatUrl(builder.heartBeatUrl);
         setDeviceSerialNumber(builder.deviceSerialNumber);
         setAccount(builder.account);
         setClientId(builder.clientId);
@@ -152,29 +146,17 @@ public class Config implements Serializable {
     public void setUpdateUrl(String updateUrl) {
         this.updateUrl = updateUrl;
     }
-    public String getUploadRecordUrl1() {
-        return this.uploadRecordUrl1;
+    public String getUploadRecordUrl() {
+        return this.uploadRecordUrl;
     }
-    public void setUploadRecordUrl1(String uploadRecordUrl1) {
-        this.uploadRecordUrl1 = uploadRecordUrl1;
-    }
-    public String getUploadRecordUrl2() {
-        return this.uploadRecordUrl2;
-    }
-    public void setUploadRecordUrl2(String uploadRecordUrl2) {
-        this.uploadRecordUrl2 = uploadRecordUrl2;
+    public void setUploadRecordUrl(String uploadRecordUrl) {
+        this.uploadRecordUrl = uploadRecordUrl;
     }
     public String getAdvertisementUrl() {
         return this.advertisementUrl;
     }
     public void setAdvertisementUrl(String advertisementUrl) {
         this.advertisementUrl = advertisementUrl;
-    }
-    public String getHeartBeatUrl() {
-        return this.heartBeatUrl;
-    }
-    public void setHeartBeatUrl(String heartBeatUrl) {
-        this.heartBeatUrl = heartBeatUrl;
     }
     public String getDeviceSerialNumber() {
         return this.deviceSerialNumber;
@@ -330,10 +312,8 @@ public class Config implements Serializable {
     public static final class Builder {
         private long id;
         private String updateUrl;
-        private String uploadRecordUrl1;
-        private String uploadRecordUrl2;
+        private String uploadRecordUrl;
         private String advertisementUrl;
-        private String heartBeatUrl;
         private String deviceSerialNumber;
         private String account;
         private String clientId;
@@ -373,23 +353,13 @@ public class Config implements Serializable {
             return this;
         }
 
-        public Builder uploadRecordUrl1(String val) {
-            uploadRecordUrl1 = val;
-            return this;
-        }
-
-        public Builder uploadRecordUrl2(String val) {
-            uploadRecordUrl2 = val;
+        public Builder uploadRecordUrl(String val) {
+            uploadRecordUrl = val;
             return this;
         }
 
         public Builder advertisementUrl(String val) {
             advertisementUrl = val;
-            return this;
-        }
-
-        public Builder heartBeatUrl(String val) {
-            heartBeatUrl = val;
             return this;
         }
 

@@ -28,11 +28,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <View style="@style/HorizontalLine" />
-
             <LinearLayout style="@style/SettingItem">
-
-                <View style="@style/VerticalLine" />
 
                 <TextView style="@style/SettingName"
                     android:text="版本号"
@@ -48,6 +44,7 @@
                     android:background="@color/white"
                     android:gravity="center"
                     android:textColor="@color/dark"
+                    android:layout_margin="1dp"
                     android:textSize="20sp" />
 
                 <View style="@style/VerticalLine" />
@@ -59,19 +56,14 @@
                     android:layout_weight="1"
                     android:background="@drawable/white_btn_bg"
                     android:gravity="center"
+                    android:layout_margin="1dp"
                     android:text="检查更新"
                     android:textColor="@color/orange"
                     android:textSize="20sp" />
 
-                <View style="@style/VerticalLine" />
-
             </LinearLayout>
 
-            <View style="@style/HorizontalLine" />
-
             <LinearLayout style="@style/SettingItem">
-
-                <View style="@style/VerticalLine" />
 
                 <TextView style="@style/SettingName"
                     android:text="版本更新URL" />
@@ -82,15 +74,9 @@
                     android:id="@+id/et_update_url"
                     style="@style/SettingEditItem" />
 
-                <View style="@style/VerticalLine" />
-
             </LinearLayout>
 
-            <View style="@style/HorizontalLine" />
-
             <LinearLayout style="@style/SettingItem">
-
-                <View style="@style/VerticalLine" />
 
                 <TextView style="@style/SettingName"
                     android:text="日志上传URL1" />
@@ -98,37 +84,12 @@
                 <View style="@style/VerticalLine" />
 
                 <EditText
-                    android:id="@+id/et_upload_url_1"
+                    android:id="@+id/et_upload_url"
                     style="@style/SettingEditItem" />
-
-                <View style="@style/VerticalLine" />
 
             </LinearLayout>
 
-            <View style="@style/HorizontalLine" />
-
             <LinearLayout style="@style/SettingItem">
-
-                <View style="@style/VerticalLine" />
-
-                <TextView style="@style/SettingName"
-                    android:text="日志上传URL2" />
-
-                <View style="@style/VerticalLine" />
-
-                <EditText
-                    android:id="@+id/et_upload_url_2"
-                    style="@style/SettingEditItem" />
-
-                <View style="@style/VerticalLine" />
-
-            </LinearLayout>
-
-            <View style="@style/HorizontalLine" />
-
-            <LinearLayout style="@style/SettingItem">
-
-                <View style="@style/VerticalLine" />
 
                 <TextView style="@style/SettingName"
                     android:text="广告更新URL" />
@@ -139,34 +100,9 @@
                     android:id="@+id/et_advertisement_url"
                     style="@style/SettingEditItem" />
 
-                <View style="@style/VerticalLine" />
-
             </LinearLayout>
 
-            <View style="@style/HorizontalLine" />
-
             <LinearLayout style="@style/SettingItem">
-
-                <View style="@style/VerticalLine" />
-
-                <TextView style="@style/SettingName"
-                    android:text="心跳URL" />
-
-                <View style="@style/VerticalLine" />
-
-                <EditText
-                    android:id="@+id/et_heart_beat_url"
-                    style="@style/SettingEditItem" />
-
-                <View style="@style/VerticalLine" />
-
-            </LinearLayout>
-
-            <View style="@style/HorizontalLine" />
-
-            <LinearLayout style="@style/SettingItem">
-
-                <View style="@style/VerticalLine" />
 
                 <TextView style="@style/SettingName"
                     android:text="设备序列号" />
@@ -181,18 +117,13 @@
                     android:background="@color/white"
                     android:gravity="center"
                     android:singleLine="true"
+                    android:layout_margin="1dp"
                     android:textColor="@color/dark"
                     android:textSize="20sp" />
 
-                <View style="@style/VerticalLine" />
-
             </LinearLayout>
 
-            <View style="@style/HorizontalLine" />
-
             <LinearLayout style="@style/SettingItem">
-
-                <View style="@style/VerticalLine" />
 
                 <TextView style="@style/SettingName"
                     android:text="单位编码" />
@@ -203,15 +134,9 @@
                     android:id="@+id/et_client_id"
                     style="@style/SettingEditItem" />
 
-                <View style="@style/VerticalLine" />
-
             </LinearLayout>
 
-            <View style="@style/HorizontalLine" />
-
             <LinearLayout style="@style/SettingItem">
-
-                <View style="@style/VerticalLine" />
 
                 <TextView style="@style/SettingName"
                     android:text="验证模式" />
@@ -225,15 +150,9 @@
                     android:layout_gravity="center"
                     android:layout_weight="1" />
 
-                <View style="@style/VerticalLine" />
-
             </LinearLayout>
 
-            <View style="@style/HorizontalLine" />
-
             <LinearLayout style="@style/SettingItem">
-
-                <View style="@style/VerticalLine" />
 
                 <TextView style="@style/SettingName"
                     android:text="网络开关" />
@@ -262,15 +181,40 @@
 
                 </RadioGroup>
 
-                <View style="@style/VerticalLine" />
-
             </LinearLayout>
-
-            <View style="@style/HorizontalLine" />
 
             <LinearLayout style="@style/SettingItem">
 
+                <TextView style="@style/SettingName"
+                    android:text="数据加密" />
+
                 <View style="@style/VerticalLine" />
+
+                <RadioGroup
+                    android:id="@+id/rg_encrypt"
+                    style="@style/SettingRadioGroup">
+
+                    <View style="@style/SpaceBody" />
+
+                    <RadioButton
+                        android:id="@+id/rb_encrypt_on"
+                        style="@style/SettingRadioItem"
+                        android:text="开启" />
+
+                    <View style="@style/SpaceBody" />
+
+                    <RadioButton
+                        android:id="@+id/rb_encrypt_off"
+                        style="@style/SettingRadioItem"
+                        android:text="关闭" />
+
+                    <View style="@style/SpaceBody" />
+
+                </RadioGroup>
+
+            </LinearLayout>
+
+            <LinearLayout style="@style/SettingItem">
 
                 <TextView style="@style/SettingName"
                     android:text="上传日志配置" />
@@ -299,15 +243,9 @@
 
                 </RadioGroup>
 
-                <View style="@style/VerticalLine" />
-
             </LinearLayout>
 
-            <View style="@style/HorizontalLine" />
-
             <LinearLayout style="@style/SettingItem">
-
-                <View style="@style/VerticalLine" />
 
                 <TextView style="@style/SettingName"
                     android:text="补全指纹信息" />
@@ -343,15 +281,9 @@
 
                 </RadioGroup>
 
-                <View style="@style/VerticalLine" />
-
             </LinearLayout>
 
-            <View style="@style/HorizontalLine" />
-
             <LinearLayout style="@style/SettingItem">
-
-                <View style="@style/VerticalLine" />
 
                 <TextView style="@style/SettingName"
                     android:text="本地日志存储" />
@@ -380,15 +312,9 @@
 
                 </RadioGroup>
 
-                <View style="@style/VerticalLine" />
-
             </LinearLayout>
 
-            <View style="@style/HorizontalLine" />
-
             <LinearLayout style="@style/SettingItem">
-
-                <View style="@style/VerticalLine" />
 
                 <TextView style="@style/SettingName"
                     android:text="无证入住" />
@@ -417,15 +343,9 @@
 
                 </RadioGroup>
 
-                <View style="@style/VerticalLine" />
-
             </LinearLayout>
 
-            <View style="@style/HorizontalLine" />
-
             <LinearLayout style="@style/SettingItem">
-
-                <View style="@style/VerticalLine" />
 
                 <TextView style="@style/SettingName"
                     android:text="眨眼活体识别" />
@@ -454,15 +374,9 @@
 
                 </RadioGroup>
 
-                <View style="@style/VerticalLine" />
-
             </LinearLayout>
 
-            <View style="@style/HorizontalLine" />
-
             <LinearLayout style="@style/SettingItem">
-
-                <View style="@style/VerticalLine" />
 
                 <TextView style="@style/SettingName"
                     android:text="查询记录" />
@@ -491,15 +405,9 @@
 
                 </RadioGroup>
 
-                <View style="@style/VerticalLine" />
-
             </LinearLayout>
 
-            <View style="@style/HorizontalLine" />
-
             <LinearLayout style="@style/SettingItem">
-
-                <View style="@style/VerticalLine" />
 
                 <TextView style="@style/SettingName"
                     android:text="广告开关" />
@@ -528,15 +436,9 @@
 
                 </RadioGroup>
 
-                <View style="@style/VerticalLine" />
-
             </LinearLayout>
 
-            <View style="@style/HorizontalLine" />
-
             <LinearLayout style="@style/SettingItem">
-
-                <View style="@style/VerticalLine" />
 
                 <TextView style="@style/SettingName"
                     android:text="广告来源" />
@@ -572,15 +474,9 @@
 
                 </RadioGroup>
 
-                <View style="@style/VerticalLine" />
-
             </LinearLayout>
 
-            <View style="@style/HorizontalLine" />
-
             <LinearLayout style="@style/SettingItem">
-
-                <View style="@style/VerticalLine" />
 
                 <TextView style="@style/SettingName"
                     android:text="比对阈值" />
@@ -592,15 +488,9 @@
                     style="@style/SettingEditItem"
                     android:inputType="numberDecimal" />
 
-                <View style="@style/VerticalLine" />
-
             </LinearLayout>
 
-            <View style="@style/HorizontalLine" />
-
             <LinearLayout style="@style/SettingItem">
-
-                <View style="@style/VerticalLine" />
 
                 <TextView style="@style/SettingName"
                     android:text="质量阈值" />
@@ -612,15 +502,9 @@
                     style="@style/SettingEditItem"
                     android:inputType="number" />
 
-                <View style="@style/VerticalLine" />
-
             </LinearLayout>
 
-            <View style="@style/HorizontalLine" />
-
             <LinearLayout style="@style/SettingItem">
-
-                <View style="@style/VerticalLine" />
 
                 <TextView style="@style/SettingName"
                     android:text="活体质量过滤阈值" />
@@ -632,15 +516,9 @@
                     style="@style/SettingEditItem"
                     android:inputType="numberDecimal" />
 
-                <View style="@style/VerticalLine" />
-
             </LinearLayout>
 
-            <View style="@style/HorizontalLine" />
-
             <LinearLayout style="@style/SettingItem">
-
-                <View style="@style/VerticalLine" />
 
                 <TextView style="@style/SettingName"
                     android:text="续传时间"
@@ -675,11 +553,7 @@
 
             </LinearLayout>
 
-            <View style="@style/HorizontalLine" />
-
             <LinearLayout style="@style/SettingItem">
-
-                <View style="@style/VerticalLine" />
 
                 <TextView style="@style/SettingName"
                     android:text="比对数目 （未上传数目 / 总数）" />
@@ -696,15 +570,9 @@
                     android:hint="正在计算..."
                     android:textSize="20sp" />
 
-                <View style="@style/VerticalLine" />
-
             </LinearLayout>
 
-            <View style="@style/HorizontalLine" />
-
             <LinearLayout style="@style/SettingItem">
-
-                <View style="@style/VerticalLine" />
 
                 <TextView style="@style/SettingName"
                     android:text="监控间隔" />
@@ -716,15 +584,9 @@
                     style="@style/SettingEditItem"
                     android:inputType="numberDecimal" />
 
-                <View style="@style/VerticalLine" />
-
             </LinearLayout>
 
-            <View style="@style/HorizontalLine" />
-
             <LinearLayout style="@style/SettingItem">
-
-                <View style="@style/VerticalLine" />
 
                 <TextView style="@style/SettingName"
                     android:text="提示文字" />
@@ -735,15 +597,9 @@
                     android:id="@+id/et_title_str"
                     style="@style/SettingEditItem" />
 
-                <View style="@style/VerticalLine" />
-
             </LinearLayout>
 
-            <View style="@style/HorizontalLine" />
-
             <LinearLayout style="@style/SettingItem">
-
-                <View style="@style/VerticalLine" />
 
                 <TextView style="@style/SettingName"
                     android:text="机构名称" />
@@ -754,15 +610,9 @@
                     android:id="@+id/et_org_name"
                     style="@style/SettingEditItem" />
 
-                <View style="@style/VerticalLine" />
-
             </LinearLayout>
 
-            <View style="@style/HorizontalLine" />
-
             <LinearLayout style="@style/SettingItem">
-
-                <View style="@style/VerticalLine" />
 
                 <TextView
                     style="@style/SettingName"
@@ -777,15 +627,9 @@
                     android:inputType="number"
                     android:maxLength="6" />
 
-                <View style="@style/VerticalLine" />
-
             </LinearLayout>
 
-            <View style="@style/HorizontalLine" />
-
             <LinearLayout style="@style/SettingItem">
-
-                <View style="@style/VerticalLine" />
 
                 <TextView style="@style/SettingName"
                     android:text="广告显示延迟（秒）" />
@@ -798,11 +642,7 @@
                     android:digits="0123456789"
                     android:inputType="number" />
 
-                <View style="@style/VerticalLine" />
-
             </LinearLayout>
-
-            <View style="@style/HorizontalLine" />
 
         </LinearLayout>
 

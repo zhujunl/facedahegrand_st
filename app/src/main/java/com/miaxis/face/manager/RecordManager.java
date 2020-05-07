@@ -52,8 +52,7 @@ public class RecordManager {
 
     private volatile boolean uploading = false;
 
-    private Call<DaheResponseEntity> uploadCall1;
-    private Call<DaheResponseEntity> uploadCall2;
+    private Call<DaheResponseEntity> uploadCall;
 
     public interface OnRecordUploadResultListener {
         void onUploadResult(boolean result, String message, boolean playVoice, String voiceText);
@@ -61,11 +60,8 @@ public class RecordManager {
 
     public void cancelRequest() {
         uploading = false;
-        if (uploadCall1 != null) {
-            uploadCall1.cancel();
-        }
-        if (uploadCall2 != null) {
-            uploadCall2.cancel();
+        if (uploadCall != null) {
+            uploadCall.cancel();
         }
     }
 
@@ -89,52 +85,30 @@ public class RecordManager {
         });
     }
 
-    public void uploadTaskOver(@NonNull Task task, @NonNull TaskResult taskResult, @NonNull OnRecordUploadResultListener listener) {
-        uploading = true;
-        App.getInstance().getThreadExecutor().execute(() -> {
-            String cmd = "TaskOver";
-            String data = makeTaskDataJson(task, taskResult);
-            String json = makeUploadResultJson(cmd, data);
-            uploadResultSync(json, listener);
-        });
-    }
+//    public void uploadTaskOver(@NonNull Task task, @NonNull TaskResult taskResult, @NonNull OnRecordUploadResultListener listener) {
+//        uploading = true;
+//        App.getInstance().getThreadExecutor().execute(() -> {
+//            String cmd = "TaskOver";
+//            String data = makeTaskDataJson(task, taskResult);
+//            String json = makeUploadResultJson(cmd, data);
+//            uploadResultSync(json, listener);
+//        });
+//    }
 
     private void uploadResultSync(@NonNull String json, @NonNull OnRecordUploadResultListener listener) {
-        boolean result = false;
         try {
             Config config = ConfigManager.getInstance().getConfig();
-            try {
-                if (!uploading) return;
-                uploadCall1 = FaceNetApi.uploadRecord(config.getUploadRecordUrl1(), json);
-                Response<DaheResponseEntity> execute = uploadCall1.execute();
-                DaheResponseEntity body = execute.body();
-                if (body != null) {
-                    Log.e("asd", json);
-                    Log.e("asd", body.getErrMsg());
-                }
-                if (body != null && body.getErrCode() == 0) {
-                    result = true;
-                    if (!uploading) return;
-                    listener.onUploadResult(true, body.getErrMsg(), body.isPlayVoice(), body.getVoiceText());
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (!uploading) return;
+            uploadCall = FaceNetApi.uploadRecord(config.getUploadRecordUrl(), json);
+            Response<DaheResponseEntity> execute = uploadCall.execute();
+            DaheResponseEntity body = execute.body();
+            if (!uploading) return;
+            if (body != null) {
+                Log.e("asd", "上传日志回执：" + body.getErrCode() + "，Msg:" + body.getErrMsg() + ",playVoice:" + body.isPlayVoice() + ",voicetext:" + body.getVoiceText());
             }
-            try {
-                if (!uploading) return;
-                uploadCall2 = FaceNetApi.uploadRecord(config.getUploadRecordUrl2(), json);
-                Response<DaheResponseEntity> execute = uploadCall2.execute();
-                DaheResponseEntity body = execute.body();
-                if (!result && body != null && body.getErrCode() == 0) {
-                    result = true;
-                    if (!uploading) return;
-                    listener.onUploadResult(true, body.getErrMsg(), body.isPlayVoice(), body.getVoiceText());
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            if (!result) {
-                if (!uploading) return;
+            if (body != null && body.getErrCode() == 0) {
+                listener.onUploadResult(true, body.getErrMsg(), body.isPlayVoice(), body.getVoiceText());
+            } else {
                 listener.onUploadResult(false, "上传失败", true, "上传失败");
             }
         } catch (Exception e) {
@@ -152,7 +126,7 @@ public class RecordManager {
         String nonce = String.valueOf(System.currentTimeMillis());
         String timeStamp = TIME_STAMP_FORMAT.format(new Date());
         boolean ase = false;
-        if (true || config.getEncrypt()) {
+        if (config.getEncrypt()) {
             String encrypt = EncryptUtil.encryptAES(data, SECRET_KEY);
             if (encrypt != null) {
                 ase = true;
@@ -296,35 +270,16 @@ public class RecordManager {
         return GSON.toJson(recordDto);
     }
 
-    private String makeTaskDataJson(Task task, TaskResult taskResult) {
-        TaskOver taskOver = new TaskOver.Builder()
-                .taskid(task.getTaskid())
-                .tasktype(task.getTasktype())
-                .taskCode(taskResult.getCode())
-                .taskMsg(taskResult.getMessage())
-                .taskdata(taskResult.getTaskData())
-                .build();
-        return GSON.toJson(taskOver);
-    }
-
     public void uploadHeartBeat(String data) {
         try {
             String cmd = "Heartbeat";
             String json = makeUploadResultJson(cmd, data);
             Config config = ConfigManager.getInstance().getConfig();
-            try {
-                uploadCall1 = FaceNetApi.uploadRecord(config.getUploadRecordUrl1(), json);
-                Response<DaheResponseEntity> execute = uploadCall1.execute();
-                DaheResponseEntity body = execute.body();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            try {
-                uploadCall2 = FaceNetApi.uploadRecord(config.getUploadRecordUrl2(), json);
-                Response<DaheResponseEntity> execute = uploadCall2.execute();
-                DaheResponseEntity body = execute.body();
-            } catch (Exception e) {
-                e.printStackTrace();
+            uploadCall = FaceNetApi.uploadRecord(config.getUploadRecordUrl(), json);
+            Response<DaheResponseEntity> execute = uploadCall.execute();
+            DaheResponseEntity body = execute.body();
+            if (body != null) {
+                Log.e("asd", "心跳回执：" + body.getErrCode() + "，Msg:" + body.getErrMsg());
             }
         } catch (Exception e) {
             e.printStackTrace();

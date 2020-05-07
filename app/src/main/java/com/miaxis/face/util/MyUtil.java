@@ -11,6 +11,7 @@ import android.util.Base64;
 
 import androidx.fragment.app.FragmentManager;
 
+import com.google.gson.Gson;
 import com.miaxis.face.bean.Version;
 import com.miaxis.face.constant.Constants;
 import com.miaxis.face.view.fragment.AlertDialog;
@@ -33,6 +34,8 @@ import java.util.zip.GZIPOutputStream;
  */
 
 public class MyUtil {
+
+    public final static Gson GSON = new Gson();
 
     public static String md5(String string) {
         if (TextUtils.isEmpty(string)) {

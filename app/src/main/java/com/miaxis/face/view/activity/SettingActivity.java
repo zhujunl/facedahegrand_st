@@ -28,6 +28,7 @@ import com.miaxis.face.bean.Config;
 import com.miaxis.face.bean.ResponseEntity;
 import com.miaxis.face.bean.UpdateData;
 import com.miaxis.face.constant.Constants;
+import com.miaxis.face.exception.MyException;
 import com.miaxis.face.greendao.gen.IDCardRecordDao;
 import com.miaxis.face.manager.ConfigManager;
 import com.miaxis.face.manager.DaoManager;
@@ -53,10 +54,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.ObservableSource;
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -68,14 +75,10 @@ public class SettingActivity extends BaseActivity {
     Button btnUpdate;
     @BindView(R.id.et_update_url)
     EditText etUpdateUrl;
-    @BindView(R.id.et_upload_url_1)
-    EditText etUploadUrl1;
-    @BindView(R.id.et_upload_url_2)
-    EditText etUploadUrl2;
+    @BindView(R.id.et_upload_url)
+    EditText etUploadUrl;
     @BindView(R.id.et_advertisement_url)
     EditText etAdvertisementUrl;
-    @BindView(R.id.et_heart_beat_url)
-    EditText etHeartBeatUrl;
     @BindView(R.id.tv_device_serial)
     TextView tvDeviceSerial;
     @BindView(R.id.et_client_id)
@@ -88,6 +91,12 @@ public class SettingActivity extends BaseActivity {
     RadioButton rbNetOff;
     @BindView(R.id.rg_net)
     RadioGroup rgNet;
+    @BindView(R.id.rb_encrypt_on)
+    RadioButton rbEncryptOn;
+    @BindView(R.id.rb_encrypt_off)
+    RadioButton rbEncryptOff;
+    @BindView(R.id.rg_encrypt)
+    RadioGroup rgEncrypt;
     @BindView(R.id.rb_result_on)
     RadioButton rbResultOn;
     @BindView(R.id.rb_result_off)
@@ -237,10 +246,8 @@ public class SettingActivity extends BaseActivity {
 //        GpioManager.getInstance().setSmdtStatusBar(this, false);
         tvVersion.setText(MyUtil.getCurVersion(this).getVersion());
         etUpdateUrl.setText(config.getUpdateUrl());
-        etUploadUrl1.setText(config.getUploadRecordUrl1());
-        etUploadUrl2.setText(config.getUploadRecordUrl2());
+        etUploadUrl.setText(config.getUploadRecordUrl());
         etAdvertisementUrl.setText(config.getAdvertisementUrl());
-        etHeartBeatUrl.setText(config.getHeartBeatUrl());
         tvDeviceSerial.setText(config.getDeviceSerialNumber());
         etClientId.setText(config.getClientId());
         if (hasFingerDevice) {
@@ -250,6 +257,8 @@ public class SettingActivity extends BaseActivity {
         }
         rbNetOn.setChecked(config.getNetFlag());
         rbNetOff.setChecked(!config.getNetFlag());
+        rbEncryptOn.setChecked(config.getEncrypt());
+        rbEncryptOff.setChecked(!config.getEncrypt());
         rbResultOn.setChecked(config.getResultFlag());
         rbResultOff.setChecked(!config.getResultFlag());
         rbSaveLocalOn.setChecked(config.getSaveLocalFlag());
@@ -315,12 +324,11 @@ public class SettingActivity extends BaseActivity {
             return;
         }
         config.setUpdateUrl(etUpdateUrl.getText().toString());
-        config.setUploadRecordUrl1(etUploadUrl1.getText().toString());
-        config.setUploadRecordUrl2(etUploadUrl2.getText().toString());
+        config.setUploadRecordUrl(etUploadUrl.getText().toString());
         config.setAdvertisementUrl(etAdvertisementUrl.getText().toString());
-        config.setHeartBeatUrl(etHeartBeatUrl.getText().toString());
         config.setClientId(etClientId.getText().toString());
         config.setNetFlag(rbNetOn.isChecked());
+        config.setEncrypt(rbEncryptOn.isChecked());
         config.setResultFlag(rbResultOn.isChecked());
         config.setSaveLocalFlag(rbSaveLocalOn.isChecked());
         config.setDocumentFlag(rbDocumentOn.isChecked());
@@ -423,17 +431,16 @@ public class SettingActivity extends BaseActivity {
                 .progress(true, 100)
                 .show();
         Observable.just(urlStr)
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .flatMap((Function<String, ObservableSource<ResponseEntity<UpdateData>>>) s -> {
-                    URL url = new URL(s);
-                    Retrofit retrofit = new Retrofit.Builder()
-                            .addConverterFactory(GsonConverterFactory.create())
-                            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                            .baseUrl("http://" + url.getHost() + ":" + url.getPort() + "/")
-                            .build();
-                    UpdateNet updateNet = retrofit.create(UpdateNet.class);
-                    return updateNet.downUpdateVersion(url.getPath());
+                .subscribeOn(Schedulers.from(App.getInstance().getThreadExecutor()))
+                .observeOn(Schedulers.from(App.getInstance().getThreadExecutor()))
+                .map(s -> {
+                    Call<ResponseEntity<UpdateData>> call = FaceNetApi.downUpdateVersion(s);
+                    Response<ResponseEntity<UpdateData>> execute = call.execute();
+                    ResponseEntity<UpdateData> body = execute.body();
+                    if (body != null) {
+                        return body;
+                    }
+                    throw new MyException("接口返回数据解析失败");
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::onUpdateDataDown, throwable -> {

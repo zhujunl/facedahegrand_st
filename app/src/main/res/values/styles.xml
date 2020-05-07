@@ -63,6 +63,7 @@
     <style name="SettingItem">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">40dp</item>
+        <item name="android:background">@drawable/stroke_shape</item>
     </style>
 
     <style name="SettingName">
@@ -72,6 +73,7 @@
         <item name="android:layout_weight">1</item>
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_margin">1dp</item>
     </style>
 
     <style name="SettingRadioItem">
@@ -88,6 +90,7 @@
         <item name="android:layout_weight">1</item>
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_margin">1dp</item>
     </style>
 
     <style name="SettingEditItem">
@@ -99,6 +102,7 @@
         <item name="android:layout_weight">1</item>
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_margin">1dp</item>
     </style>
 
 </resources>

@@ -38,10 +38,12 @@ import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.miaxis.face.R;
+import com.miaxis.face.app.App;
 import com.miaxis.face.app.Face_App;
 import com.miaxis.face.app.GlideApp;
 import com.miaxis.face.bean.Config;
 import com.miaxis.face.bean.IDCardRecord;
+import com.miaxis.face.bean.Task;
 import com.miaxis.face.bean.Undocumented;
 import com.miaxis.face.manager.AdvertManager;
 import com.miaxis.face.manager.CameraManager;
@@ -50,6 +52,7 @@ import com.miaxis.face.manager.ConfigManager;
 import com.miaxis.face.manager.FaceManager;
 import com.miaxis.face.manager.GpioManager;
 import com.miaxis.face.manager.ServerManager;
+import com.miaxis.face.manager.TTSManager;
 import com.miaxis.face.manager.ToastManager;
 import com.miaxis.face.manager.WatchDogManager;
 import com.miaxis.face.presenter.VerifyPresenter;
@@ -302,7 +305,8 @@ public class VerifyActivity extends BaseActivity {
     };
 
     public void controlAdvertDialog(boolean show) {
-        runOnUiThread(() -> {
+//        runOnUiThread(() -> {
+        App.getInstance().getThreadExecutor().execute(() -> {
             if (show) {
                 try {
                     if (advertiseLock.isLocked()) {
@@ -328,6 +332,7 @@ public class VerifyActivity extends BaseActivity {
             } else {
                 if (System.currentTimeMillis() - cameraOpenTime < 3000) return;
                 try {
+                    cameraOpenTime = System.currentTimeMillis();
                     while (advertiseLock.isLocked()) {
                         try {
                             Thread.sleep(100);
@@ -337,8 +342,11 @@ public class VerifyActivity extends BaseActivity {
                     }
                     advertiseLock.lock();
                     GpioManager.getInstance().openCameraGpio();
-                    CameraManager.getInstance().openCamera(tvCamera, cameraListener);
-                    cameraOpenTime = System.currentTimeMillis();
+                    runOnUiThread(() -> {
+                        CameraManager.getInstance().openCamera(tvCamera, cameraListener);
+                        cameraOpenTime = System.currentTimeMillis();
+                    });
+                    Thread.sleep(800);
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
@@ -460,6 +468,8 @@ public class VerifyActivity extends BaseActivity {
             } else if (status == 2) {
                 tvPass.setVisibility(View.VISIBLE);
                 tvUploadHint.setVisibility(View.INVISIBLE);
+                advertiseFlag = true;
+                sendAdvertiseDelaySignal();
             }
         });
     }
@@ -469,7 +479,6 @@ public class VerifyActivity extends BaseActivity {
             if (open) {
                 if (finger == null) {
                     showGif(R.raw.put_finger, ivGatherFinger);
-//                    ivGatherFinger.setImageResource(R.drawable.finger_null);
                 } else {
                     ivGatherFinger.setImageBitmap(finger);
                 }
@@ -492,7 +501,7 @@ public class VerifyActivity extends BaseActivity {
         });
     }
 
-    public void onTaskResult(int status) {
+    public void onTaskResult(Task task, int status) {
         runOnUiThread(() -> {
             if (status == 0) {
                 advertiseFlag = false;
@@ -506,12 +515,27 @@ public class VerifyActivity extends BaseActivity {
                     }
                 }
             } else if (status == 1) {
-                tvUploadHint.setVisibility(View.VISIBLE);
-            } else {
+                rsvRect.clearDraw();
+                rvResult.setVisibility(View.INVISIBLE);
+                tvLivenessHint.setVisibility(View.INVISIBLE);
+                ivFaceBox.setVisibility(View.INVISIBLE);
                 tvPass.setVisibility(View.VISIBLE);
                 tvUploadHint.setVisibility(View.INVISIBLE);
                 advertiseFlag = true;
                 sendAdvertiseDelaySignal();
+            } else if (status == 2) {
+                if (TextUtils.equals(task.getTasktype(), "1001")) {
+                } else if (TextUtils.equals(task.getTasktype(), "1002")) {
+                    rvResult.clear();
+                    rvResult.setFingerMode(false);
+                    rvResult.showCardImage(task.getCardBitmap());
+                    rvResult.setVisibility(View.VISIBLE);
+                    if (config.getLivenessFlag()) {
+                        tvLivenessHint.setText("请缓慢眨眼");
+                        tvLivenessHint.setVisibility(View.VISIBLE);
+                        ivFaceBox.setVisibility(View.VISIBLE);
+                    }
+                }
             }
         });
     }
@@ -666,26 +690,32 @@ public class VerifyActivity extends BaseActivity {
 
     @OnClick(R.id.iv_cloud_down)
     void onUndocumented() {
-        advertiseFlag = false;
-        UndocumentedDialogFragment.newInstance(new UndocumentedDialogFragment.OnDialogButtonClickListener() {
-            @Override
-            public void onCancel() {
-                advertiseFlag = true;
-                sendAdvertiseDelaySignal();
-            }
+        if (presenter != null) {
+            if (!presenter.isOnVerify()) {
+                advertiseFlag = false;
+                UndocumentedDialogFragment.newInstance(new UndocumentedDialogFragment.OnDialogButtonClickListener() {
+                    @Override
+                    public void onCancel() {
+                        advertiseFlag = true;
+                        sendAdvertiseDelaySignal();
+                    }
 
-            @Override
-            public void onConfirm(String name, String cardNumber, String nation) {
-                Undocumented undocumented = new Undocumented.Builder()
-                        .name(name)
-                        .cardNumber(cardNumber)
-                        .nation(nation)
-                        .build();
-                if (presenter != null) {
-                    presenter.undocumented(undocumented);
-                }
+                    @Override
+                    public void onConfirm(String name, String cardNumber, String nation) {
+                        Undocumented undocumented = new Undocumented.Builder()
+                                .name(name)
+                                .cardNumber(cardNumber)
+                                .nation(nation)
+                                .build();
+                        if (presenter != null) {
+                            presenter.undocumented(undocumented);
+                        }
+                    }
+                }).show(getSupportFragmentManager(), "undocumented");
+            } else {
+                ToastManager.toast("请先拿开身份证");
             }
-        }).show(getSupportFragmentManager(), "undocumented");
+        }
     }
 
     /**

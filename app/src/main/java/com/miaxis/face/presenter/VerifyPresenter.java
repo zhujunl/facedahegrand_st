@@ -10,6 +10,7 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Base64;
 
+import com.google.gson.Gson;
 import com.miaxis.face.app.App;
 import com.miaxis.face.bean.Config;
 import com.miaxis.face.bean.IDCardRecord;
@@ -34,6 +35,7 @@ import com.miaxis.face.manager.TTSManager;
 import com.miaxis.face.manager.ToastManager;
 import com.miaxis.face.model.IDCardRecordModel;
 import com.miaxis.face.util.FileUtil;
+import com.miaxis.face.util.MyUtil;
 import com.miaxis.face.view.activity.VerifyActivity;
 
 import org.zz.api.MXFaceInfoEx;
@@ -41,7 +43,9 @@ import org.zz.api.MXFaceInfoEx;
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.miaxis.face.manager.FingerManager.FingerVerifyResult.VERIFY_SUCCESS;
 
@@ -174,12 +178,17 @@ public class VerifyPresenter {
             if (!checkWhiteList(idCardRecord)) {
                 return;
             }
+            idCardRecord.setVerifyMode(config.getVerifyMode());
             if (ConfigManager.isFaceFirst(config.getVerifyMode())) {
                 onFaceVerifyMode(idCardRecord);
             } else {
                 onFingerVerifyMode(idCardRecord);
             }
         }
+    }
+
+    public boolean isOnVerify() {
+        return idCardRecord != null;
     }
 
     private boolean checkValidate(IDCardRecord idCardRecord) {
@@ -269,6 +278,8 @@ public class VerifyPresenter {
         public void onFeatureExtract(MxRGBImage mxRGBImage, MXFaceInfoEx mxFaceInfoEx, byte[] feature) {
             if (undocumentedFlag) {
                 onUndocumentedFeature(mxRGBImage, mxFaceInfoEx);
+            } else if (taskFlag) {
+                onTaskFeatureBack(mxRGBImage, feature);
             } else {
                 onFaceVerify(mxRGBImage, mxFaceInfoEx, feature);
             }
@@ -402,89 +413,97 @@ public class VerifyPresenter {
 
     private FingerManager.OnGatherFingerListener gatherListener = (status, fingerImage, feature) -> {
         if (idCardRecord != null) {
-            if (status == FingerManager.GatherFingerStatus.GATHER_FINGER) {
-                if (view.get() != null) {
-                    view.get().gatherFingerResult(true, fingerImage, "请校验指纹");
-                }
-                SoundManager.getInstance().playSound(SoundManager.PRESS_FINGER);
-            } else if (status == FingerManager.GatherFingerStatus.VERIFY_FINGER_SUCCESS) {
-                if (view.get() != null) {
-                    view.get().gatherFingerResult(false, null, "");
-                }
-                if (TextUtils.isEmpty(idCardRecord.getGatherFingerprint1())) {
-                    idCardRecord.setGatherFingerprint1(feature);
-                    idCardRecord.setGatherFingerprintBitmap1(fingerImage);
-                    if (config.getGatherFingerFlag() == 1) {
-                        if (view.get() != null) {
-                            view.get().gatherFingerResult(true, null, "请更换手指");
-                        }
-                        SoundManager.getInstance().playSound(SoundManager.PLEASE_CHANGE_FINGER);
-                        try {
-                            Thread.sleep(1200);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        gatherFinger();
-                    } else {
-                        SoundManager.getInstance().playSound(SoundManager.GATHER_SUCCESS);
-                        uploadIDCardRecord(idCardRecord);
+            gatherFingerForIDCardRecord(status, fingerImage, feature);
+        } else if (undocumented != null) {
+            gatherFingerForUndocumented(status, fingerImage, feature);
+        }
+    };
+
+    private void gatherFingerForIDCardRecord(FingerManager.GatherFingerStatus status, Bitmap fingerImage, String feature) {
+        if (status == FingerManager.GatherFingerStatus.GATHER_FINGER) {
+            if (view.get() != null) {
+                view.get().gatherFingerResult(true, fingerImage, "请校验指纹");
+            }
+            SoundManager.getInstance().playSound(SoundManager.PRESS_FINGER);
+        } else if (status == FingerManager.GatherFingerStatus.VERIFY_FINGER_SUCCESS) {
+            if (view.get() != null) {
+                view.get().gatherFingerResult(false, null, "");
+            }
+            if (TextUtils.isEmpty(idCardRecord.getGatherFingerprint1())) {
+                idCardRecord.setGatherFingerprint1(feature);
+                idCardRecord.setGatherFingerprintBitmap1(fingerImage);
+                if (config.getGatherFingerFlag() == 1) {
+                    if (view.get() != null) {
+                        view.get().gatherFingerResult(true, null, "请更换手指");
                     }
+                    SoundManager.getInstance().playSound(SoundManager.PLEASE_CHANGE_FINGER);
+                    try {
+                        Thread.sleep(1200);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    gatherFinger();
                 } else {
                     SoundManager.getInstance().playSound(SoundManager.GATHER_SUCCESS);
-                    idCardRecord.setGatherFingerprint2(feature);
-                    idCardRecord.setGatherFingerprintBitmap2(fingerImage);
                     uploadIDCardRecord(idCardRecord);
                 }
             } else {
-                gatherFinger();
-                if (view.get() != null) {
-                    view.get().gatherFingerResult(true, null, "请重新录入");
-                }
+                SoundManager.getInstance().playSound(SoundManager.GATHER_SUCCESS);
+                idCardRecord.setGatherFingerprint2(feature);
+                idCardRecord.setGatherFingerprintBitmap2(fingerImage);
+                uploadIDCardRecord(idCardRecord);
             }
-        } else if (undocumented != null) {
-            if (status == FingerManager.GatherFingerStatus.GATHER_FINGER) {
-                if (view.get() != null) {
-                    view.get().gatherFingerResult(true, fingerImage, "请校验指纹");
-                }
-                SoundManager.getInstance().playSound(SoundManager.PRESS_FINGER);
-            } else if (status == FingerManager.GatherFingerStatus.VERIFY_FINGER_SUCCESS) {
-                if (view.get() != null) {
-                    view.get().gatherFingerResult(false, null, "");
-                }
-                if (TextUtils.isEmpty(undocumented.getGatherFingerprint1())) {
-                    undocumented.setGatherFingerprint1(feature);
-                    undocumented.setGatherFingerprintBitmap1(fingerImage);
-                    if (config.getGatherFingerFlag() == 1) {
-                        if (view.get() != null) {
-                            view.get().gatherFingerResult(true, null, "请更换手指");
-                        }
-                        SoundManager.getInstance().playSound(SoundManager.PLEASE_CHANGE_FINGER);
-                        if (handler != null) {
-                            handler.removeMessages(UNDOCUMENTED_DELAY);
-                            handler.sendMessageDelayed(handler.obtainMessage(UNDOCUMENTED_DELAY), 10 * 1000);
-                        }
-                        try {
-                            Thread.sleep(1200);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        gatherFinger();
-                    } else {
-                        uploadUndocumented(undocumented);
+        } else {
+            gatherFinger();
+            if (view.get() != null) {
+                view.get().gatherFingerResult(true, null, "请重新录入");
+            }
+        }
+    }
+
+    private void gatherFingerForUndocumented(FingerManager.GatherFingerStatus status, Bitmap fingerImage, String feature) {
+        if (status == FingerManager.GatherFingerStatus.GATHER_FINGER) {
+            if (view.get() != null) {
+                view.get().gatherFingerResult(true, fingerImage, "请校验指纹");
+            }
+            SoundManager.getInstance().playSound(SoundManager.PRESS_FINGER);
+        } else if (status == FingerManager.GatherFingerStatus.VERIFY_FINGER_SUCCESS) {
+            if (view.get() != null) {
+                view.get().gatherFingerResult(false, null, "");
+            }
+            if (TextUtils.isEmpty(undocumented.getGatherFingerprint1())) {
+                undocumented.setGatherFingerprint1(feature);
+                undocumented.setGatherFingerprintBitmap1(fingerImage);
+                if (config.getGatherFingerFlag() == 1) {
+                    if (view.get() != null) {
+                        view.get().gatherFingerResult(true, null, "请更换手指");
                     }
+                    SoundManager.getInstance().playSound(SoundManager.PLEASE_CHANGE_FINGER);
+                    if (handler != null) {
+                        handler.removeMessages(UNDOCUMENTED_DELAY);
+                        handler.sendMessageDelayed(handler.obtainMessage(UNDOCUMENTED_DELAY), 10 * 1000);
+                    }
+                    try {
+                        Thread.sleep(1200);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    gatherFinger();
                 } else {
-                    undocumented.setGatherFingerprint2(feature);
-                    undocumented.setGatherFingerprintBitmap2(fingerImage);
                     uploadUndocumented(undocumented);
                 }
             } else {
-                gatherFinger();
-                if (view.get() != null) {
-                    view.get().gatherFingerResult(true, null, "请重新录入");
-                }
+                undocumented.setGatherFingerprint2(feature);
+                undocumented.setGatherFingerprintBitmap2(fingerImage);
+                uploadUndocumented(undocumented);
+            }
+        } else {
+            gatherFinger();
+            if (view.get() != null) {
+                view.get().gatherFingerResult(true, null, "请重新录入");
             }
         }
-    };
+    }
 
     private void uploadIDCardRecord(IDCardRecord idCardRecord) {
         if (idCardRecord != null) {
@@ -517,7 +536,7 @@ public class VerifyPresenter {
     }
 
     private RecordManager.OnRecordUploadResultListener recordListener = (result, message, playVoice, voiceText) -> {
-        if (idCardRecord != null || undocumented != null || task != null) {
+        if (idCardRecord != null || undocumented != null) {
             if (result) {
                 if (view.get() != null) {
                     view.get().uploadStatus("上传成功");
@@ -545,19 +564,6 @@ public class VerifyPresenter {
                     view.get().undocumentedResult(2);
                 }
             }
-            if (task != null) {
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                task = null;
-                taskFlag = false;
-                taskDone = false;
-                if (view.get() != null) {
-                    view.get().onTaskResult(2);
-                }
-            }
         }
     };
 
@@ -572,6 +578,10 @@ public class VerifyPresenter {
                 }
             });
         }
+    }
+
+    public boolean isOnUndocumented() {
+        return undocumented != null;
     }
 
     public void undocumented(Undocumented undocumented) {
@@ -659,13 +669,17 @@ public class VerifyPresenter {
     }
 
     public ServerManager.OnTaskHandleListener taskListener = task -> {
-        taskFlag = true;
-        taskDone = false;
-        this.task = task;
-        if (view.get() != null) {
-            view.get().onTaskResult(0);
+        if (isOnVerify() || isOnUndocumented()) {
+            TaskResult taskResult = new TaskResult("400", "设备正忙", "");
+            ServerManager.getInstance().onTaskOver(task, taskResult);
+        } else {
+            taskFlag = true;
+            taskDone = false;
+            this.task = task;
+            if (view.get() != null) {
+                view.get().onTaskResult(task, 0);
+            }
         }
-
     };
 
     public boolean isOnTask() {
@@ -677,12 +691,12 @@ public class VerifyPresenter {
             if (TextUtils.equals(task.getTasktype(), "1001")) {
                 handleTaskTakePicture(task);
             } else if (TextUtils.equals(task.getTasktype(), "1002")) {
-
+                handleTaskCardVerify(task);
             }
         }
     }
 
-    public void handleTaskTakePicture(Task task) {
+    private void handleTaskTakePicture(Task task) {
         if (CameraManager.getInstance().getCamera() != null) {
             CameraManager.getInstance().getCamera().takePicture(null, null, (data, mCamera) -> {
                 mCamera.startPreview();
@@ -691,19 +705,81 @@ public class VerifyPresenter {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
                 bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
                 String photoBase64 = FileUtil.bitmapToBase64(bitmap);
-                TaskResult taskResult = new TaskResult("0", "ok", photoBase64);
+                TaskResult taskResult = new TaskResult("200", "ok", photoBase64);
+                ServerManager.getInstance().onTaskOver(task, taskResult);
                 if (view.get() != null) {
-                    view.get().uploadStatus("上传中");
+                    view.get().onTaskResult(task, 1);
                 }
-                RecordManager.getInstance().uploadTaskOver(task, taskResult, recordListener);
             });
         } else {
-            if (view.get() != null) {
-                view.get().uploadStatus("上传中");
-            }
-            TaskResult taskResult = new TaskResult("1", "摄像头打开失败", "");
-            RecordManager.getInstance().uploadTaskOver(task, taskResult, recordListener);
+            taskErrorBack("摄像头打开失败");
         }
+    }
+
+    private void handleTaskCardVerify(Task task) {
+        try {
+            byte[] decode = Base64.decode(task.getTaskparam(), Base64.NO_WRAP);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(decode, 0, decode.length);
+            PhotoFaceFeature feature = FaceManager.getInstance().getCardFaceFeatureByBitmapPosting(bitmap);
+            if (feature.getFaceFeature() != null) {
+                if (this.task != null) {
+                    this.task.setCardBitmap(bitmap);
+                    this.task.setCardFeatureCache(feature.getFaceFeature());
+                    if (view.get() != null) {
+                        view.get().onTaskResult(task, 2);
+                    }
+                    if (config.getLivenessFlag()) {
+                        SoundManager.getInstance().playSound(SoundManager.PLEASE_BLINK);
+                    } else {
+                        TTSManager.getInstance().playVoiceMessageFlush("请看镜头");
+                    }
+                    FaceManager.getInstance().setNeedNextFeature(true);
+                    FaceManager.getInstance().startLoop();
+                }
+            } else {
+                taskErrorBack("照片提取特征失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            taskErrorBack("解码身份证照片出错");
+        }
+    }
+
+    private void onTaskFeatureBack(MxRGBImage mxRGBImage, byte[] feature) {
+        try {
+            if (task != null && task.getCardFeatureCache() != null) {
+                float faceMatchScore = FaceManager.getInstance().matchFeature(feature, task.getCardFeatureCache());
+                byte[] fileImage = FaceManager.getInstance().imageEncode(mxRGBImage.getRgbImage(), mxRGBImage.getWidth(), mxRGBImage.getHeight());
+                boolean result = faceMatchScore > config.getVerifyScore();
+                FaceManager.getInstance().stopLoop();
+                taskDone = true;
+                Map<String ,Object> map = new HashMap<>();
+                map.put("livephoto", Base64.encodeToString(fileImage, Base64.NO_WRAP));
+                map.put("cmpresult", result);
+                map.put("similarity", faceMatchScore);
+                String json = MyUtil.GSON.toJson(map);
+                TaskResult taskResult = new TaskResult("200", "ok", json);
+                ServerManager.getInstance().onTaskOver(task, taskResult);
+                if (view.get() != null) {
+                    view.get().onTaskResult(task, 1);
+                }
+                return;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        taskErrorBack("执行1002任务时遇到问题");
+    }
+
+    private void taskErrorBack(String message) {
+        TaskResult taskResult = new TaskResult("400", message, "");
+        ServerManager.getInstance().onTaskOver(task, taskResult);
+        if (view.get() != null) {
+            view.get().onTaskResult(task, 1);
+        }
+        task = null;
+        taskFlag = false;
+        taskDone = false;
     }
 
 }
