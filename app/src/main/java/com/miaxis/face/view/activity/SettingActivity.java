@@ -203,6 +203,7 @@ public class SettingActivity extends BaseActivity {
         initData();
         initModeSpinner();
         initView();
+        GpioManager.getInstance().setSmdtStatusBar(this, false);
     }
 
     void initModeSpinner() {

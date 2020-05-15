@@ -70,6 +70,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
 import butterknife.BindView;
@@ -139,7 +140,7 @@ public class VerifyActivity extends BaseActivity {
     private Handler asyncHandler;
 
     private volatile boolean advertiseFlag = false;
-    private int advertiseDelay = 15;
+    private AtomicInteger advertiseDelay = new AtomicInteger(15);
     private ReentrantLock advertiseLock = new ReentrantLock();
 
     private long cameraOpenTime = 0;
@@ -163,6 +164,7 @@ public class VerifyActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        GpioManager.getInstance().setSmdtStatusBar(this, false);
         CardManager.getInstance().startReadCard();
         AdvertManager.getInstance().updateAdvertise();
         initWithConfig();
@@ -211,12 +213,13 @@ public class VerifyActivity extends BaseActivity {
         asyncHandler.removeCallbacks(advertiseRunnable);
         GpioManager.getInstance().closeLed();
         unregisterReceiver(timeReceiver);
+        GpioManager.getInstance().setSmdtStatusBar(this, true);
         System.exit(0);
     }
 
     protected void initData() {
         presenter = new VerifyPresenter(this, config);
-        advertiseDelay = config.getAdvertiseDelayTime();
+        advertiseDelay.set(config.getAdvertiseDelayTime());
         handlerThread = new HandlerThread("advertise_thread");
         handlerThread.start();
         asyncHandler = new Handler(handlerThread.getLooper());
@@ -360,7 +363,7 @@ public class VerifyActivity extends BaseActivity {
         runOnUiThread(() -> {
             switch (cardStatus) {
                 case NoCard:
-                    advertiseDelay = config.getAdvertiseDelayTime();
+                    advertiseDelay.set(config.getAdvertiseDelayTime());
                     advertiseFlag = true;
                     tvPass.setText("请放身份证");
                     tvPass.setVisibility(View.VISIBLE);
@@ -523,6 +526,9 @@ public class VerifyActivity extends BaseActivity {
                 tvUploadHint.setVisibility(View.INVISIBLE);
                 advertiseFlag = true;
                 sendAdvertiseDelaySignal();
+                if (presenter != null) {
+                    presenter.onTaskDone();
+                }
             } else if (status == 2) {
                 if (TextUtils.equals(task.getTasktype(), "1001")) {
                 } else if (TextUtils.equals(task.getTasktype(), "1002")) {
@@ -541,7 +547,7 @@ public class VerifyActivity extends BaseActivity {
     }
 
     private void sendAdvertiseDelaySignal() {
-        advertiseDelay = config.getAdvertiseDelayTime();
+        advertiseDelay.set(config.getAdvertiseDelayTime());
         asyncHandler.post(advertiseRunnable);
     }
 
@@ -550,13 +556,15 @@ public class VerifyActivity extends BaseActivity {
         public void run() {
             try {
                 Thread.sleep(1000);
-                advertiseDelay--;
-                if (!advertiseFlag || advertiseDelay > 0) {
+                advertiseDelay.decrementAndGet();
+                if (!advertiseFlag || advertiseDelay.get() > 0) {
                     asyncHandler.post(advertiseRunnable);
                     return;
                 }
-                if (!advertiseDialog.isVisible()) {
+                if (config.getAdvertiseFlag() && !advertiseDialog.isVisible()) {
                     controlAdvertDialog(true);
+                } else {
+                    advertiseDelay.set(config.getAdvertiseDelayTime());
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();

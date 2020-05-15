@@ -252,24 +252,28 @@ public class VerifyPresenter {
             if (view.get() != null) {
                 view.get().verifyMode(false);
             }
-            int rightPosition = CardManager.fingerPositionCovert(idCardRecord.getFingerprintPosition0());
-            int leftPosition = CardManager.fingerPositionCovert(idCardRecord.getFingerprintPosition1());
-            if (rightPosition >= 11 && rightPosition <= 20 && leftPosition >= 11 && leftPosition <= 20) {
-                SoundManager.getInstance().playSound(SoundManager.PLEASE_PRESS,
-                        leftPosition,
-                        SoundManager.SOUND_OR,
-                        rightPosition);
-            } else {
-                SoundManager.getInstance().playSound(SoundManager.SOUND_OTHER_FINGER);
+            if (!TextUtils.isEmpty(idCardRecord.getFingerprint0()) && !TextUtils.isEmpty(idCardRecord.getFingerprint1())) {
+                try {
+                    int rightPosition = CardManager.fingerPositionCovert(idCardRecord.getFingerprintPosition0());
+                    int leftPosition = CardManager.fingerPositionCovert(idCardRecord.getFingerprintPosition1());
+                    if (rightPosition >= 11 && rightPosition <= 20 && leftPosition >= 11 && leftPosition <= 20) {
+                        SoundManager.getInstance().playSound(SoundManager.PLEASE_PRESS,
+                                leftPosition,
+                                SoundManager.SOUND_OR,
+                                rightPosition);
+                    } else {
+                        SoundManager.getInstance().playSound(SoundManager.SOUND_OTHER_FINGER);
+                    }
+                    FingerManager.getInstance().startVerifyFinger(
+                            Base64.decode(idCardRecord.getFingerprint0(), Base64.NO_WRAP),
+                            Base64.decode(idCardRecord.getFingerprint1(), Base64.NO_WRAP),
+                            fingerVerifyListener);
+                    return;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-            FingerManager.getInstance().startVerifyFinger(
-                    TextUtils.isEmpty(idCardRecord.getFingerprint0())
-                            ? null
-                            : Base64.decode(idCardRecord.getFingerprint0(), Base64.NO_WRAP),
-                    TextUtils.isEmpty(idCardRecord.getFingerprint1())
-                            ? null
-                            : Base64.decode(idCardRecord.getFingerprint1(), Base64.NO_WRAP),
-                    fingerVerifyListener);
+            FingerManager.getInstance().startVerifyFinger(null, null, fingerVerifyListener);
         }
     }
 
@@ -389,13 +393,17 @@ public class VerifyPresenter {
                     idCardRecord.getFaceResult(),
                     idCardRecord.getFingerResult());
             idCardRecord.setVerifyResult(success);
-            if (/*TextUtils.isEmpty(idCardRecord.getFingerprint0()) && */
-                    success && config.getGatherFingerFlag() != 2) {
+            if (TextUtils.isEmpty(idCardRecord.getFingerprint0())
+                    && TextUtils.isEmpty(idCardRecord.getFingerprint1())
+                    && success && config.getGatherFingerFlag() != 2) {
                 gatherFinger();
             } else {
-                if (success) {
-                    SoundManager.getInstance().playSound(SoundManager.SOUND_SUCCESS);
-                } else {
+//                if (success) {
+//                    SoundManager.getInstance().playSound(SoundManager.SOUND_SUCCESS);
+//                } else {
+//                    SoundManager.getInstance().playSound(SoundManager.SOUND_FAIL);
+//                }
+                if (!success && !config.getResultFlag()) {
                     SoundManager.getInstance().playSound(SoundManager.SOUND_FAIL);
                 }
                 uploadIDCardRecord(idCardRecord);
@@ -549,6 +557,7 @@ public class VerifyPresenter {
 //                SoundManager.getInstance().playSound(SoundManager.UPLOAD_FAILED);
             }
             if (playVoice) {
+                SoundManager.getInstance().stopPlay();
                 TTSManager.getInstance().playVoiceMessageFlush(voiceText);
             }
             if (undocumented != null) {
@@ -731,6 +740,7 @@ public class VerifyPresenter {
                     if (config.getLivenessFlag()) {
                         SoundManager.getInstance().playSound(SoundManager.PLEASE_BLINK);
                     } else {
+                        SoundManager.getInstance().stopPlay();
                         TTSManager.getInstance().playVoiceMessageFlush("请看镜头");
                     }
                     FaceManager.getInstance().setNeedNextFeature(true);
@@ -769,6 +779,12 @@ public class VerifyPresenter {
             e.printStackTrace();
         }
         taskErrorBack("执行1002任务时遇到问题");
+    }
+
+    public void onTaskDone() {
+        taskDone = false;
+        task = null;
+        taskFlag = false;
     }
 
     private void taskErrorBack(String message) {

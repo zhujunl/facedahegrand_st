@@ -85,9 +85,6 @@ public class UndocumentedDialogFragment extends BaseDialogFragment {
     }
 
     protected void initView() {
-        //TODO:
-        etName.setText("唐一非");
-        etCardNumber.setText("340823199601021913");
         llRoot.setOnClickListener(v -> hideInputMethod(llRoot));
         btnCancel.setOnClickListener(view -> {
             dismiss();

@@ -160,7 +160,7 @@ public class ConfigManager {
                 return faceResult || fingerResult;
             case Constants.VERIFY_MODE_FACE_FIRST_DOUBLE:
             case Constants.VERIFY_MODE_FINGER_FIRST_DOUBLE:
-                return faceResult && !fingerResult;
+                return faceResult && fingerResult;
         }
         return false;
     }

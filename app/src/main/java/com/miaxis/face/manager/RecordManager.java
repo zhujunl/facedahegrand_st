@@ -104,7 +104,12 @@ public class RecordManager {
             DaheResponseEntity body = execute.body();
             if (!uploading) return;
             if (body != null) {
-                Log.e("asd", "上传日志回执：" + body.getErrCode() + "，Msg:" + body.getErrMsg() + ",playVoice:" + body.isPlayVoice() + ",voicetext:" + body.getVoiceText());
+                String message = "服务器回执：" + body.getErrCode()
+                        + "\nMsg:" + body.getErrMsg()
+                        + "\nplayVoice:" + body.isPlayVoice()
+                        + "\nvoicetext:" + body.getVoiceText();
+                Log.e("asd", message);
+                ToastManager.toast(message);
             }
             if (body != null && body.getErrCode() == 0) {
                 listener.onUploadResult(true, body.getErrMsg(), body.isPlayVoice(), body.getVoiceText());
@@ -114,6 +119,7 @@ public class RecordManager {
         } catch (Exception e) {
             e.printStackTrace();
             if (!uploading) return;
+            ToastManager.toast("Http：" + e.getMessage());
             listener.onUploadResult(false, e.getMessage() + "", true, "上传失败");
         }
     }
