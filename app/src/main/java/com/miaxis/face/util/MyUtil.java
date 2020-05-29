@@ -104,17 +104,20 @@ public class MyUtil {
         return serial;
     }
 
-    public static Version getCurVersion(Context context) {
+    public static String getCurVersion(Context context) {
         try {
-            Version v = new Version();
+//            Version v = new Version();
             PackageManager manager = context.getPackageManager();
             PackageInfo info = manager.getPackageInfo(context.getPackageName(), 0);
-            v.setVersionCode(info.versionCode);
-            v.setVersion(info.versionName);
-            return v;
+//            v.setVersionCode(info.versionCode);
+//            v.setVersion(info.versionName);
+            if (info != null && !TextUtils.isEmpty(info.versionName)) {
+                return info.versionName;
+            }
+            return "";
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return "";
         }
     }
 

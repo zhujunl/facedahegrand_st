@@ -57,6 +57,7 @@ public class ConfigManager {
                     .verifyMode(Constants.DEFAULT_VERIFY_MODE)
                     .netFlag(Constants.DEFAULT_NET_FLAG)
                     .resultFlag(Constants.DEFAULT_RESULT_FLAG)
+                    .sequelFlag(Constants.DEFAULT_SEQUEL_FLAG)
                     .gatherFingerFlag(Constants.DEFAULT_GATHER_FINGER_FLAG)
                     .saveLocalFlag(Constants.DEFAULT_SAVE_LOCAL_FLAG)
                     .documentFlag(Constants.DEFAULT_DOCUMENT_FLAG)

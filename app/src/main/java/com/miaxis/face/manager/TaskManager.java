@@ -1,11 +1,14 @@
 package com.miaxis.face.manager;
 
+import android.util.Log;
+
 import com.miaxis.face.app.App;
 import com.miaxis.face.bean.Config;
 import com.miaxis.face.bean.IDCardRecord;
 import com.miaxis.face.constant.Constants;
 import com.miaxis.face.greendao.gen.IDCardRecordDao;
 import com.miaxis.face.presenter.AdvertisePresenter;
+import com.miaxis.face.presenter.UpdatePresenter;
 import com.miaxis.face.service.ClearService;
 import com.miaxis.face.service.UpLoadRecordService;
 
@@ -43,16 +46,23 @@ public class TaskManager {
         timerTask = new TimerTask() {
             @Override
             public void run() {
-                Config config = ConfigManager.getInstance().getConfig();
-//                if (config.getNetFlag()) {
-//                    upLoad();
-//                }
-                if (config.getAdvertisementMode() == Constants.ADVERTISEMENT_NET || config.getAdvertisementMode() == Constants.ADVERTISEMENT_NET_AND_LOCAL) {
-                    AdvertisePresenter.downloadAdvertiseUrl(config.getAdvertisementUrl());
-                }
-                ClearService.startActionClear(App.getInstance());
+                task();
             }
         };
+    }
+
+    public void task() {
+        Config config = ConfigManager.getInstance().getConfig();
+        if (config.getNetFlag() && config.getSequelFlag()) {
+            upLoad();
+        }
+        if (config.getAdvertisementMode() == Constants.ADVERTISEMENT_NET || config.getAdvertisementMode() == Constants.ADVERTISEMENT_NET_AND_LOCAL) {
+            AdvertisePresenter.downloadAdvertiseUrl(config.getAdvertisementUrl());
+        }
+        App.getInstance().getThreadExecutor().execute(() -> {
+            new UpdatePresenter(App.getInstance()).checkUpdateSync();
+        });
+        ClearService.startActionClear(App.getInstance());
     }
 
     private void startTask() {
@@ -89,19 +99,27 @@ public class TaskManager {
     }
 
     private void upLoad() {
-        IDCardRecordDao recordDao = DaoManager.getInstance().getDaoSession().getIDCardRecordDao();
-        long count = recordDao.count();
-        long page = (count % GROUP_SIZE == 0) ? count / GROUP_SIZE : (count / GROUP_SIZE + 1);
-        for (int i = 0; i < page; i++) {
-            List<IDCardRecord> recordList = recordDao.queryBuilder().offset(i * GROUP_SIZE).limit(GROUP_SIZE).orderAsc(IDCardRecordDao.Properties.Id).list();
-            for (int j = 0; j < recordList.size(); j++) {
-                IDCardRecord record = recordList.get(j);
-                if (!record.isUpload()) {
-//                    RecordManager.getInstance().uploadRecord();
+        App.getInstance().getThreadExecutor().execute(() -> {
+            IDCardRecordDao recordDao = DaoManager.getInstance().getDaoSession().getIDCardRecordDao();
+            long count = recordDao.count();
+            long page = (count % GROUP_SIZE == 0) ? count / GROUP_SIZE : (count / GROUP_SIZE + 1);
+            for (int i = 0; i < page; i++) {
+                List<IDCardRecord> recordList = recordDao.queryBuilder().offset(i * GROUP_SIZE).limit(GROUP_SIZE).orderAsc(IDCardRecordDao.Properties.Id).list();
+                for (int j = 0; j < recordList.size(); j++) {
+                    IDCardRecord record = recordList.get(j);
+                    if (!record.isUpload()) {
+                        RecordManager.getInstance().uploadRecord(record, (result, message, playVoice, voiceText) -> {
+                            Log.e("asd", result ? "续传成功" : "续传失败");
+                            if (result) {
+                                record.setUpload(true);
+                                recordDao.update(record);
+                            }
+                        });
 //                    UpLoadRecordService.startActionUpLoad(App.getInstance(), record, ConfigManager.getInstance().getConfig());
+                    }
                 }
             }
-        }
+        });
     }
 
 }

@@ -247,16 +247,9 @@ public class ServerManager {
     private void heartBeat() {
         try {
             handler.removeMessages(0);
-            String data = "{\"webapi\": \"" + getHost() + "\"}";
+            Config config = ConfigManager.getInstance().getConfig();
+            String data = "{\"webapi\": \"" + getHost() + "\",\"deviceSN\":\"" + config.getDeviceSerialNumber() + "\"}";
             RecordManager.getInstance().uploadHeartBeat(data);
-//            Config config = ConfigManager.getInstance().getConfig();
-//            String json = "{\"webapi\": \"" + getAddress() + "\"}";
-//            Call<DaheResponseEntity> uploadCall = FaceNetApi.uploadRecord(config.getUploadRecordUrl(), json);
-//            Response<DaheResponseEntity> execute = uploadCall.execute();
-//            DaheResponseEntity body = execute.body();
-//            if (body != null) {
-//                Log.e("asd", "心跳回执：" + body.getErrCode() + "，Msg:" + body.getErrMsg());
-//            }
         } catch (Exception e) {
             Log.e("asd", "" + e.getMessage());
         } finally {

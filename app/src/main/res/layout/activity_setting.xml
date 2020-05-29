@@ -79,7 +79,7 @@
             <LinearLayout style="@style/SettingItem">
 
                 <TextView style="@style/SettingName"
-                    android:text="日志上传URL1" />
+                    android:text="日志上传URL" />
 
                 <View style="@style/VerticalLine" />
 
@@ -238,6 +238,37 @@
                         android:id="@+id/rb_result_off"
                         style="@style/SettingRadioItem"
                         android:text="仅限成功" />
+
+                    <View style="@style/SpaceBody" />
+
+                </RadioGroup>
+
+            </LinearLayout>
+
+            <LinearLayout style="@style/SettingItem">
+
+                <TextView style="@style/SettingName"
+                    android:text="日志续传" />
+
+                <View style="@style/VerticalLine" />
+
+                <RadioGroup
+                    android:id="@+id/rg_sequel"
+                    style="@style/SettingRadioGroup">
+
+                    <View style="@style/SpaceBody" />
+
+                    <RadioButton
+                        android:id="@+id/rb_sequel_on"
+                        style="@style/SettingRadioItem"
+                        android:text="开启" />
+
+                    <View style="@style/SpaceBody" />
+
+                    <RadioButton
+                        android:id="@+id/rb_sequel_off"
+                        style="@style/SettingRadioItem"
+                        android:text="关闭" />
 
                     <View style="@style/SpaceBody" />
 
@@ -521,7 +552,7 @@
             <LinearLayout style="@style/SettingItem">
 
                 <TextView style="@style/SettingName"
-                    android:text="续传时间"
+                    android:text="定时任务(续传、清理、广告、版本)"
                     android:layout_weight="3"/>
 
                 <View style="@style/VerticalLine" />
@@ -545,7 +576,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/white_btn_bg"
                     android:gravity="center"
-                    android:text="立即续传"
+                    android:text="立即执行"
                     android:textColor="@color/orange"
                     android:textSize="20sp" />
 

@@ -25,9 +25,9 @@ public class BaseAPI {
 
     public static void rebuildRetrofit() {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .connectTimeout(5, TimeUnit.SECONDS)
-                .readTimeout(5, TimeUnit.SECONDS)
-                .writeTimeout(5, TimeUnit.SECONDS);
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(10, TimeUnit.SECONDS)
+                .writeTimeout(10, TimeUnit.SECONDS);
         builder.sslSocketFactory(SSLSocketClient.getSSLSocketFactory());
         builder.hostnameVerifier(SSLSocketClient.getHostnameVerifier());
         OkHttpClient okHttpClient = builder.build();

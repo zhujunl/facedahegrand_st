@@ -7,8 +7,8 @@ android {
         applicationId "com.miaxis.faceid_cw"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 1
-        versionName "1.0.0_Dahe_New_ST"
+        versionCode 2
+        versionName "1.0.1_Dahe_New_ST"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -29,7 +29,7 @@ android {
 }
 
 greendao {
-    schemaVersion 1
+    schemaVersion 2
     daoPackage 'com.miaxis.face.greendao.gen'
     targetGenDir 'src/main/java'
 }

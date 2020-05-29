@@ -342,6 +342,7 @@ public class VerifyPresenter {
             faceDone = true;
             idCardRecord.setFaceBitmap(faceBitmap);
             idCardRecord.setFaceResult(result);
+            idCardRecord.setFaceScore(faceMatchScore);
             if (view.get() != null) {
                 view.get().faceVerifyResult(result, rectBitmap, result ? "人脸通过" : "人脸失败");
             }

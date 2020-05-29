@@ -2,7 +2,6 @@ package com.miaxis.face.view.activity;
 
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -17,18 +16,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import com.liulishuo.filedownloader.BaseDownloadTask;
-import com.liulishuo.filedownloader.FileDownloadListener;
-import com.liulishuo.filedownloader.FileDownloader;
 import com.miaxis.face.R;
 import com.miaxis.face.app.App;
 import com.miaxis.face.bean.Config;
-import com.miaxis.face.bean.ResponseEntity;
-import com.miaxis.face.bean.UpdateData;
 import com.miaxis.face.constant.Constants;
-import com.miaxis.face.exception.MyException;
 import com.miaxis.face.greendao.gen.IDCardRecordDao;
 import com.miaxis.face.manager.ConfigManager;
 import com.miaxis.face.manager.DaoManager;
@@ -37,15 +28,10 @@ import com.miaxis.face.manager.GpioManager;
 import com.miaxis.face.manager.TaskManager;
 import com.miaxis.face.manager.ToastManager;
 import com.miaxis.face.net.FaceNetApi;
-import com.miaxis.face.net.UpdateNet;
-import com.miaxis.face.util.FileUtil;
-import com.miaxis.face.util.LogUtil;
+import com.miaxis.face.presenter.UpdatePresenter;
 import com.miaxis.face.util.MyUtil;
 import com.miaxis.face.util.PatternUtil;
-import com.miaxis.face.view.fragment.UpdateDialog;
 
-import java.io.File;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -53,19 +39,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.ObservableSource;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
-import retrofit2.Call;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SettingActivity extends BaseActivity {
 
@@ -183,14 +156,17 @@ public class SettingActivity extends BaseActivity {
     Button btnCancelConfig;
     @BindView(R.id.btn_exit)
     Button btnExit;
+    @BindView(R.id.rb_sequel_on)
+    RadioButton rbSequelOn;
+    @BindView(R.id.rb_sequel_off)
+    RadioButton rbSequelOff;
+    @BindView(R.id.rg_sequel)
+    RadioGroup rgSequel;
 
     private Config config;
-    private UpdateDialog updateDialog;
     private boolean hasFingerDevice;
 
-    private MaterialDialog waitDialog;
-    private MaterialDialog updateMaterialDialog;
-    private MaterialDialog downloadProgressDialog;
+    private UpdatePresenter updatePresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -241,11 +217,12 @@ public class SettingActivity extends BaseActivity {
     private void initData() {
         config = ConfigManager.getInstance().getConfig();
         hasFingerDevice = FingerManager.getInstance().checkHasFingerDevice();
+        updatePresenter = new UpdatePresenter(this);
     }
 
     private void initView() {
 //        GpioManager.getInstance().setSmdtStatusBar(this, false);
-        tvVersion.setText(MyUtil.getCurVersion(this).getVersion());
+        tvVersion.setText(MyUtil.getCurVersion(this));
         etUpdateUrl.setText(config.getUpdateUrl());
         etUploadUrl.setText(config.getUploadRecordUrl());
         etAdvertisementUrl.setText(config.getAdvertisementUrl());
@@ -258,6 +235,8 @@ public class SettingActivity extends BaseActivity {
         }
         rbNetOn.setChecked(config.getNetFlag());
         rbNetOff.setChecked(!config.getNetFlag());
+        rbSequelOn.setChecked(config.getSequelFlag());
+        rbSequelOff.setChecked(!config.getSequelFlag());
         rbEncryptOn.setChecked(config.getEncrypt());
         rbEncryptOff.setChecked(!config.getEncrypt());
         rbResultOn.setChecked(config.getResultFlag());
@@ -295,8 +274,6 @@ public class SettingActivity extends BaseActivity {
                 tvResultCount.setText(notUpCount + " / " + count);
             });
         });
-        updateDialog = new UpdateDialog();
-        updateDialog.setContext(this);
     }
 
     @OnClick(R.id.tv_select_time)
@@ -329,6 +306,7 @@ public class SettingActivity extends BaseActivity {
         config.setAdvertisementUrl(etAdvertisementUrl.getText().toString());
         config.setClientId(etClientId.getText().toString());
         config.setNetFlag(rbNetOn.isChecked());
+        config.setSequelFlag(rbSequelOn.isChecked());
         config.setEncrypt(rbEncryptOn.isChecked());
         config.setResultFlag(rbResultOn.isChecked());
         config.setSaveLocalFlag(rbSaveLocalOn.isChecked());
@@ -377,17 +355,35 @@ public class SettingActivity extends BaseActivity {
 
     @OnClick(R.id.btn_clear_now)
     void upLoad() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-//                Face_App.timerTask.run();
-            }
-        }).start();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+////                Face_App.timerTask.run();
+//            }
+//        }).start();
+        App.getInstance().getThreadExecutor().execute(() -> TaskManager.getInstance().task());
+        btnClearNow.setEnabled(false);
+        ToastManager.toast("任务已开始执行");
     }
 
     @OnClick(R.id.btn_update)
     void update() {
-        onUpdateClick();
+        String urlStr = "";
+        if (TextUtils.isEmpty(config.getUpdateUrl())) {
+            if (!TextUtils.isEmpty(etUpdateUrl.getText().toString())) {
+                if (!PatternUtil.isHttpFormat(etUpdateUrl.getText().toString())) {
+                    Toast.makeText(SettingActivity.this, "应用更新URL校验失败，请输入 http://host:port/api 格式", Toast.LENGTH_LONG).show();
+                    return;
+                } else {
+                    urlStr = etUpdateUrl.getText().toString();
+                }
+            } else {
+                return;
+            }
+        } else {
+            urlStr = config.getUpdateUrl();
+        }
+        updatePresenter.checkUpdateWithDialog(urlStr);
     }
 
     @OnClick(R.id.btn_exit)
@@ -407,160 +403,10 @@ public class SettingActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-    }
-
-    private void onUpdateClick() {
-        String urlStr = "";
-        if (TextUtils.isEmpty(config.getUpdateUrl())) {
-            if (!TextUtils.isEmpty(etUpdateUrl.getText().toString())) {
-                if (!PatternUtil.isHttpFormat(etUpdateUrl.getText().toString())) {
-                    Toast.makeText(SettingActivity.this, "应用更新URL校验失败，请输入 http://host:port/api 格式", Toast.LENGTH_LONG).show();
-                    return;
-                } else {
-                    urlStr = etUpdateUrl.getText().toString();
-                }
-            } else {
-                return;
-            }
-        } else {
-            urlStr = config.getUpdateUrl();
-        }
-        waitDialog = new MaterialDialog.Builder(SettingActivity.this)
-                .cancelable(false)
-                .autoDismiss(false)
-                .content("请求服务器中，请稍后")
-                .progress(true, 100)
-                .show();
-        Observable.just(urlStr)
-                .subscribeOn(Schedulers.from(App.getInstance().getThreadExecutor()))
-                .observeOn(Schedulers.from(App.getInstance().getThreadExecutor()))
-                .map(s -> {
-                    Call<ResponseEntity<UpdateData>> call = FaceNetApi.downUpdateVersion(s);
-                    Response<ResponseEntity<UpdateData>> execute = call.execute();
-                    ResponseEntity<UpdateData> body = execute.body();
-                    if (body != null) {
-                        return body;
-                    }
-                    throw new MyException("接口返回数据解析失败");
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::onUpdateDataDown, throwable -> {
-                    if (waitDialog != null) {
-                        waitDialog.dismiss();
-                    }
-                    LogUtil.writeLog(throwable.getMessage());
-                    Toast.makeText(SettingActivity.this, "更新请求Url连接失败", Toast.LENGTH_SHORT).show();
-                });
-    }
-
-    private void onUpdateDataDown(ResponseEntity<UpdateData> responseEntity) {
-        if (TextUtils.equals("200", responseEntity.getCode())) {
-            if (waitDialog != null) {
-                waitDialog.dismiss();
-            }
-            UpdateData updateData = responseEntity.getData();
-            if (updateData == null) {
-                Toast.makeText(SettingActivity.this, "更新请求Url返回数据错误", Toast.LENGTH_SHORT).show();
-            }
-            updateMaterialDialog = new MaterialDialog.Builder(SettingActivity.this)
-                    .title("是否要下载更新文件？")
-                    .content("设备当前版本：" + MyUtil.getCurVersion(this).getVersion() + "\n"
-                            + "服务器当前版本：人证核验_" + updateData.getVersion())
-                    .positiveText("确认下载")
-                    .onPositive((dialog, which) -> downUpdateFile(updateData.getVersion(), updateData.getUrl()))
-                    .negativeText("取消")
-                    .show();
-        } else {
-            Toast.makeText(SettingActivity.this, "更新请求Url返回码并非200", Toast.LENGTH_SHORT).show();
+        if (updatePresenter != null) {
+            updatePresenter.doDestroy();
         }
     }
 
-    private void downUpdateFile(String version, String url) {
-        downloadProgressDialog = new MaterialDialog.Builder(SettingActivity.this)
-                .title("下载进度")
-                .progress(false, 100)
-                .positiveText("取消")
-                .onPositive((dialog, which) -> FileDownloader.getImpl().pauseAll())
-                .cancelable(false)
-                .show();
-        downloadFile(url, FileUtil.FACE_MAIN_PATH + File.separator + version + ".apk");
-    }
-
-    private void downloadFile(String url, String path) {
-        FileDownloader.getImpl().create(url)
-                .setPath(path)
-                .setListener(new FileDownloadListener() {
-                    @Override
-                    protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-                    }
-
-                    @Override
-                    protected void connected(BaseDownloadTask task, String etag, boolean isContinue, int soFarBytes, int totalBytes) {
-                    }
-
-                    @Override
-                    protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-                        if (downloadProgressDialog != null && downloadProgressDialog.isShowing()) {
-                            int percent = (int) ((double) soFarBytes / (double) totalBytes * 100);
-                            downloadProgressDialog.setProgress(percent);
-                        }
-                    }
-
-                    @Override
-                    protected void blockComplete(BaseDownloadTask task) {
-                    }
-
-                    @Override
-                    protected void retry(final BaseDownloadTask task, final Throwable ex, final int retryingTimes, final int soFarBytes) {
-                    }
-
-                    @Override
-                    protected void completed(BaseDownloadTask task) {
-                        onDownloadCompleted(task.getPath());
-                    }
-
-                    @Override
-                    protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-                        onDownloadFinish("下载已取消");
-                    }
-
-                    @Override
-                    protected void error(BaseDownloadTask task, Throwable e) {
-                        onDownloadFinish("下载时出现错误，已停止下载");
-                    }
-
-                    @Override
-                    protected void warn(BaseDownloadTask task) {
-                    }
-                }).start();
-    }
-
-    private void onDownloadFinish(String message) {
-        if (downloadProgressDialog != null) {
-            downloadProgressDialog.dismiss();
-            Toast.makeText(SettingActivity.this, message, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void onDownloadCompleted(String path) {
-        if (downloadProgressDialog != null) {
-            downloadProgressDialog.dismiss();
-            Toast.makeText(SettingActivity.this, "下载已完成，正在准备安装", Toast.LENGTH_SHORT).show();
-        }
-        File file = new File(path);
-        if (file.exists()) {
-            installApk(file);
-        } else {
-            Toast.makeText(SettingActivity.this, "文件路径未找到，请尝试手动安装", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void installApk(File file) {
-        singOut();
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
-        startActivity(intent);
-    }
 
 }

@@ -55,6 +55,7 @@ import com.miaxis.face.manager.ServerManager;
 import com.miaxis.face.manager.TTSManager;
 import com.miaxis.face.manager.ToastManager;
 import com.miaxis.face.manager.WatchDogManager;
+import com.miaxis.face.presenter.UpdatePresenter;
 import com.miaxis.face.presenter.VerifyPresenter;
 import com.miaxis.face.view.custom.AdvertiseDialogFragment;
 import com.miaxis.face.view.custom.RectSurfaceView;
@@ -134,6 +135,7 @@ public class VerifyActivity extends BaseActivity {
 
     private Config config;
     private VerifyPresenter presenter;
+    private UpdatePresenter updatePresenter;
 
     private AdvertiseDialogFragment advertiseDialog;
     private HandlerThread handlerThread;
@@ -159,6 +161,7 @@ public class VerifyActivity extends BaseActivity {
         initData();
         initView();
         initTimeReceiver();
+//        updatePresenter.checkUpdateSync();
     }
 
     @Override
@@ -207,6 +210,10 @@ public class VerifyActivity extends BaseActivity {
             presenter.doDestroy();
             presenter = null;
         }
+        if (updatePresenter != null) {
+            updatePresenter.doDestroy();
+            updatePresenter = null;
+        }
         tvCamera.setDrawingCacheEnabled(false);
         CameraManager.getInstance().closeCamera();
         ServerManager.getInstance().stopServer();
@@ -219,6 +226,7 @@ public class VerifyActivity extends BaseActivity {
 
     protected void initData() {
         presenter = new VerifyPresenter(this, config);
+        updatePresenter = new UpdatePresenter(this);
         advertiseDelay.set(config.getAdvertiseDelayTime());
         handlerThread = new HandlerThread("advertise_thread");
         handlerThread.start();
@@ -647,6 +655,7 @@ public class VerifyActivity extends BaseActivity {
             etPwd.setVisibility(View.VISIBLE);
             advertiseFlag = false;
             asyncHandler.removeCallbacks(advertiseRunnable);
+            btnCancel.setVisibility(View.VISIBLE);
             btnCancel.setVisibility(View.VISIBLE);
             btnConfirm.setVisibility(View.VISIBLE);
             tvWelMsg.setVisibility(View.GONE);

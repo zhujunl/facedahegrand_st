@@ -66,6 +66,7 @@ public class Constants {
     public static final boolean DEFAULT_ENCRYPT = false;
     public static final boolean DEFAULT_NET_FLAG = true;
     public static final boolean DEFAULT_RESULT_FLAG = false;
+    public static final boolean DEFAULT_SEQUEL_FLAG = false;
     public static final int DEFAULT_GATHER_FINGER_FLAG = 2;
     public static final boolean DEFAULT_SAVE_LOCAL_FLAG = false;
     public static final boolean DEFAULT_DOCUMENT_FLAG = false;

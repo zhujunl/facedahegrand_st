@@ -36,6 +36,7 @@ public class Config implements Serializable {
     private int verifyMode;
     private boolean netFlag;
     private boolean resultFlag;
+    private boolean sequelFlag;
     private boolean saveLocalFlag;
     private boolean documentFlag;
     private boolean livenessFlag;
@@ -57,16 +58,16 @@ public class Config implements Serializable {
     private int intervalTime;
     private String orgName;
     private int advertiseDelayTime;
-    @Generated(hash = 764626670)
+    @Generated(hash = 1807254584)
     public Config(long id, String updateUrl, String uploadRecordUrl,
             String advertisementUrl, String deviceSerialNumber, String account,
             String clientId, boolean encrypt, int verifyMode, boolean netFlag,
-            boolean resultFlag, boolean saveLocalFlag, boolean documentFlag,
-            boolean livenessFlag, boolean queryFlag, boolean whiteFlag,
-            boolean blackFlag, int gatherFingerFlag, boolean advertiseFlag,
-            int advertisementMode, float verifyScore, int qualityScore,
-            int livenessQualityScore, String titleStr, String password,
-            String upTime, int intervalTime, String orgName,
+            boolean resultFlag, boolean sequelFlag, boolean saveLocalFlag,
+            boolean documentFlag, boolean livenessFlag, boolean queryFlag,
+            boolean whiteFlag, boolean blackFlag, int gatherFingerFlag,
+            boolean advertiseFlag, int advertisementMode, float verifyScore,
+            int qualityScore, int livenessQualityScore, String titleStr,
+            String password, String upTime, int intervalTime, String orgName,
             int advertiseDelayTime) {
         this.id = id;
         this.updateUrl = updateUrl;
@@ -79,6 +80,7 @@ public class Config implements Serializable {
         this.verifyMode = verifyMode;
         this.netFlag = netFlag;
         this.resultFlag = resultFlag;
+        this.sequelFlag = sequelFlag;
         this.saveLocalFlag = saveLocalFlag;
         this.documentFlag = documentFlag;
         this.livenessFlag = livenessFlag;
@@ -114,6 +116,7 @@ public class Config implements Serializable {
         setVerifyMode(builder.verifyMode);
         setNetFlag(builder.netFlag);
         setResultFlag(builder.resultFlag);
+        setSequelFlag(builder.sequelFlag);
         setSaveLocalFlag(builder.saveLocalFlag);
         setDocumentFlag(builder.documentFlag);
         setLivenessFlag(builder.livenessFlag);
@@ -199,6 +202,12 @@ public class Config implements Serializable {
     }
     public void setResultFlag(boolean resultFlag) {
         this.resultFlag = resultFlag;
+    }
+    public boolean getSequelFlag() {
+        return this.sequelFlag;
+    }
+    public void setSequelFlag(boolean sequelFlag) {
+        this.sequelFlag = sequelFlag;
     }
     public boolean getSaveLocalFlag() {
         return this.saveLocalFlag;
@@ -309,6 +318,50 @@ public class Config implements Serializable {
         this.advertiseDelayTime = advertiseDelayTime;
     }
 
+    public boolean isEncrypt() {
+        return encrypt;
+    }
+
+    public boolean isNetFlag() {
+        return netFlag;
+    }
+
+    public boolean isResultFlag() {
+        return resultFlag;
+    }
+
+    public boolean isSequelFlag() {
+        return sequelFlag;
+    }
+
+    public boolean isSaveLocalFlag() {
+        return saveLocalFlag;
+    }
+
+    public boolean isDocumentFlag() {
+        return documentFlag;
+    }
+
+    public boolean isLivenessFlag() {
+        return livenessFlag;
+    }
+
+    public boolean isQueryFlag() {
+        return queryFlag;
+    }
+
+    public boolean isWhiteFlag() {
+        return whiteFlag;
+    }
+
+    public boolean isBlackFlag() {
+        return blackFlag;
+    }
+
+    public boolean isAdvertiseFlag() {
+        return advertiseFlag;
+    }
+
     public static final class Builder {
         private long id;
         private String updateUrl;
@@ -321,6 +374,7 @@ public class Config implements Serializable {
         private int verifyMode;
         private boolean netFlag;
         private boolean resultFlag;
+        private boolean sequelFlag;
         private boolean saveLocalFlag;
         private boolean documentFlag;
         private boolean livenessFlag;
@@ -395,6 +449,11 @@ public class Config implements Serializable {
 
         public Builder resultFlag(boolean val) {
             resultFlag = val;
+            return this;
+        }
+
+        public Builder sequelFlag(boolean val) {
+            sequelFlag = val;
             return this;
         }
 
