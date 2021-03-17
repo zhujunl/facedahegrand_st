@@ -60,7 +60,7 @@ public class AdvertisePresenter {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(responseEntity -> {
                     if (TextUtils.equals(responseEntity.getCode(), "200")) {
-                        Log.e("asd", "下载完成");
+                        Log.e("asd", "广告下载完成");
                         DaoManager.getInstance().getDaoSession().getAdvertisementDao().deleteAll();
                         try {
                             DaoManager.getInstance().getDaoSession().getAdvertisementDao().insertInTx(responseEntity.getData());

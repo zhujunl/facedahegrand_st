@@ -99,6 +99,7 @@ public class RecordManager {
         try {
             Config config = ConfigManager.getInstance().getConfig();
             if (!uploading) return;
+//            String transJson = json.replaceAll("\\\\\"", "\"");
             uploadCall = FaceNetApi.uploadRecord(config.getUploadRecordUrl(), json);
             Response<DaheResponseEntity> execute = uploadCall.execute();
             DaheResponseEntity body = execute.body();

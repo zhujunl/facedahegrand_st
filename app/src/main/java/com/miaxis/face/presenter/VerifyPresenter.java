@@ -292,8 +292,10 @@ public class VerifyPresenter {
         @Override
         public void onFaceDetect(int faceNum, MXFaceInfoEx[] faceInfoExes) {
             if (faceDone || undocumentedDone || taskDone) return;
-            if (view.get() != null) {
-                view.get().drawFaceRect(faceInfoExes, faceNum);
+            if (undocumentedFlag || taskFlag || hasCardEvent) {
+                if (view.get() != null) {
+                    view.get().drawFaceRect(faceInfoExes, faceNum);
+                }
             }
         }
 
@@ -680,7 +682,7 @@ public class VerifyPresenter {
 
     public ServerManager.OnTaskHandleListener taskListener = task -> {
         if (isOnVerify() || isOnUndocumented()) {
-            TaskResult taskResult = new TaskResult("400", "设备正忙", "");
+            TaskResult taskResult = new TaskResult("1", "设备正忙", "");
             ServerManager.getInstance().onTaskOver(task, taskResult);
         } else {
             taskFlag = true;
@@ -715,7 +717,7 @@ public class VerifyPresenter {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
                 bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
                 String photoBase64 = FileUtil.bitmapToBase64(bitmap);
-                TaskResult taskResult = new TaskResult("200", "ok", photoBase64);
+                TaskResult taskResult = new TaskResult("0", "ok", photoBase64);
                 ServerManager.getInstance().onTaskOver(task, taskResult);
                 if (view.get() != null) {
                     view.get().onTaskResult(task, 1);
@@ -766,10 +768,10 @@ public class VerifyPresenter {
                 taskDone = true;
                 Map<String ,Object> map = new HashMap<>();
                 map.put("livephoto", Base64.encodeToString(fileImage, Base64.NO_WRAP));
-                map.put("cmpresult", result);
+                map.put("cmpresult", result ? "通过" : "未通过");
                 map.put("similarity", faceMatchScore);
                 String json = MyUtil.GSON.toJson(map);
-                TaskResult taskResult = new TaskResult("200", "ok", json);
+                TaskResult taskResult = new TaskResult("0", "ok", json);
                 ServerManager.getInstance().onTaskOver(task, taskResult);
                 if (view.get() != null) {
                     view.get().onTaskResult(task, 1);
@@ -789,7 +791,7 @@ public class VerifyPresenter {
     }
 
     private void taskErrorBack(String message) {
-        TaskResult taskResult = new TaskResult("400", message, "");
+        TaskResult taskResult = new TaskResult("1", message, "");
         ServerManager.getInstance().onTaskOver(task, taskResult);
         if (view.get() != null) {
             view.get().onTaskResult(task, 1);

@@ -142,12 +142,12 @@ public class ServerManager {
                                         return newFixedLengthResponse(makeErrorBackTaskOver(task, "400", "任务超时"));
                                     }
                                 }
-                                String returnResponse = response;
+//                                String returnResponse = response.replaceAll("\\\\\"", "\"");
                                 done = false;
                                 serviceDoing = false;
                                 taskCache = null;
                                 sessionCache = null;
-                                return newFixedLengthResponse(returnResponse);
+                                return newFixedLengthResponse(response);
                             } else {
                                 return newFixedLengthResponse(makeErrorBackTaskOver(task, "400", "当前页面并非核验页面"));
                             }

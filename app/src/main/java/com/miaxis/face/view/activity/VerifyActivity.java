@@ -161,7 +161,7 @@ public class VerifyActivity extends BaseActivity {
         initData();
         initView();
         initTimeReceiver();
-//        updatePresenter.checkUpdateSync();
+        updatePresenter.checkUpdateSync();
     }
 
     @Override
