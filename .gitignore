@@ -9,12 +9,6 @@
 .cxx
 /app/release
 /.idea
-/app/src/main/assets
 /app/src/androidTest
 /app/src/test
-/app/src/main/libs
-/app/src/main/jniLibs
-/app/libs
 /app/build
-/serialport
-/opencv
