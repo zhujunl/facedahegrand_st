@@ -12,10 +12,31 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
+    signingConfigs {
+        debug {
+            keyAlias 'Chronaxia'
+            keyPassword 'qq972625961'
+            storeFile file('../chronaxia.jks')
+            storePassword 'qq972625961'
+        }
+        release {
+            keyAlias 'Chronaxia'
+            keyPassword 'qq972625961'
+            storeFile file('../chronaxia.jks')
+            storePassword 'qq972625961'
+        }
+    }
+
     buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
+        }
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
