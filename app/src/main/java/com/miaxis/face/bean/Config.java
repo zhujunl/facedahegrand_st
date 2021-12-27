@@ -48,7 +48,7 @@ public class Config implements Serializable {
     private int advertisementMode;
 
     private float verifyScore;
-    private int qualityScore;
+    private int qualityScore_new;
     private int livenessQualityScore;
 
     private String titleStr;
@@ -58,7 +58,7 @@ public class Config implements Serializable {
     private int intervalTime;
     private String orgName;
     private int advertiseDelayTime;
-    @Generated(hash = 1807254584)
+    @Generated(hash = 826168662)
     public Config(long id, String updateUrl, String uploadRecordUrl,
             String advertisementUrl, String deviceSerialNumber, String account,
             String clientId, boolean encrypt, int verifyMode, boolean netFlag,
@@ -66,7 +66,7 @@ public class Config implements Serializable {
             boolean documentFlag, boolean livenessFlag, boolean queryFlag,
             boolean whiteFlag, boolean blackFlag, int gatherFingerFlag,
             boolean advertiseFlag, int advertisementMode, float verifyScore,
-            int qualityScore, int livenessQualityScore, String titleStr,
+            int qualityScore_new, int livenessQualityScore, String titleStr,
             String password, String upTime, int intervalTime, String orgName,
             int advertiseDelayTime) {
         this.id = id;
@@ -91,7 +91,7 @@ public class Config implements Serializable {
         this.advertiseFlag = advertiseFlag;
         this.advertisementMode = advertisementMode;
         this.verifyScore = verifyScore;
-        this.qualityScore = qualityScore;
+        this.qualityScore_new = qualityScore_new;
         this.livenessQualityScore = livenessQualityScore;
         this.titleStr = titleStr;
         this.password = password;
@@ -103,7 +103,6 @@ public class Config implements Serializable {
     @Generated(hash = 589037648)
     public Config() {
     }
-
     private Config(Builder builder) {
         setId(builder.id);
         setUpdateUrl(builder.updateUrl);
@@ -270,10 +269,10 @@ public class Config implements Serializable {
         this.verifyScore = verifyScore;
     }
     public int getQualityScore() {
-        return this.qualityScore;
+        return this.qualityScore_new;
     }
     public void setQualityScore(int qualityScore) {
-        this.qualityScore = qualityScore;
+        this.qualityScore_new = qualityScore;
     }
     public int getLivenessQualityScore() {
         return this.livenessQualityScore;
@@ -360,6 +359,12 @@ public class Config implements Serializable {
 
     public boolean isAdvertiseFlag() {
         return advertiseFlag;
+    }
+    public int getQualityScore_new() {
+        return this.qualityScore_new;
+    }
+    public void setQualityScore_new(int qualityScore_new) {
+        this.qualityScore_new = qualityScore_new;
     }
 
     public static final class Builder {

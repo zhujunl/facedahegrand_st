@@ -77,7 +77,7 @@ public class Constants {
     public static final boolean DEFAULT_BLACK_FLAG = false;
     public static final boolean DEFAULT_ADVERTISE_FLAG = true;
     public static final float DEFAULT_VERIFY_SCORE = 0.70f;
-    public static final int DEFAULT_QUALITY_SCORE = 50;
+    public static final int DEFAULT_QUALITY_SCORE = 80;
     public static final int DEFAULT_LIVENESS_QUALITY_SCORE = 25;
     public static final String DEFAULT_TITLE_STR = "";
     public static final String DEFAULT_PASSWORD = "666666";

@@ -262,8 +262,18 @@ public class FaceManager {
         if (needNextFeature) {
             Log.e("asd", "提特征中");
             Config config = ConfigManager.getInstance().getConfig();
+            Log.d("quality===","="+intermediary.mxFaceInfoEx.quality);
+            Log.d("getquality===","="+config.getQualityScore());
             if (intermediary.mxFaceInfoEx.quality > config.getQualityScore()) {
                 byte[] feature = extractFeature(intermediary.data, zoomWidth, zoomHeight, intermediary.mxFaceInfoEx);
+                int i=intermediary.mxFaceInfoEx.pitch;
+                int q= intermediary.mxFaceInfoEx.yaw;
+                int w=intermediary.mxFaceInfoEx.roll;
+                if (i>20||q>15||w>15){
+                    Log.e("lianglian", "extract: true" );
+                }else {
+                    Log.e("lianglian", "extract: false" );
+                }
                 if (feature != null) {
                     needNextFeature = false;
                     if (faceHandleListener != null) {

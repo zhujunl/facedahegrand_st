@@ -131,13 +131,37 @@ public class CardManager {
                 byte[] bFingerData0 = new byte[FINGER_DATA_SIZE];
                 byte[] bFingerData1 = new byte[FINGER_DATA_SIZE];
                 int iLen = 256 + 1024;
-                System.arraycopy(bCardFullInfo, iLen, bFingerData0, 0, bFingerData0.length);
+                try {
+                    System.arraycopy(bCardFullInfo, iLen, bFingerData0, 0, bFingerData0.length);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 iLen += 512;
-                System.arraycopy(bCardFullInfo, iLen, bFingerData1, 0, bFingerData1.length);
-                idCardRecord.setFingerprintPosition0(fingerPositionCovert(bFingerData0[5]));
-                idCardRecord.setFingerprint0(Base64.encodeToString(bFingerData0, Base64.NO_WRAP));
-                idCardRecord.setFingerprintPosition1(fingerPositionCovert(bFingerData1[5]));
-                idCardRecord.setFingerprint1(Base64.encodeToString(bFingerData1, Base64.NO_WRAP));
+                try {
+                    System.arraycopy(bCardFullInfo, iLen, bFingerData1, 0, bFingerData1.length);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                try {
+                    idCardRecord.setFingerprintPosition0(fingerPositionCovert(bFingerData0[5]));
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                try {
+                    idCardRecord.setFingerprint0(Base64.encodeToString(bFingerData0, Base64.NO_WRAP));
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                try {
+                    idCardRecord.setFingerprintPosition1(fingerPositionCovert(bFingerData1[5]));
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                try {
+                    idCardRecord.setFingerprint1(Base64.encodeToString(bFingerData1, Base64.NO_WRAP));
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         } else {
             throw new Exception("读卡失败");
