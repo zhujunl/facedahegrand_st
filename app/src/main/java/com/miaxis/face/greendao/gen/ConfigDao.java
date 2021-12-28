@@ -54,6 +54,8 @@ public class ConfigDao extends AbstractDao<Config, Long> {
         public final static Property IntervalTime = new Property(27, int.class, "intervalTime", false, "INTERVAL_TIME");
         public final static Property OrgName = new Property(28, String.class, "orgName", false, "ORG_NAME");
         public final static Property AdvertiseDelayTime = new Property(29, int.class, "advertiseDelayTime", false, "ADVERTISE_DELAY_TIME");
+        public final static Property Version_delay = new Property(30, Integer.class, "version_delay", false, "VERSION_DELAY");
+        public final static Property Version_position = new Property(31, Integer.class, "version_position", false, "VERSION_POSITION");
     }
 
 
@@ -98,7 +100,9 @@ public class ConfigDao extends AbstractDao<Config, Long> {
                 "\"UP_TIME\" TEXT," + // 26: upTime
                 "\"INTERVAL_TIME\" INTEGER NOT NULL ," + // 27: intervalTime
                 "\"ORG_NAME\" TEXT," + // 28: orgName
-                "\"ADVERTISE_DELAY_TIME\" INTEGER NOT NULL );"); // 29: advertiseDelayTime
+                "\"ADVERTISE_DELAY_TIME\" INTEGER NOT NULL ," + // 29: advertiseDelayTime
+                "\"VERSION_DELAY\" INTEGER," + // 30: version_delay
+                "\"VERSION_POSITION\" INTEGER);"); // 31: version_position
     }
 
     /** Drops the underlying database table. */
@@ -180,6 +184,16 @@ public class ConfigDao extends AbstractDao<Config, Long> {
             stmt.bindString(29, orgName);
         }
         stmt.bindLong(30, entity.getAdvertiseDelayTime());
+ 
+        Integer version_delay = entity.getVersion_delay();
+        if (version_delay != null) {
+            stmt.bindLong(31, version_delay);
+        }
+ 
+        Integer version_position = entity.getVersion_position();
+        if (version_position != null) {
+            stmt.bindLong(32, version_position);
+        }
     }
 
     @Override
@@ -255,6 +269,16 @@ public class ConfigDao extends AbstractDao<Config, Long> {
             stmt.bindString(29, orgName);
         }
         stmt.bindLong(30, entity.getAdvertiseDelayTime());
+ 
+        Integer version_delay = entity.getVersion_delay();
+        if (version_delay != null) {
+            stmt.bindLong(31, version_delay);
+        }
+ 
+        Integer version_position = entity.getVersion_position();
+        if (version_position != null) {
+            stmt.bindLong(32, version_position);
+        }
     }
 
     @Override
@@ -294,7 +318,9 @@ public class ConfigDao extends AbstractDao<Config, Long> {
             cursor.isNull(offset + 26) ? null : cursor.getString(offset + 26), // upTime
             cursor.getInt(offset + 27), // intervalTime
             cursor.isNull(offset + 28) ? null : cursor.getString(offset + 28), // orgName
-            cursor.getInt(offset + 29) // advertiseDelayTime
+            cursor.getInt(offset + 29), // advertiseDelayTime
+            cursor.isNull(offset + 30) ? null : cursor.getInt(offset + 30), // version_delay
+            cursor.isNull(offset + 31) ? null : cursor.getInt(offset + 31) // version_position
         );
         return entity;
     }
@@ -331,6 +357,8 @@ public class ConfigDao extends AbstractDao<Config, Long> {
         entity.setIntervalTime(cursor.getInt(offset + 27));
         entity.setOrgName(cursor.isNull(offset + 28) ? null : cursor.getString(offset + 28));
         entity.setAdvertiseDelayTime(cursor.getInt(offset + 29));
+        entity.setVersion_delay(cursor.isNull(offset + 30) ? null : cursor.getInt(offset + 30));
+        entity.setVersion_position(cursor.isNull(offset + 31) ? null : cursor.getInt(offset + 31));
      }
     
     @Override

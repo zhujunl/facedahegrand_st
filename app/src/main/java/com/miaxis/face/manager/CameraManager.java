@@ -1,12 +1,16 @@
 package com.miaxis.face.manager;
 
+import android.app.Activity;
 import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.util.Log;
+import android.view.Surface;
 import android.view.TextureView;
 
 import androidx.annotation.NonNull;
+
+import com.miaxis.face.app.App;
 
 import java.io.IOException;
 import java.util.List;
@@ -205,5 +209,7 @@ public class CameraManager {
     private void closeMonitor() {
         monitorFlag = false;
     }
+
+
 
 }

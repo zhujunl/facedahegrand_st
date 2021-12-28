@@ -1,5 +1,6 @@
 package com.miaxis.face.view.activity;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,8 +13,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -129,6 +132,8 @@ public class VerifyActivity extends BaseActivity {
     TextView tvGatherFingerHint;
     @BindView(R.id.rl_gather_finger)
     RelativeLayout rlGatherFinger;
+    @BindView(R.id.tv_face_tip)
+    TextView tv_face_tip;
 
     private MaterialDialog waitDialog;
     private MaterialDialog resultDialog;
@@ -236,6 +241,7 @@ public class VerifyActivity extends BaseActivity {
     protected void initView() {
         etPwd.setHint(ServerManager.getInstance().getHost());
         tvCamera.getViewTreeObserver().addOnGlobalLayoutListener(globalListener);
+        tvCamera.setRotationY(180);
         rsvRect.bringToFront();
     }
 
@@ -375,6 +381,7 @@ public class VerifyActivity extends BaseActivity {
                     advertiseFlag = true;
                     tvPass.setText("请放身份证");
                     tvPass.setVisibility(View.VISIBLE);
+                    tv_face_tip.setVisibility(View.INVISIBLE);
                     rvResult.setVisibility(View.GONE);
                     ivFaceBox.setVisibility(View.INVISIBLE);
                     tvLivenessHint.setVisibility(View.INVISIBLE);
@@ -396,6 +403,7 @@ public class VerifyActivity extends BaseActivity {
                 case ReadCard:
                     if (idCardRecord != null) {
                         tvPass.setVisibility(View.GONE);
+                        ivFaceBox.setVisibility(View.VISIBLE);
                         rvResult.clear();
                         rvResult.showCardImage(idCardRecord.getCardBitmap());
                         rvResult.setVisibility(View.VISIBLE);
@@ -432,7 +440,7 @@ public class VerifyActivity extends BaseActivity {
                 }
             } else {
                 tvLivenessHint.setVisibility(View.INVISIBLE);
-                ivFaceBox.setVisibility(View.INVISIBLE);
+                ivFaceBox.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -444,6 +452,13 @@ public class VerifyActivity extends BaseActivity {
     public void actionLiveHint(String message) {
         runOnUiThread(() -> {
             tvLivenessHint.setText(message);
+        });
+    }
+
+    public void showFaceTips(String message) {
+        runOnUiThread(() -> {
+            tv_face_tip.setVisibility(TextUtils.isEmpty(message)?View.GONE:View.VISIBLE);
+            tv_face_tip.setText(message==null?"":message);
         });
     }
 
@@ -468,9 +483,10 @@ public class VerifyActivity extends BaseActivity {
             if (status == 0) {
                 rsvRect.clearDraw();
                 tvLivenessHint.setVisibility(View.INVISIBLE);
-                ivFaceBox.setVisibility(View.INVISIBLE);
+                ivFaceBox.setVisibility(View.VISIBLE);
             } else if (status == 1) {
                 tvPass.setVisibility(View.INVISIBLE);
+                ivFaceBox.setVisibility(View.VISIBLE);
                 if (config.getLivenessFlag()) {
                     tvLivenessHint.setText("请缓慢眨眼");
                     tvLivenessHint.setVisibility(View.VISIBLE);
@@ -478,6 +494,8 @@ public class VerifyActivity extends BaseActivity {
                 }
             } else if (status == 2) {
                 tvPass.setVisibility(View.VISIBLE);
+                tv_face_tip.setVisibility(View.INVISIBLE);
+                ivFaceBox.setVisibility(View.INVISIBLE);
                 tvUploadHint.setVisibility(View.INVISIBLE);
                 advertiseFlag = true;
                 sendAdvertiseDelaySignal();
@@ -506,7 +524,7 @@ public class VerifyActivity extends BaseActivity {
     public void uploadStatus(String message) {
         runOnUiThread(() -> {
             tvLivenessHint.setVisibility(View.INVISIBLE);
-            ivFaceBox.setVisibility(View.INVISIBLE);
+            ivFaceBox.setVisibility(View.VISIBLE);
             tvUploadHint.setText(message);
             tvUploadHint.setVisibility(View.VISIBLE);
         });
@@ -518,6 +536,7 @@ public class VerifyActivity extends BaseActivity {
                 advertiseFlag = false;
                 asyncHandler.removeCallbacks(advertiseRunnable);
                 tvPass.setVisibility(View.INVISIBLE);
+                ivFaceBox.setVisibility(View.VISIBLE);
                 if (CameraManager.getInstance().getCamera() == null) {
                     controlAdvertDialog(false);
                 } else {
@@ -531,6 +550,7 @@ public class VerifyActivity extends BaseActivity {
                 tvLivenessHint.setVisibility(View.INVISIBLE);
                 ivFaceBox.setVisibility(View.INVISIBLE);
                 tvPass.setVisibility(View.VISIBLE);
+                tv_face_tip.setVisibility(View.INVISIBLE);
                 tvUploadHint.setVisibility(View.INVISIBLE);
                 advertiseFlag = true;
                 sendAdvertiseDelaySignal();
@@ -786,4 +806,25 @@ public class VerifyActivity extends BaseActivity {
                 .into(view);
     }
 
+    public static void setCameraDisplayOrientation(Activity activity, int cameraId, Camera camera) {
+        Camera.CameraInfo info =new Camera.CameraInfo();
+        Camera.getCameraInfo(cameraId, info);
+        int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
+        int degrees = 0;
+        switch (rotation) {
+            case Surface.ROTATION_0: degrees = 0; break;
+            case Surface.ROTATION_90: degrees = 90; break;
+            case Surface.ROTATION_180: degrees = 180; break;
+            case Surface.ROTATION_270: degrees = 270; break;
+        }
+
+        int result;
+        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+            result = (info.orientation + degrees) % 360;
+            result = (360 - result) % 360;  // compensate the mirror
+        } else {  // back-facing
+            result = (info.orientation - degrees + 360) % 360;
+        }
+        camera.setDisplayOrientation(result);
+    }
 }

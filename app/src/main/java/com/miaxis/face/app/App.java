@@ -75,4 +75,10 @@ public class App extends Application {
     public ExecutorService getThreadExecutor() {
         return threadExecutor;
     }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        TaskManager.getInstance().close();
+    }
 }

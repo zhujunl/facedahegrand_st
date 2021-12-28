@@ -7,6 +7,19 @@
         <item>单项验证，人脸优先</item>
         <item>单项验证，指纹优先</item>
     </string-array>
+
+    <string-array name="versiondelay">
+        <item>一分钟</item>
+        <item>两分钟</item>
+        <item>五分钟</item>
+        <item>十分钟</item>
+        <item>三十分钟</item>
+        <item>一小时</item>
+        <item>两小时</item>
+        <item>五小时</item>
+        <item>十小时</item>
+        <item>二十四小时</item>
+    </string-array>
     <!--        <item>双重验证，人脸优先</item>-->
     <!--        <item>双重验证，指纹优先</item>-->
 

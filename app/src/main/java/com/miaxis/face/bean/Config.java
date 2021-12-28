@@ -58,17 +58,18 @@ public class Config implements Serializable {
     private int intervalTime;
     private String orgName;
     private int advertiseDelayTime;
-    @Generated(hash = 826168662)
-    public Config(long id, String updateUrl, String uploadRecordUrl,
-            String advertisementUrl, String deviceSerialNumber, String account,
-            String clientId, boolean encrypt, int verifyMode, boolean netFlag,
-            boolean resultFlag, boolean sequelFlag, boolean saveLocalFlag,
-            boolean documentFlag, boolean livenessFlag, boolean queryFlag,
-            boolean whiteFlag, boolean blackFlag, int gatherFingerFlag,
+    private Integer version_delay;
+    private Integer version_position;
+    @Generated(hash = 1114347870)
+    public Config(long id, String updateUrl, String uploadRecordUrl, String advertisementUrl,
+            String deviceSerialNumber, String account, String clientId, boolean encrypt,
+            int verifyMode, boolean netFlag, boolean resultFlag, boolean sequelFlag,
+            boolean saveLocalFlag, boolean documentFlag, boolean livenessFlag,
+            boolean queryFlag, boolean whiteFlag, boolean blackFlag, int gatherFingerFlag,
             boolean advertiseFlag, int advertisementMode, float verifyScore,
-            int qualityScore_new, int livenessQualityScore, String titleStr,
-            String password, String upTime, int intervalTime, String orgName,
-            int advertiseDelayTime) {
+            int qualityScore_new, int livenessQualityScore, String titleStr, String password,
+            String upTime, int intervalTime, String orgName, int advertiseDelayTime,
+            Integer version_delay, Integer version_position) {
         this.id = id;
         this.updateUrl = updateUrl;
         this.uploadRecordUrl = uploadRecordUrl;
@@ -99,6 +100,8 @@ public class Config implements Serializable {
         this.intervalTime = intervalTime;
         this.orgName = orgName;
         this.advertiseDelayTime = advertiseDelayTime;
+        this.version_delay = version_delay;
+        this.version_position = version_position;
     }
     @Generated(hash = 589037648)
     public Config() {
@@ -134,6 +137,8 @@ public class Config implements Serializable {
         setIntervalTime(builder.intervalTime);
         setOrgName(builder.orgName);
         setAdvertiseDelayTime(builder.advertiseDelayTime);
+        setVersion_delay(builder.version_delay);
+        setVersion_position(builder.version_position);
     }
 
     public long getId() {
@@ -367,6 +372,22 @@ public class Config implements Serializable {
         this.qualityScore_new = qualityScore_new;
     }
 
+    public Integer getVersion_delay() {
+        return version_delay;
+    }
+
+    public void setVersion_delay(Integer version_delay) {
+        this.version_delay = version_delay;
+    }
+
+    public Integer getVersion_position() {
+        return version_position;
+    }
+
+    public void setVersion_position(Integer version_position) {
+        this.version_position = version_position;
+    }
+
     public static final class Builder {
         private long id;
         private String updateUrl;
@@ -398,6 +419,8 @@ public class Config implements Serializable {
         private int intervalTime;
         private String orgName;
         private int advertiseDelayTime;
+        private Integer version_delay;
+        private Integer version_position;
 
         public Builder() {
         }
@@ -550,6 +573,16 @@ public class Config implements Serializable {
         public Builder advertiseDelayTime(int val) {
             advertiseDelayTime = val;
             return this;
+        }
+
+        public Builder version_delay(Integer val) {
+            this.version_delay = val;
+            return this;
+        }
+
+        public Builder version_position(Integer val){
+            this.version_position=val;
+            return  this;
         }
 
         public Config build() {

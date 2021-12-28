@@ -95,7 +95,7 @@ public class Constants {
     public static final String DOWN_VERSION = "app/getApp";
     public static final String UPLOAD_PERSON = "person/uploadPerson";
 
-    public static final int TASK_DELAY = 1000 * 60 * 60 * 24;
+    public static final int TASK_DELAY = 1*60*1000;
 
     public static final int RESULT_CODE_FINISH = 51243123;
 

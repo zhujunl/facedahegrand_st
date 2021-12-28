@@ -162,6 +162,8 @@ public class SettingActivity extends BaseActivity {
     RadioButton rbSequelOff;
     @BindView(R.id.rg_sequel)
     RadioGroup rgSequel;
+    @BindView(R.id.et_version_delay_time)
+    Spinner et_version_delay_time;
 
     private Config config;
     private boolean hasFingerDevice;
@@ -212,8 +214,45 @@ public class SettingActivity extends BaseActivity {
                 config.setVerifyMode(0);
             }
         });
-    }
 
+
+        List<String> versionList=Arrays.asList(getResources().getStringArray(R.array.versiondelay));
+        ArrayAdapter<String> versionAdapter=new ArrayAdapter<>(this,R.layout.spinner_style_display,R.id.tvDisplay,versionList);
+        et_version_delay_time.setAdapter(versionAdapter);
+        et_version_delay_time.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                config.setVersion_position(position);
+                switch (position){
+                    case 0:config.setVersion_delay(60 * 1000);
+                        break;
+                    case 1:config.setVersion_delay(2*60*1000);
+                        break;
+                    case 2:config.setVersion_delay(5*60*1000);
+                        break;
+                    case 3:config.setVersion_delay(10*60*1000);
+                        break;
+                    case 4:config.setVersion_delay(30*60*1000);
+                        break;
+                    case 5:config.setVersion_delay(60 * 60 * 1000);
+                        break;
+                    case 6:config.setVersion_delay(2*60*60*1000);
+                        break;
+                    case 7:config.setVersion_delay(5*60*60*1000);
+                        break;
+                    case 8:config.setVersion_delay(10*60*60*1000);
+                        break;
+                    case 9:config.setVersion_delay(24*60*60*1000);
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
     private void initData() {
         config = ConfigManager.getInstance().getConfig();
         hasFingerDevice = FingerManager.getInstance().checkHasFingerDevice();
@@ -259,6 +298,7 @@ public class SettingActivity extends BaseActivity {
         etLivenessQualityScore.setText(String.valueOf(config.getLivenessQualityScore()));
         tvSelectTime.setText(config.getUpTime());
         etMonitorInterval.setText(String.valueOf(config.getIntervalTime()));
+        et_version_delay_time.setSelection(config.getVersion_position());
         etTitleStr.setText(config.getTitleStr());
         etOrgName.setText(config.getOrgName());
         etPwd.setText(config.getPassword());
@@ -337,12 +377,14 @@ public class SettingActivity extends BaseActivity {
         } else if (rbAdvertiseNetAndLocal.isChecked()) {
             config.setAdvertisementMode(Constants.ADVERTISEMENT_NET_AND_LOCAL);
         }
+
         ConfigManager.getInstance().saveConfig(config, (result, message) -> {
             if (result) {
                 FaceNetApi.rebuildRetrofit();
                 TaskManager.getInstance().reSetTimer();
                 finish();
             } else {
+                Log.e("message===",message);
                 ToastManager.toast("保存设置失败");
             }
         });

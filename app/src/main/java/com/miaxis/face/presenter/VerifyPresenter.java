@@ -331,6 +331,13 @@ public class VerifyPresenter {
                 view.get().actionLiveHint(hint);
             }
         }
+
+        @Override
+        public void onFaceTips(String msg) {
+            if (view.get() != null) {
+                view.get().showFaceTips(msg);
+            }
+        }
     };
 
     private void onFaceVerify(MxRGBImage mxRGBImage, MXFaceInfoEx mxFaceInfoEx, byte[] feature) {

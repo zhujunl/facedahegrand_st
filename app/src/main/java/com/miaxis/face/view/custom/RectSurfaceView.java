@@ -62,6 +62,8 @@ public class RectSurfaceView extends SurfaceView {
 
     public void drawRect(MXFaceInfoEx[] faceInfos, int faceNum) {
         Canvas canvas = shRect.lockCanvas(null);
+        canvas.translate(canvas.getWidth(),0);
+        canvas.scale(-1,1);
         if (canvas == null) {
             return;
         }

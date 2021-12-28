@@ -3,6 +3,7 @@ package com.miaxis.face.presenter;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -65,8 +66,20 @@ public class UpdatePresenter {
                     Toast.makeText(context, "更新请求Url连接失败", Toast.LENGTH_SHORT).show();
                 });
     }
+    public void checkUpdate() {
+        Log.d("Task====","checkUpdate");
+        String updateUrl = config.getUpdateUrl();
+        checkUpdate(updateUrl)
+                .subscribe(this::onUpdateDataDownSync, throwable -> {
+                    throwable.printStackTrace();
+                    Log.e("asd", "" + throwable.getMessage());
+                });
+    }
+
+
 
     public void checkUpdateSync() {
+        Log.d("Task====","checkUpdateSync");
         String updateUrl = config.getUpdateUrl();
         checkUpdate(updateUrl)
                 .subscribe(this::onUpdateDataDownSync, throwable -> {

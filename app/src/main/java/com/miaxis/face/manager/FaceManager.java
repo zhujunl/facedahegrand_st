@@ -88,6 +88,8 @@ public class FaceManager {
         void onFaceIntercept(int code, String message);
 
         void onActionLiveDetect(int code, String message);
+
+        void onFaceTips(String msg);
     }
 
     public void startLoop() {
@@ -143,6 +145,12 @@ public class FaceManager {
         }
     }
 
+
+    int left=100;
+    int top=30;
+    int right=left+120;
+    int bottom=top+190;
+
     private void verify(byte[] detectData) throws Exception {
         byte[] zoomedRgbData = cameraPreviewConvert(detectData,
                 CameraManager.PRE_WIDTH,
@@ -163,17 +171,31 @@ public class FaceManager {
             if (faceHandleListener != null) {
                 faceHandleListener.onFaceDetect(faceNum[0], faceBuffer);
             }
-            MXFaceInfoEx mxFaceInfoEx = sortMXFaceInfoEx(faceBuffer);
-            result = faceQuality(zoomedRgbData, zoomWidth, zoomHeight, 1, new MXFaceInfoEx[]{mxFaceInfoEx});
-            if (result) {
-                Intermediary intermediary = new Intermediary();
-                intermediary.width = zoomWidth;
-                intermediary.height = zoomHeight;
-                intermediary.mxFaceInfoEx = new MXFaceInfoEx(mxFaceInfoEx);
-                intermediary.data = zoomedRgbData;
-                intermediaryData = intermediary;
-                nova = true;
+            MXFaceInfoEx mxFaceInfoEx = sortMXFaceInfoEx(faceBuffer);//640*480
+            if (mxFaceInfoEx.x>=left&&mxFaceInfoEx.y>=top
+                   && mxFaceInfoEx.x+mxFaceInfoEx.width<=right
+                    &&mxFaceInfoEx.y+mxFaceInfoEx.height<=bottom
+            ){
+                if (faceHandleListener != null) {
+                    faceHandleListener.onFaceTips(null);
+                }
+                Log.e(TAG, "verify: 在框"+mxFaceInfoEx );
+                result = faceQuality(zoomedRgbData, zoomWidth, zoomHeight, 1, new MXFaceInfoEx[]{mxFaceInfoEx});
+                if (result) {
+                    Intermediary intermediary = new Intermediary();
+                    intermediary.width = zoomWidth;
+                    intermediary.height = zoomHeight;
+                    intermediary.mxFaceInfoEx = new MXFaceInfoEx(mxFaceInfoEx);
+                    intermediary.data = zoomedRgbData;
+                    intermediaryData = intermediary;
+                    nova = true;
 //              Log.e("asd", "检测耗时" + (System.currentTimeMillis() - time) + "-----" + mxFaceInfoEx.quality);
+                }
+            }else {
+                if (faceHandleListener != null) {
+                    faceHandleListener.onFaceTips("请将人脸移入框内");
+                }
+                Log.e(TAG, "verify: 不在框内"+mxFaceInfoEx );
             }
         } else {
             if (faceHandleListener != null) {
@@ -181,7 +203,7 @@ public class FaceManager {
             }
         }
     }
-
+private String TAG="verify";
     private void actionLiveDetect(byte[] detectData) throws Exception {
         Log.e("asd", "进入活体");
         MXImage original = new MXImage(detectData, CameraManager.PRE_WIDTH, CameraManager.PRE_HEIGHT, MXImage.FORMAT_YUV);
@@ -262,18 +284,8 @@ public class FaceManager {
         if (needNextFeature) {
             Log.e("asd", "提特征中");
             Config config = ConfigManager.getInstance().getConfig();
-            Log.d("quality===","="+intermediary.mxFaceInfoEx.quality);
-            Log.d("getquality===","="+config.getQualityScore());
             if (intermediary.mxFaceInfoEx.quality > config.getQualityScore()) {
                 byte[] feature = extractFeature(intermediary.data, zoomWidth, zoomHeight, intermediary.mxFaceInfoEx);
-                int i=intermediary.mxFaceInfoEx.pitch;
-                int q= intermediary.mxFaceInfoEx.yaw;
-                int w=intermediary.mxFaceInfoEx.roll;
-                if (i>20||q>15||w>15){
-                    Log.e("lianglian", "extract: true" );
-                }else {
-                    Log.e("lianglian", "extract: false" );
-                }
                 if (feature != null) {
                     needNextFeature = false;
                     if (faceHandleListener != null) {
@@ -335,6 +347,7 @@ public class FaceManager {
         int re = initFaceModel(context);
         if (re == 0) {
             re = mxFaceAPI.mxInitAlg(context, FileUtil.getFaceModelPath(), sLicence);
+            mxFaceAPI.mxAlgVersion();
         }
         if (re == 0) {
             re = mxLiveDetectApi.initialize(FileUtil.getFaceModelPath());

@@ -16,10 +16,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class TaskManager {
 
     private TaskManager() {
+        scheduledExecutorService= Executors.newScheduledThreadPool(1);
+        config=ConfigManager.getInstance().getConfig();
     }
 
     public static TaskManager getInstance () {
@@ -36,6 +42,8 @@ public class TaskManager {
 
     private static Timer timer;
     public static TimerTask timerTask;
+    private Config config;
+    private ScheduledExecutorService scheduledExecutorService;
 
     public void init() {
         startTask();
@@ -52,6 +60,7 @@ public class TaskManager {
     }
 
     public void task() {
+        Log.d("Task====","task");
         Config config = ConfigManager.getInstance().getConfig();
         if (config.getNetFlag() && config.getSequelFlag()) {
             upLoad();
@@ -66,7 +75,6 @@ public class TaskManager {
     }
 
     private void startTask() {
-        Config config = ConfigManager.getInstance().getConfig();
         initTask();
         Date start = new Date();
         start.setHours(Integer.parseInt(config.getUpTime().split(" : ")[0]));
@@ -76,26 +84,26 @@ public class TaskManager {
         if (tStart < t1) {
             start.setDate(new Date().getDate() + 1);
         }
-        timer.schedule(timerTask, start, Constants.TASK_DELAY);
+        timer.scheduleAtFixedRate(timerTask,config.getVersion_delay(),config.getVersion_delay());
     }
 
     public void reSetTimer() {
-        Config config = ConfigManager.getInstance().getConfig();
         timerTask.cancel();
         initTask();
         timer.cancel();
         timer.purge();
         timer = new Timer();
-        Date start = new Date();
-        start.setHours(Integer.parseInt(config.getUpTime().split(" : ")[0]));
-        start.setMinutes(Integer.parseInt(config.getUpTime().split(" : ")[1]));
-        start.setSeconds(0);
-        long tStart = start.getTime();
-        long t1 = new Date().getTime();
-        if (tStart < t1) {
-            start.setDate(new Date().getDate() + 1);
-        }
-        timer.schedule(timerTask, start, Constants.TASK_DELAY);
+//        Date start = new Date();
+//        start.setHours(Integer.parseInt(config.getUpTime().split(" : ")[0]));
+//        start.setMinutes(Integer.parseInt(config.getUpTime().split(" : ")[1]));
+//        start.setSeconds(0);
+//        long tStart = start.getTime();
+//        long t1 = new Date().getTime();
+//        if (tStart < t1) {
+//            start.setDate(new Date().getDate() + 1);
+//        }
+//        timer.schedule(timerTask, start, Constants.TASK_DELAY);
+        timer.scheduleAtFixedRate(timerTask,config.getVersion_delay(),config.getVersion_delay());
     }
 
     private void upLoad() {
@@ -120,6 +128,12 @@ public class TaskManager {
                 }
             }
         });
+    }
+
+    public void close(){
+        if(!scheduledExecutorService.isShutdown()){
+            scheduledExecutorService.shutdown();
+        }
     }
 
 }

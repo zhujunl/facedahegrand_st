@@ -79,6 +79,22 @@
             <LinearLayout style="@style/SettingItem">
 
                 <TextView style="@style/SettingName"
+                    android:text="更新间隔时间" />
+
+                <View style="@style/VerticalLine" />
+
+                <Spinner
+                    android:id="@+id/et_version_delay_time"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+
+            <LinearLayout style="@style/SettingItem">
+
+                <TextView style="@style/SettingName"
                     android:text="日志上传URL" />
 
                 <View style="@style/VerticalLine" />
