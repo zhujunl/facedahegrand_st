@@ -185,6 +185,7 @@ public class RecordManager {
                     .signOrgan(idCardRecord.getIssuingAuthority())
                     .valid(idCardRecord.getValidateStart() + "-" + idCardRecord.getValidateEnd())
                     .idCard(idCardRecord.getCardId())
+                    .changeNum(idCardRecord.getVersion())
                     .headImage(idCardRecord.getCardBitmap() != null ? FileUtil.bitmapToBase64(idCardRecord.getCardBitmap()) : "")
                     .snapshot(idCardRecord.getFaceBitmap() != null ? FileUtil.bitmapToBase64(idCardRecord.getFaceBitmap()) : "")
                     .similarity(String.valueOf(idCardRecord.getFaceScore()))

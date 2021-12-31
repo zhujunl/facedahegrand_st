@@ -11,6 +11,10 @@ android {
         versionName "1.0.6_Dahe_New_ST"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
+
+        ndk {
+            abiFilters 'armeabi-v7a'//, 'arm64-v8a' 'armeabi-v7a', 'x86', 'x86_64', 'mips', 'mips64'
+        }
     }
     signingConfigs {
         debug {
@@ -50,7 +54,7 @@ android {
 }
 
 greendao {
-    schemaVersion 5
+    schemaVersion 17
     daoPackage 'com.miaxis.face.greendao.gen'
     targetGenDir 'src/main/java'
 }

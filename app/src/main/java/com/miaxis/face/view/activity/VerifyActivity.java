@@ -1,5 +1,11 @@
 package com.miaxis.face.view.activity;
 
+import static com.miaxis.face.constant.Constants.LEFT_VOLUME;
+import static com.miaxis.face.constant.Constants.LOOP;
+import static com.miaxis.face.constant.Constants.PRIORITY;
+import static com.miaxis.face.constant.Constants.RIGHT_VOLUME;
+import static com.miaxis.face.constant.Constants.SOUND_RATE;
+
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,8 +13,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.graphics.SurfaceTexture;
 import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
+import android.media.AudioManager;
+import android.media.SoundPool;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -16,6 +26,7 @@ import android.os.Looper;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.SparseIntArray;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
@@ -34,6 +45,7 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amap.api.services.weather.LocalWeatherLive;
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
@@ -43,11 +55,11 @@ import com.bumptech.glide.request.target.Target;
 import com.miaxis.face.R;
 import com.miaxis.face.app.App;
 import com.miaxis.face.app.Face_App;
-import com.miaxis.face.app.GlideApp;
 import com.miaxis.face.bean.Config;
 import com.miaxis.face.bean.IDCardRecord;
 import com.miaxis.face.bean.Task;
 import com.miaxis.face.bean.Undocumented;
+import com.miaxis.face.constant.Constants;
 import com.miaxis.face.manager.AdvertManager;
 import com.miaxis.face.manager.CameraManager;
 import com.miaxis.face.manager.CardManager;
@@ -73,7 +85,9 @@ import org.zz.api.MXFaceInfoEx;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -154,6 +168,8 @@ public class VerifyActivity extends BaseActivity {
     private int mState = 0;         // 记录点击次数
     private long firstTime = 0;
     private int toType;             // 0 SettingActivity   1 RecordActivity
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -241,7 +257,7 @@ public class VerifyActivity extends BaseActivity {
     protected void initView() {
         etPwd.setHint(ServerManager.getInstance().getHost());
         tvCamera.getViewTreeObserver().addOnGlobalLayoutListener(globalListener);
-        tvCamera.setRotationY(180);
+        tvCamera.setRotationY(Build.VERSION.RELEASE.equals("4.4.4")?180:0);
         rsvRect.bringToFront();
     }
 
@@ -790,7 +806,7 @@ public class VerifyActivity extends BaseActivity {
     }
 
     private void showGif(int rawId, ImageView view) {
-        GlideApp.with(this).load(rawId).listener(new RequestListener<Drawable>() {
+        Glide.with(this).load(rawId).listener(new RequestListener<Drawable>() {
             @Override
             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                 return false;
@@ -804,27 +820,5 @@ public class VerifyActivity extends BaseActivity {
                 .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(view);
-    }
-
-    public static void setCameraDisplayOrientation(Activity activity, int cameraId, Camera camera) {
-        Camera.CameraInfo info =new Camera.CameraInfo();
-        Camera.getCameraInfo(cameraId, info);
-        int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
-        int degrees = 0;
-        switch (rotation) {
-            case Surface.ROTATION_0: degrees = 0; break;
-            case Surface.ROTATION_90: degrees = 90; break;
-            case Surface.ROTATION_180: degrees = 180; break;
-            case Surface.ROTATION_270: degrees = 270; break;
-        }
-
-        int result;
-        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-            result = (info.orientation + degrees) % 360;
-            result = (360 - result) % 360;  // compensate the mirror
-        } else {  // back-facing
-            result = (info.orientation - degrees + 360) % 360;
-        }
-        camera.setDisplayOrientation(result);
     }
 }

@@ -1,6 +1,8 @@
 package com.miaxis.face.app;
 
 import android.app.Application;
+import android.content.Intent;
+import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.multidex.MultiDex;
@@ -22,6 +24,7 @@ import com.miaxis.face.manager.WatchDogManager;
 import com.miaxis.face.net.FaceNetApi;
 import com.miaxis.face.util.FileUtil;
 
+import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -48,18 +51,24 @@ public class App extends Application {
             DaoManager.getInstance().initDbHelper(getApplicationContext(), "FaceDahe_New.db");
             WatchDogManager.getInstance().init(this);
             CrashExceptionManager.getInstance().init(this);
-            GpioManager.getInstance().init(this);
+            if(Build.VERSION.RELEASE.equals("4.4.4")){
+                GpioManager.getInstance().init(this);
+            }else if(Build.VERSION.RELEASE.equals("11")){
+                sendBroadcast(0x11,true);
+                sendBroadcast(0x12,true);
+            }
             FileDownloader.setup(this);
             SoundManager.getInstance().init();
             CardManager.getInstance().init();
-            FingerManager.getInstance().init(this);
+            FingerManager.getInstance(). init(this);
             ConfigManager.getInstance().checkConfig();
             FaceNetApi.rebuildRetrofit();
+            initHsIdPhotoDecodeLib();
             TTSManager.getInstance().init(this);
 //            AdvertManager.getInstance().init();
             TaskManager.getInstance().init();
             //TODO:定时续传日志，清理
-            int result = FaceManager.getInstance().initFaceST(this);
+            int result = Build.VERSION.RELEASE.equals("4.4.4")?FaceManager.getInstance().initFaceST4(this):FaceManager.getInstance().initFaceST_11(this);
             listener.onInit(result == FaceManager.INIT_SUCCESS, FaceManager.getFaceInitResultDetail(result));
 //            listener.onInit(true, "");
         } catch (Exception e) {
@@ -76,9 +85,34 @@ public class App extends Application {
         return threadExecutor;
     }
 
-    @Override
-    public void onTerminate() {
-        super.onTerminate();
-        TaskManager.getInstance().close();
+    /**
+     * 复制宇松二代证解码库的授权文件到指定目录
+     *
+     * @return
+     */
+    private int initHsIdPhotoDecodeLib() {
+        String hsLibDirName = "wltlib";
+        String hsFile1 = "base.dat";
+        String hsFile2 = "license.lic";
+        String hsFile3 = "test.dat";
+        String hsFile4 = "zp.wlt";
+        File wltlibDir = new File(FileUtil.getAvailableWltPath(this));
+        if (!wltlibDir.exists()) {
+            if (!wltlibDir.mkdirs()) {
+                return -1;
+            }
+        }
+        FileUtil.copyAssetsFile(this, hsLibDirName + File.separator + hsFile1, wltlibDir + File.separator + hsFile1);
+        FileUtil.copyAssetsFile(this, hsLibDirName + File.separator + hsFile2, wltlibDir + File.separator + hsFile2);
+        FileUtil.copyAssetsFile(this, hsLibDirName + File.separator + hsFile3, wltlibDir + File.separator + hsFile3);
+        FileUtil.copyAssetsFile(this, hsLibDirName + File.separator + hsFile4, wltlibDir + File.separator + hsFile4);
+        return 0;
+    }
+
+    public void sendBroadcast(int type,boolean value){
+        Intent intent = new Intent("com.miaxis.power");
+        intent.putExtra("type",type);
+        intent.putExtra("value",value);
+        getInstance().sendBroadcast(intent);
     }
 }

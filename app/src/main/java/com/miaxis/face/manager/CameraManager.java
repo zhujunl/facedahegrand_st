@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
+import android.os.Build;
 import android.util.Log;
 import android.view.Surface;
 import android.view.TextureView;
@@ -37,7 +38,7 @@ public class CameraManager {
     public static final int PRE_HEIGHT = 480;
     public static final int PIC_WIDTH = 640;
     public static final int PIC_HEIGHT = 480;
-    public static final int ORIENTATION = 180;
+    public static final int ORIENTATION = Build.VERSION.RELEASE.equals("4.4.4")?0:0;
     private static final int RETRY_TIMES = 3;
 
     private Camera camera;
@@ -92,12 +93,12 @@ public class CameraManager {
             camera.startPreview();
         } catch (Exception e) {
             e.printStackTrace();
-            new Thread(() -> {
-                if (retryTime <= RETRY_TIMES) {
-                    retryTime++;
+//            new Thread(() -> {
+//                if (retryTime <= RETRY_TIMES) {
+//                    retryTime++;
                     openVisibleCamera();
-                }
-            }).start();
+//                }
+//            }).start();
         }
     }
 
@@ -112,12 +113,12 @@ public class CameraManager {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            new Thread(() -> {
-                if (retryTime <= RETRY_TIMES) {
-                    retryTime++;
+//            new Thread(() -> {
+//                if (retryTime <= RETRY_TIMES) {
+//                    retryTime++;
                     closeCamera();
-                }
-            }).start();
+//                }
+//            }).start();
         }
     }
 

@@ -336,7 +336,7 @@ private String TAG="verify";
      * @param context 设备上下文
      * @return 状态码
      */
-    public int initFaceST(Context context) {
+    public int initFaceST4(Context context) {
         final String sLicence = FileUtil.readLicence();
         if (TextUtils.isEmpty(sLicence)) {
             return ERR_LICENCE;
@@ -347,6 +347,22 @@ private String TAG="verify";
         int re = initFaceModel(context);
         if (re == 0) {
             re = mxFaceAPI.mxInitAlg(context, FileUtil.getFaceModelPath(), sLicence);
+            mxFaceAPI.mxAlgVersion();
+        }
+        if (re == 0) {
+            re = mxLiveDetectApi.initialize(FileUtil.getFaceModelPath());
+        }
+        initThread();
+        return re;
+    }
+
+    public int initFaceST_11(Context context) {
+        mxFaceAPI = new MXFaceAPI();
+        mxLiveDetectApi = MXLiveDetectApi.INSTANCE;
+        dtTool = new mxImageTool();
+        int re = initFaceModel(context);
+        if (re == 0) {
+            re = mxFaceAPI.mxInitAlg(context, FileUtil.getFaceModelPath(), "");
             mxFaceAPI.mxAlgVersion();
         }
         if (re == 0) {

@@ -535,7 +535,7 @@ public class CardManager {
 
         System.arraycopy(bCardInfo, iLen, id_type, 0, id_type.length);
         iLen += id_type.length;
-        idCardRecord.setVersion(unicode2String(id_type));
+        //idCardRecord.setVersion(unicode2String(id_type));
 
         System.arraycopy(bCardInfo, iLen, id_remark, 0, id_remark.length);
         iLen += id_remark.length;

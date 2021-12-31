@@ -48,7 +48,7 @@ public class Config implements Serializable {
     private int advertisementMode;
 
     private float verifyScore;
-    private int qualityScore_new;
+    private int qualityScore;
     private int livenessQualityScore;
 
     private String titleStr;
@@ -60,16 +60,16 @@ public class Config implements Serializable {
     private int advertiseDelayTime;
     private Integer version_delay;
     private Integer version_position;
-    @Generated(hash = 1114347870)
+    @Generated(hash = 1309147223)
     public Config(long id, String updateUrl, String uploadRecordUrl, String advertisementUrl,
             String deviceSerialNumber, String account, String clientId, boolean encrypt,
             int verifyMode, boolean netFlag, boolean resultFlag, boolean sequelFlag,
             boolean saveLocalFlag, boolean documentFlag, boolean livenessFlag,
             boolean queryFlag, boolean whiteFlag, boolean blackFlag, int gatherFingerFlag,
-            boolean advertiseFlag, int advertisementMode, float verifyScore,
-            int qualityScore_new, int livenessQualityScore, String titleStr, String password,
-            String upTime, int intervalTime, String orgName, int advertiseDelayTime,
-            Integer version_delay, Integer version_position) {
+            boolean advertiseFlag, int advertisementMode, float verifyScore, int qualityScore,
+            int livenessQualityScore, String titleStr, String password, String upTime,
+            int intervalTime, String orgName, int advertiseDelayTime, Integer version_delay,
+            Integer version_position) {
         this.id = id;
         this.updateUrl = updateUrl;
         this.uploadRecordUrl = uploadRecordUrl;
@@ -92,7 +92,7 @@ public class Config implements Serializable {
         this.advertiseFlag = advertiseFlag;
         this.advertisementMode = advertisementMode;
         this.verifyScore = verifyScore;
-        this.qualityScore_new = qualityScore_new;
+        this.qualityScore = qualityScore;
         this.livenessQualityScore = livenessQualityScore;
         this.titleStr = titleStr;
         this.password = password;
@@ -274,10 +274,10 @@ public class Config implements Serializable {
         this.verifyScore = verifyScore;
     }
     public int getQualityScore() {
-        return this.qualityScore_new;
+        return this.qualityScore;
     }
     public void setQualityScore(int qualityScore) {
-        this.qualityScore_new = qualityScore;
+        this.qualityScore = qualityScore;
     }
     public int getLivenessQualityScore() {
         return this.livenessQualityScore;
@@ -364,12 +364,6 @@ public class Config implements Serializable {
 
     public boolean isAdvertiseFlag() {
         return advertiseFlag;
-    }
-    public int getQualityScore_new() {
-        return this.qualityScore_new;
-    }
-    public void setQualityScore_new(int qualityScore_new) {
-        this.qualityScore_new = qualityScore_new;
     }
 
     public Integer getVersion_delay() {
@@ -588,5 +582,43 @@ public class Config implements Serializable {
         public Config build() {
             return new Config(this);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Config{" +
+                "id=" + id +
+                ", updateUrl='" + updateUrl + '\'' +
+                ", uploadRecordUrl='" + uploadRecordUrl + '\'' +
+                ", advertisementUrl='" + advertisementUrl + '\'' +
+                ", deviceSerialNumber='" + deviceSerialNumber + '\'' +
+                ", account='" + account + '\'' +
+                ", clientId='" + clientId + '\'' +
+                ", encrypt=" + encrypt +
+                ", verifyMode=" + verifyMode +
+                ", netFlag=" + netFlag +
+                ", resultFlag=" + resultFlag +
+                ", sequelFlag=" + sequelFlag +
+                ", saveLocalFlag=" + saveLocalFlag +
+                ", documentFlag=" + documentFlag +
+                ", livenessFlag=" + livenessFlag +
+                ", queryFlag=" + queryFlag +
+                ", whiteFlag=" + whiteFlag +
+                ", blackFlag=" + blackFlag +
+                ", gatherFingerFlag=" + gatherFingerFlag +
+                ", advertiseFlag=" + advertiseFlag +
+                ", advertisementMode=" + advertisementMode +
+                ", verifyScore=" + verifyScore +
+                ", qualityScore=" + qualityScore +
+                ", livenessQualityScore=" + livenessQualityScore +
+                ", titleStr='" + titleStr + '\'' +
+                ", password='" + password + '\'' +
+                ", upTime='" + upTime + '\'' +
+                ", intervalTime=" + intervalTime +
+                ", orgName='" + orgName + '\'' +
+                ", advertiseDelayTime=" + advertiseDelayTime +
+                ", version_delay=" + version_delay +
+                ", version_position=" + version_position +
+                '}';
     }
 }

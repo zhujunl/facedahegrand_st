@@ -2,6 +2,10 @@ package com.miaxis.face.constant;
 
 import com.miaxis.face.bean.Config;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by Administrator on 2017/5/18 0018.
  */
@@ -94,6 +98,8 @@ public class Constants {
     public static final String CHECK_VERSION = "app/getAppInfo";
     public static final String DOWN_VERSION = "app/getApp";
     public static final String UPLOAD_PERSON = "person/uploadPerson";
+
+    public static final List<Integer> DELAYList= Arrays.asList(60 * 1000,2*60*1000,5*60*1000,10*60*1000,30*60*1000,60 * 60 * 1000,2*60*60*1000,5*60*60*1000,10*60*60*1000,24*60*60*1000);
 
     public static final int TASK_DELAY = 1*60*1000;
 

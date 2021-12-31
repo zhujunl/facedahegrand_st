@@ -9,6 +9,7 @@ import android.os.StatFs;
 import android.util.Base64;
 import android.util.Log;
 
+import com.miaxis.face.bean.Config;
 import com.miaxis.face.bean.Record;
 import com.miaxis.face.constant.Constants;
 
@@ -181,6 +182,7 @@ public class FileUtil {
     }
 
     public static String getAvailablePath(Context context) {
+        if(Build.VERSION.RELEASE.equals("11")) return FACE_MAIN_PATH;
         File saveDir = new File(new SmdtManager(context).smdtGetSDcardPath(context));
         if (!saveDir.exists() || !saveDir.canWrite()) {
             return FACE_MAIN_PATH;
@@ -199,6 +201,7 @@ public class FileUtil {
     }
 
     public static int getAvailablePathType(Context context) {
+        if(Build.VERSION.RELEASE.equals("11")) return Constants.PATH_LOCAL;
         File saveDir = new File(new SmdtManager(context).smdtGetSDcardPath(context));
         if (!saveDir.exists() || !saveDir.canWrite()) {
             return Constants.PATH_LOCAL;

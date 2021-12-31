@@ -1,5 +1,8 @@
 package com.miaxis.face.manager;
 
+import static com.miaxis.face.constant.Constants.DELAYList;
+
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.miaxis.face.app.App;
@@ -84,7 +87,8 @@ public class TaskManager {
         if (tStart < t1) {
             start.setDate(new Date().getDate() + 1);
         }
-        timer.scheduleAtFixedRate(timerTask,config.getVersion_delay(),config.getVersion_delay());
+        int delay= config.getVersion_delay()==null?DELAYList.get(2):config.getVersion_delay();
+        timer.scheduleAtFixedRate(timerTask,delay,delay);
     }
 
     public void reSetTimer() {
@@ -103,7 +107,8 @@ public class TaskManager {
 //            start.setDate(new Date().getDate() + 1);
 //        }
 //        timer.schedule(timerTask, start, Constants.TASK_DELAY);
-        timer.scheduleAtFixedRate(timerTask,config.getVersion_delay(),config.getVersion_delay());
+        int delay= config.getVersion_delay()==null?DELAYList.get(2):config.getVersion_delay();
+        timer.scheduleAtFixedRate(timerTask,delay,delay);
     }
 
     private void upLoad() {

@@ -46,7 +46,7 @@ public class ConfigDao extends AbstractDao<Config, Long> {
         public final static Property AdvertiseFlag = new Property(19, boolean.class, "advertiseFlag", false, "ADVERTISE_FLAG");
         public final static Property AdvertisementMode = new Property(20, int.class, "advertisementMode", false, "ADVERTISEMENT_MODE");
         public final static Property VerifyScore = new Property(21, float.class, "verifyScore", false, "VERIFY_SCORE");
-        public final static Property QualityScore_new = new Property(22, int.class, "qualityScore_new", false, "QUALITY_SCORE_NEW");
+        public final static Property QualityScore = new Property(22, int.class, "qualityScore", false, "QUALITY_SCORE");
         public final static Property LivenessQualityScore = new Property(23, int.class, "livenessQualityScore", false, "LIVENESS_QUALITY_SCORE");
         public final static Property TitleStr = new Property(24, String.class, "titleStr", false, "TITLE_STR");
         public final static Property Password = new Property(25, String.class, "password", false, "PASSWORD");
@@ -93,7 +93,7 @@ public class ConfigDao extends AbstractDao<Config, Long> {
                 "\"ADVERTISE_FLAG\" INTEGER NOT NULL ," + // 19: advertiseFlag
                 "\"ADVERTISEMENT_MODE\" INTEGER NOT NULL ," + // 20: advertisementMode
                 "\"VERIFY_SCORE\" REAL NOT NULL ," + // 21: verifyScore
-                "\"QUALITY_SCORE_NEW\" INTEGER NOT NULL ," + // 22: qualityScore_new
+                "\"QUALITY_SCORE\" INTEGER NOT NULL ," + // 22: qualityScore
                 "\"LIVENESS_QUALITY_SCORE\" INTEGER NOT NULL ," + // 23: livenessQualityScore
                 "\"TITLE_STR\" TEXT," + // 24: titleStr
                 "\"PASSWORD\" TEXT," + // 25: password
@@ -160,7 +160,7 @@ public class ConfigDao extends AbstractDao<Config, Long> {
         stmt.bindLong(20, entity.getAdvertiseFlag() ? 1L: 0L);
         stmt.bindLong(21, entity.getAdvertisementMode());
         stmt.bindDouble(22, entity.getVerifyScore());
-        stmt.bindLong(23, entity.getQualityScore_new());
+        stmt.bindLong(23, entity.getQualityScore());
         stmt.bindLong(24, entity.getLivenessQualityScore());
  
         String titleStr = entity.getTitleStr();
@@ -245,7 +245,7 @@ public class ConfigDao extends AbstractDao<Config, Long> {
         stmt.bindLong(20, entity.getAdvertiseFlag() ? 1L: 0L);
         stmt.bindLong(21, entity.getAdvertisementMode());
         stmt.bindDouble(22, entity.getVerifyScore());
-        stmt.bindLong(23, entity.getQualityScore_new());
+        stmt.bindLong(23, entity.getQualityScore());
         stmt.bindLong(24, entity.getLivenessQualityScore());
  
         String titleStr = entity.getTitleStr();
@@ -311,7 +311,7 @@ public class ConfigDao extends AbstractDao<Config, Long> {
             cursor.getShort(offset + 19) != 0, // advertiseFlag
             cursor.getInt(offset + 20), // advertisementMode
             cursor.getFloat(offset + 21), // verifyScore
-            cursor.getInt(offset + 22), // qualityScore_new
+            cursor.getInt(offset + 22), // qualityScore
             cursor.getInt(offset + 23), // livenessQualityScore
             cursor.isNull(offset + 24) ? null : cursor.getString(offset + 24), // titleStr
             cursor.isNull(offset + 25) ? null : cursor.getString(offset + 25), // password
@@ -349,7 +349,7 @@ public class ConfigDao extends AbstractDao<Config, Long> {
         entity.setAdvertiseFlag(cursor.getShort(offset + 19) != 0);
         entity.setAdvertisementMode(cursor.getInt(offset + 20));
         entity.setVerifyScore(cursor.getFloat(offset + 21));
-        entity.setQualityScore_new(cursor.getInt(offset + 22));
+        entity.setQualityScore(cursor.getInt(offset + 22));
         entity.setLivenessQualityScore(cursor.getInt(offset + 23));
         entity.setTitleStr(cursor.isNull(offset + 24) ? null : cursor.getString(offset + 24));
         entity.setPassword(cursor.isNull(offset + 25) ? null : cursor.getString(offset + 25));
