@@ -102,33 +102,37 @@ public class DaoManager {
     public ConfigOld getOldConfig(Context context){
         ConfigOld configOld ;
         SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(path, null);
-        Cursor cursor=db.rawQuery("select * from CONFIG", null);
-        while (cursor.moveToNext()) {
-            configOld= new ConfigOld();
-            configOld.setId(cursor.getInt(cursor.getColumnIndex("_id")));
-            configOld.setHost(cursor.getString(cursor.getColumnIndex("HOST")));
-            configOld.setResultFlag(cursor.getInt(cursor.getColumnIndex("RESULT_FLAG")) != 0);
-            configOld.setDocumentFlag(cursor.getInt(cursor.getColumnIndex("DOCUMENT_FLAG")) != 0);
-            configOld.setUpTime(cursor.getString(cursor.getColumnIndex("UP_TIME")));
-            configOld.setPassScore(cursor.getFloat(cursor.getColumnIndex("PASS_SCORE")));
-            configOld.setBanner(cursor.getString(cursor.getColumnIndex("BANNER")));
-            configOld.setIntervalTime(cursor.getInt(cursor.getColumnIndex("INTERVAL_TIME")));
-            configOld.setOrgId(cursor.getString(cursor.getColumnIndex("ORG_ID")));
-            configOld.setOrgName(cursor.getString(cursor.getColumnIndex("ORG_NAME")));
-            configOld.setNetFlag(cursor.getInt(cursor.getColumnIndex("NET_FLAG")) != 0);
-            configOld.setQueryFlag(cursor.getInt(cursor.getColumnIndex("QUERY_FLAG")) != 0);
-            configOld.setPassword(cursor.getString(cursor.getColumnIndex("PASSWORD")));
-            configOld.setVerifyMode(cursor.getInt(cursor.getColumnIndex("VERIFY_MODE")));
-            configOld.setWhiteFlag(cursor.getInt(cursor.getColumnIndex("WHITE_FLAG")) != 0);
-            configOld.setBlackFlag(cursor.getInt(cursor.getColumnIndex("BLACK_FLAG")) != 0);
-            configOld.setAdvertiseFlag(cursor.getInt(cursor.getColumnIndex("ADVERTISE_FLAG")) != 0);
-            configOld.setAdvertiseDelayTime(cursor.getInt(cursor.getColumnIndex("ADVERTISE_DELAY_TIME")));
-            configOld.setAdvertisementUrl(cursor.getString(cursor.getColumnIndex("ADVERTISEMENT_URL")));
-            configOld.setAdvertisementMode(cursor.getInt(cursor.getColumnIndex("ADVERTISEMENT_MODE")));
-            configOld.setUpdateUrl(cursor.getString(cursor.getColumnIndex("UPDATE_URL")));
-            cursor.close();
-            db.close();
-            return configOld;
+        try {
+            Cursor cursor=db.rawQuery("select * from CONFIG", null);
+            while (cursor.moveToNext()) {
+                configOld= new ConfigOld();
+                configOld.setId(cursor.getInt(cursor.getColumnIndex("_id")));
+                configOld.setHost(cursor.getString(cursor.getColumnIndex("HOST")));
+                configOld.setResultFlag(cursor.getInt(cursor.getColumnIndex("RESULT_FLAG")) != 0);
+                configOld.setDocumentFlag(cursor.getInt(cursor.getColumnIndex("DOCUMENT_FLAG")) != 0);
+                configOld.setUpTime(cursor.getString(cursor.getColumnIndex("UP_TIME")));
+                configOld.setPassScore(cursor.getFloat(cursor.getColumnIndex("PASS_SCORE")));
+                configOld.setBanner(cursor.getString(cursor.getColumnIndex("BANNER")));
+                configOld.setIntervalTime(cursor.getInt(cursor.getColumnIndex("INTERVAL_TIME")));
+                configOld.setOrgId(cursor.getString(cursor.getColumnIndex("ORG_ID")));
+                configOld.setOrgName(cursor.getString(cursor.getColumnIndex("ORG_NAME")));
+                configOld.setNetFlag(cursor.getInt(cursor.getColumnIndex("NET_FLAG")) != 0);
+                configOld.setQueryFlag(cursor.getInt(cursor.getColumnIndex("QUERY_FLAG")) != 0);
+                configOld.setPassword(cursor.getString(cursor.getColumnIndex("PASSWORD")));
+                configOld.setVerifyMode(cursor.getInt(cursor.getColumnIndex("VERIFY_MODE")));
+                configOld.setWhiteFlag(cursor.getInt(cursor.getColumnIndex("WHITE_FLAG")) != 0);
+                configOld.setBlackFlag(cursor.getInt(cursor.getColumnIndex("BLACK_FLAG")) != 0);
+                configOld.setAdvertiseFlag(cursor.getInt(cursor.getColumnIndex("ADVERTISE_FLAG")) != 0);
+                configOld.setAdvertiseDelayTime(cursor.getInt(cursor.getColumnIndex("ADVERTISE_DELAY_TIME")));
+                configOld.setAdvertisementUrl(cursor.getString(cursor.getColumnIndex("ADVERTISEMENT_URL")));
+                configOld.setAdvertisementMode(cursor.getInt(cursor.getColumnIndex("ADVERTISEMENT_MODE")));
+                configOld.setUpdateUrl(cursor.getString(cursor.getColumnIndex("UPDATE_URL")));
+                cursor.close();
+                db.close();
+                return configOld;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }

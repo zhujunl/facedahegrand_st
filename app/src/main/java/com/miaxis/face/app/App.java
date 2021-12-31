@@ -3,12 +3,9 @@ package com.miaxis.face.app;
 import android.app.Application;
 import android.content.Intent;
 import android.os.Build;
-
-import androidx.annotation.NonNull;
-import androidx.multidex.MultiDex;
+import android.util.Log;
 
 import com.liulishuo.filedownloader.FileDownloader;
-import com.miaxis.face.manager.AdvertManager;
 import com.miaxis.face.manager.CardManager;
 import com.miaxis.face.manager.ConfigManager;
 import com.miaxis.face.manager.CrashExceptionManager;
@@ -16,7 +13,6 @@ import com.miaxis.face.manager.DaoManager;
 import com.miaxis.face.manager.FaceManager;
 import com.miaxis.face.manager.FingerManager;
 import com.miaxis.face.manager.GpioManager;
-import com.miaxis.face.manager.ServerManager;
 import com.miaxis.face.manager.SoundManager;
 import com.miaxis.face.manager.TTSManager;
 import com.miaxis.face.manager.TaskManager;
@@ -27,6 +23,9 @@ import com.miaxis.face.util.FileUtil;
 import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import androidx.annotation.NonNull;
+import androidx.multidex.MultiDex;
 
 public class App extends Application {
 

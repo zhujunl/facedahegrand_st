@@ -1,21 +1,16 @@
 package com.miaxis.face.manager;
 
-import android.app.Activity;
 import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.os.Build;
-import android.util.Log;
-import android.view.Surface;
+import android.os.SystemClock;
 import android.view.TextureView;
-
-import androidx.annotation.NonNull;
-
-import com.miaxis.face.app.App;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.locks.ReentrantLock;
+
+import androidx.annotation.NonNull;
 
 public class CameraManager {
 
@@ -38,7 +33,7 @@ public class CameraManager {
     public static final int PRE_HEIGHT = 480;
     public static final int PIC_WIDTH = 640;
     public static final int PIC_HEIGHT = 480;
-    public static final int ORIENTATION = Build.VERSION.RELEASE.equals("4.4.4")?0:0;
+    public static final int ORIENTATION = Build.VERSION.RELEASE.equals("4.4.4")?180:0;
     private static final int RETRY_TIMES = 3;
 
     private Camera camera;
@@ -71,7 +66,15 @@ public class CameraManager {
 
     private void openVisibleCamera() {
         try {
-            camera = Camera.open(0);
+            for (int i = 0; i < RETRY_TIMES; i++) {
+                if (camera==null){
+                    camera = Camera.open(0);
+                    if (camera!=null){
+                        break;
+                    }
+                    SystemClock.sleep(100);
+                }
+            }
             Camera.Parameters parameters = camera.getParameters();
 //            List<Camera.Size> sizeList = parameters.getSupportedPreviewSizes();
             parameters.setPreviewSize(PRE_WIDTH, PRE_HEIGHT);
@@ -96,7 +99,7 @@ public class CameraManager {
 //            new Thread(() -> {
 //                if (retryTime <= RETRY_TIMES) {
 //                    retryTime++;
-                    openVisibleCamera();
+//                    openVisibleCamera();
 //                }
 //            }).start();
         }
@@ -116,7 +119,7 @@ public class CameraManager {
 //            new Thread(() -> {
 //                if (retryTime <= RETRY_TIMES) {
 //                    retryTime++;
-                    closeCamera();
+//                    closeCamera();
 //                }
 //            }).start();
         }
