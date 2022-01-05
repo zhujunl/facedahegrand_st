@@ -335,6 +335,10 @@ public class SettingActivity extends BaseActivity {
         config.setLivenessFlag(rbLivenessOn.isChecked());
         config.setQueryFlag(rbQueryOn.isChecked());
         config.setAdvertiseFlag(rbAdvertiseOn.isChecked());
+        if(Float.parseFloat(etVerifyScore.getText().toString().trim())>1.0F){
+            ToastManager.toast("保存失败，比对阈值最高为1");
+            return;
+        }
         config.setVerifyScore(Float.parseFloat(etVerifyScore.getText().toString()));
         config.setQualityScore(Integer.parseInt(etQualityScore.getText().toString()));
         config.setLivenessQualityScore(Integer.parseInt(etLivenessQualityScore.getText().toString()));

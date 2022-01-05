@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.graphics.Point;
 import android.graphics.SurfaceTexture;
 import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
@@ -27,6 +28,7 @@ import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseIntArray;
+import android.view.Display;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
@@ -52,6 +54,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.miaxis.face.BuildConfig;
 import com.miaxis.face.R;
 import com.miaxis.face.app.App;
 import com.miaxis.face.app.Face_App;
@@ -174,7 +177,11 @@ public class VerifyActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_verify);
+        if(BuildConfig.EQUIPMENT_TYPE==1){
+            setContentView(R.layout.activity_verify);
+        }else {
+            setContentView(R.layout.activity_verify2);
+        }
         ButterKnife.bind(this);
         initWindow();
         initDialog();

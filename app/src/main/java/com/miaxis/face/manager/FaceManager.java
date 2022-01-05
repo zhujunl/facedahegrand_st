@@ -200,6 +200,7 @@ public class FaceManager {
         } else {
             if (faceHandleListener != null) {
                 faceHandleListener.onFaceDetect(0, null);
+                faceHandleListener.onFaceTips(null);
             }
         }
     }

@@ -4,7 +4,7 @@
         <shape>
             <stroke
                 android:width="2px"
-                android:color="@color/qing"/>
+                android:color="@android:color/transparent"/>
             <solid
                 android:color="@color/qing_aero"/>
         </shape>

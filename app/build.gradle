@@ -35,11 +35,13 @@ android {
         debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField 'int', 'EQUIPMENT_TYPE', '1'//1是通用，2是定制
             signingConfig signingConfigs.debug
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField 'int', 'EQUIPMENT_TYPE', '1'
             signingConfig signingConfigs.release
         }
     }

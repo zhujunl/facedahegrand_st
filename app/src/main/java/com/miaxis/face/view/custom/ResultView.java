@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.miaxis.face.BuildConfig;
 import com.miaxis.face.R;
 import com.miaxis.face.app.GlideApp;
 
@@ -44,7 +45,7 @@ public class ResultView extends LinearLayout {
     }
 
     private void init() {
-        View v = inflate(getContext(), R.layout.view_result, this);
+        View v = BuildConfig.EQUIPMENT_TYPE==1? inflate(getContext(), R.layout.view_result, this):inflate(getContext(), R.layout.view_result2, this);
         ButterKnife.bind(this, v);
         bringToFront();
         GlideApp.with(this).load(R.raw.put_finger).into(ivFingerResult);

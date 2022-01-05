@@ -568,7 +568,7 @@ public class VerifyPresenter {
             }
             if (playVoice) {
                 SoundManager.getInstance().stopPlay();
-                TTSManager.getInstance().playVoiceMessageFlush(voiceText);
+  //              TTSManager.getInstance().playVoiceMessageFlush(voiceText);
             }
             if (undocumented != null) {
                 try {

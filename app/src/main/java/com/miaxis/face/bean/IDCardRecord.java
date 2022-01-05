@@ -6,6 +6,7 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Transient;
 
+import java.util.Arrays;
 import java.util.Date;
 import org.greenrobot.greendao.annotation.Generated;
 
@@ -755,5 +756,53 @@ public class IDCardRecord {
         public IDCardRecord build() {
             return new IDCardRecord(this);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "IDCardRecord{" +
+                "id=" + id +
+                ", cardType='" + cardType + '\'' +
+                ", cardId='" + cardId + '\'' +
+                ", name='" + name + '\'' +
+                ", birthday='" + birthday + '\'' +
+                ", address='" + address + '\'' +
+                ", cardNumber='" + cardNumber + '\'' +
+                ", issuingAuthority='" + issuingAuthority + '\'' +
+                ", validateStart='" + validateStart + '\'' +
+                ", validateEnd='" + validateEnd + '\'' +
+                ", sex='" + sex + '\'' +
+                ", nation='" + nation + '\'' +
+                ", fingerprint0='" + fingerprint0 + '\'' +
+                ", fingerprintPosition0='" + fingerprintPosition0 + '\'' +
+                ", fingerprint1='" + fingerprint1 + '\'' +
+                ", fingerprintPosition1='" + fingerprintPosition1 + '\'' +
+                ", passNumber='" + passNumber + '\'' +
+                ", issueCount='" + issueCount + '\'' +
+                ", chineseName='" + chineseName + '\'' +
+                ", version='" + version + '\'' +
+                ", cardPhotoPath='" + cardPhotoPath + '\'' +
+                ", facePhotoPath='" + facePhotoPath + '\'' +
+                ", verifyMode=" + verifyMode +
+                ", faceResult=" + faceResult +
+                ", fingerResult=" + fingerResult +
+                ", faceScore=" + faceScore +
+                ", fingerScore=" + fingerScore +
+                ", verifyResult=" + verifyResult +
+                ", verifyTime=" + verifyTime +
+                ", orgName='" + orgName + '\'' +
+                ", describe='" + describe + '\'' +
+                ", location='" + location + '\'' +
+                ", upload=" + upload +
+                ", cardBitmap=" + cardBitmap +
+                ", faceBitmap=" + faceBitmap +
+                ", cardFeature=" + Arrays.toString(cardFeature) +
+                ", localeFingerprint='" + localeFingerprint + '\'' +
+                ", localeFingerprintBitmap=" + localeFingerprintBitmap +
+                ", gatherFingerprint1='" + gatherFingerprint1 + '\'' +
+                ", gatherFingerprintBitmap1=" + gatherFingerprintBitmap1 +
+                ", gatherFingerprint2='" + gatherFingerprint2 + '\'' +
+                ", gatherFingerprintBitmap2=" + gatherFingerprintBitmap2 +
+                '}';
     }
 }
