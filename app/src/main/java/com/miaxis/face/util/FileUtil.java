@@ -182,7 +182,7 @@ public class FileUtil {
     }
 
     public static String getAvailablePath(Context context) {
-        if(Build.VERSION.RELEASE.equals("11")) return FACE_MAIN_PATH;
+        if(!Constants.VERSION) return FACE_MAIN_PATH;
         File saveDir = new File(new SmdtManager(context).smdtGetSDcardPath(context));
         if (!saveDir.exists() || !saveDir.canWrite()) {
             return FACE_MAIN_PATH;
@@ -201,7 +201,7 @@ public class FileUtil {
     }
 
     public static int getAvailablePathType(Context context) {
-        if(Build.VERSION.RELEASE.equals("11")) return Constants.PATH_LOCAL;
+        if(!Constants.VERSION) return Constants.PATH_LOCAL;
         File saveDir = new File(new SmdtManager(context).smdtGetSDcardPath(context));
         if (!saveDir.exists() || !saveDir.canWrite()) {
             return Constants.PATH_LOCAL;

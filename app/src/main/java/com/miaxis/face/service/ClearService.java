@@ -3,6 +3,7 @@ package com.miaxis.face.service;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
+import android.os.Build;
 
 import com.miaxis.face.bean.IDCardRecord;
 import com.miaxis.face.constant.Constants;
@@ -29,7 +30,12 @@ public class ClearService extends IntentService {
     public static void startActionClear(Context context) {
         Intent intent = new Intent(context, ClearService.class);
         intent.setAction(ACTION_CLEAR);
-        context.startService(intent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(intent);
+        } else {
+
+            context.startService(intent);
+        }
     }
 
     @Override

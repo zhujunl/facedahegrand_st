@@ -5,7 +5,9 @@ import android.app.smdt.SmdtManager;
 import android.content.Context;
 import android.os.Build;
 
+import com.miaxis.face.app.App;
 import com.miaxis.face.app.Face_App;
+import com.miaxis.face.constant.Constants;
 
 public class GpioManager {
 
@@ -61,6 +63,9 @@ public class GpioManager {
     }
 
     public void openCameraGpio() {
+        if(!Constants.VERSION){
+            return;
+        }
         try {
             for (int i = 0; i < 3; i++) {
                 Thread.sleep(GPIO_INTERVAL);
@@ -81,9 +86,13 @@ public class GpioManager {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
     }
 
     public void closeCameraGpio() {
+        if(!Constants.VERSION){
+            return;
+        }
         try {
             for (int i = 0; i < 3; i++) {
                 int result = smdtManager.smdtSetGpioValue(2, false);
@@ -100,18 +109,26 @@ public class GpioManager {
      * 打开闪光灯
      */
     public void openLed() {
+        if(!Constants.VERSION){
+            return;
+        }
         try {
             Thread.sleep(GPIO_INTERVAL);
             smdtManager.smdtSetGpioValue(3, true);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     /**
      * 关闭闪光灯
      */
     public void closeLed() {
+        if(!Constants.VERSION){
+            return;
+        }
+
         try {
             Thread.sleep(GPIO_INTERVAL);
             smdtManager.smdtSetGpioValue(3, false);
@@ -121,10 +138,12 @@ public class GpioManager {
     }
 
     public void setSmdtStatusBar(Context context, boolean value) {
-        try {
-            smdtManager.smdtSetStatusBar(context, value);
-        } catch (Exception e) {
-            e.printStackTrace();
+        if(Constants.VERSION){
+            try {
+                smdtManager.smdtSetStatusBar(context, value);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -161,9 +180,11 @@ public class GpioManager {
     }
 
     public void reduction(Context context) {
-        smdtManager.smdtSetStatusBar(context, true);
-        smdtManager.smdtSetGpioValue(2, false);
-        smdtManager.smdtSetGpioValue(3, false);
+        if(Constants.VERSION){
+            smdtManager.smdtSetStatusBar(context, true);
+            smdtManager.smdtSetGpioValue(2, false);
+            smdtManager.smdtSetGpioValue(3, false);
+        }
         unableDog();
     }
 
@@ -171,7 +192,8 @@ public class GpioManager {
         @Override
         public void run() {
             while (feedFlag) {
-                smdtManager.smdtWatchDogFeed();
+                if(Constants.VERSION)
+                    smdtManager.smdtWatchDogFeed();
                 try {
                     Thread.sleep(10000);
                 } catch (InterruptedException e) {
@@ -184,7 +206,8 @@ public class GpioManager {
     private void enableDog() {
         char c = 1;
         feedFlag = true;
-        smdtManager.smdtWatchDogEnable(c);
+        if(Constants.VERSION)
+            smdtManager.smdtWatchDogEnable(c);
         if (tFeedDog == null) {
             tFeedDog = new FeedDogThread();
             tFeedDog.start();
@@ -194,7 +217,8 @@ public class GpioManager {
     private void unableDog() {
         char c = 0;
         feedFlag = false;
-        smdtManager.smdtWatchDogEnable(c);
+        if(Constants.VERSION)
+            smdtManager.smdtWatchDogEnable(c);
         if (tFeedDog != null) {
             tFeedDog.interrupt();
             tFeedDog = null;

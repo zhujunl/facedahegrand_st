@@ -224,6 +224,7 @@ public class VerifyActivity extends BaseActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        if(!Constants.VERSION)App.getInstance().sendBroadcast(0x23,false);
         CardManager.getInstance().closeReadCard();
         EventBus.getDefault().unregister(this);
         ServerManager.getInstance().stopHeartBeat();
@@ -241,6 +242,10 @@ public class VerifyActivity extends BaseActivity {
         if (updatePresenter != null) {
             updatePresenter.doDestroy();
             updatePresenter = null;
+        }
+        if(!Constants.VERSION){
+            App.getInstance().sendBroadcast(0x11,false);
+            App.getInstance().sendBroadcast(0x12,false);
         }
         tvCamera.setDrawingCacheEnabled(false);
         CameraManager.getInstance().closeCamera();
@@ -264,7 +269,7 @@ public class VerifyActivity extends BaseActivity {
     protected void initView() {
         etPwd.setHint(ServerManager.getInstance().getHost());
         tvCamera.getViewTreeObserver().addOnGlobalLayoutListener(globalListener);
-        tvCamera.setRotationY(Build.VERSION.RELEASE.equals("4.4.4")?180:0);
+        tvCamera.setRotationY(CameraManager.ORIENTATION);
         rsvRect.bringToFront();
     }
 
@@ -404,6 +409,7 @@ public class VerifyActivity extends BaseActivity {
                     advertiseFlag = true;
                     tvPass.setText("请放身份证");
                     tvPass.setVisibility(View.VISIBLE);
+                    if(!Constants.VERSION)App.getInstance().sendBroadcast(0x23,false);
                     tv_face_tip.setVisibility(View.INVISIBLE);
                     rvResult.setVisibility(View.GONE);
                     ivFaceBox.setVisibility(View.INVISIBLE);
@@ -426,6 +432,7 @@ public class VerifyActivity extends BaseActivity {
                 case ReadCard:
                     if (idCardRecord != null) {
                         tvPass.setVisibility(View.GONE);
+                        if(!Constants.VERSION)App.getInstance().sendBroadcast(0x23,true);
                         ivFaceBox.setVisibility(View.VISIBLE);
                         rvResult.clear();
                         rvResult.showCardImage(idCardRecord.getCardBitmap());
@@ -509,6 +516,7 @@ public class VerifyActivity extends BaseActivity {
                 ivFaceBox.setVisibility(View.VISIBLE);
             } else if (status == 1) {
                 tvPass.setVisibility(View.INVISIBLE);
+                if(!Constants.VERSION)App.getInstance().sendBroadcast(0x23,false);
                 ivFaceBox.setVisibility(View.VISIBLE);
                 if (config.getLivenessFlag()) {
                     tvLivenessHint.setText("请缓慢眨眼");
@@ -517,6 +525,7 @@ public class VerifyActivity extends BaseActivity {
                 }
             } else if (status == 2) {
                 tvPass.setVisibility(View.VISIBLE);
+                if(!Constants.VERSION)App.getInstance().sendBroadcast(0x23,false);
                 tv_face_tip.setVisibility(View.INVISIBLE);
                 ivFaceBox.setVisibility(View.INVISIBLE);
                 tvUploadHint.setVisibility(View.INVISIBLE);
@@ -560,6 +569,7 @@ public class VerifyActivity extends BaseActivity {
                 asyncHandler.removeCallbacks(advertiseRunnable);
                 tvPass.setVisibility(View.INVISIBLE);
                 ivFaceBox.setVisibility(View.VISIBLE);
+                if(!Constants.VERSION)App.getInstance().sendBroadcast(0x23,false);
                 if (CameraManager.getInstance().getCamera() == null) {
                     controlAdvertDialog(false);
                 } else {
@@ -573,6 +583,7 @@ public class VerifyActivity extends BaseActivity {
                 tvLivenessHint.setVisibility(View.INVISIBLE);
                 ivFaceBox.setVisibility(View.INVISIBLE);
                 tvPass.setVisibility(View.VISIBLE);
+                if(!Constants.VERSION)App.getInstance().sendBroadcast(0x23,false);
                 tv_face_tip.setVisibility(View.INVISIBLE);
                 tvUploadHint.setVisibility(View.INVISIBLE);
                 advertiseFlag = true;

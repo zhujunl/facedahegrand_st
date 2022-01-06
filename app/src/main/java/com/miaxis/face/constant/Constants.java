@@ -1,5 +1,7 @@
 package com.miaxis.face.constant;
 
+import android.os.Build;
+
 import com.miaxis.face.bean.Config;
 
 import java.util.ArrayList;
@@ -141,4 +143,12 @@ public class Constants {
     public static final int SOUND_OTHER_FINGER  = 5;
     public static final int SOUND_VALIDATE_FAIL  = 6;
 
+    public static final int TYPE_CAMERA = 0x11;//USB摄像头
+    public static final int TYPE_ID_FP = 0x12;//指纹和⼆代证
+    public static final int TYPE_LED_GREEN = 0x20;// LED 原MR990绿灯
+    public static final int TYPE_LED_RED = 0x21;// LED 原MR990红灯
+    public static final int TYPE_LED_BLUE = 0x22;// LED 原MR990蓝灯
+    public static final int TYPE_LED = 0x23;// LED
+
+    public static final Boolean VERSION= Build.VERSION.RELEASE.equals("4.4.4")?true:false;
 }

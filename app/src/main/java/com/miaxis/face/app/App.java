@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 
 import com.liulishuo.filedownloader.FileDownloader;
+import com.miaxis.face.constant.Constants;
 import com.miaxis.face.manager.CardManager;
 import com.miaxis.face.manager.ConfigManager;
 import com.miaxis.face.manager.CrashExceptionManager;
@@ -49,11 +50,11 @@ public class App extends Application {
             DaoManager.getInstance().initDbHelper(getApplicationContext(), "FaceDahe_New.db");
             WatchDogManager.getInstance().init(this);
             CrashExceptionManager.getInstance().init(this);
-            if(Build.VERSION.RELEASE.equals("4.4.4")){
+            if(Constants.VERSION){
                 GpioManager.getInstance().init(this);
-            }else if(Build.VERSION.RELEASE.equals("11")){
-                sendBroadcast(0x11,true);
-                sendBroadcast(0x12,true);
+            }else{
+                sendBroadcast(Constants.TYPE_ID_FP,true);
+                sendBroadcast(Constants.TYPE_CAMERA,true);
             }
             FileDownloader.setup(this);
             SoundManager.getInstance().init();
@@ -66,7 +67,7 @@ public class App extends Application {
 //            AdvertManager.getInstance().init();
             TaskManager.getInstance().init();
             //TODO:定时续传日志，清理
-            int result = Build.VERSION.RELEASE.equals("4.4.4")?FaceManager.getInstance().initFaceST4(this):FaceManager.getInstance().initFaceST_11(this);
+            int result = Constants.VERSION?FaceManager.getInstance().initFaceST4(this):FaceManager.getInstance().initFaceST_11(this);
             listener.onInit(result == FaceManager.INIT_SUCCESS, FaceManager.getFaceInitResultDetail(result));
 //            listener.onInit(true, "");
         } catch (Exception e) {
