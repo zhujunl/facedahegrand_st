@@ -3,6 +3,7 @@ package com.miaxis.face.app;
 import android.app.Application;
 import android.content.Intent;
 import android.os.Build;
+import android.util.Log;
 
 import com.liulishuo.filedownloader.FileDownloader;
 import com.miaxis.face.constant.Constants;
@@ -36,6 +37,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.e("App","onCreate");
         instance = this;
         MultiDex.install(this);
     }

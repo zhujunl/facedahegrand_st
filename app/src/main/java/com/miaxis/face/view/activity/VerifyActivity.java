@@ -34,6 +34,7 @@ import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -182,6 +183,7 @@ public class VerifyActivity extends BaseActivity {
         }else {
             setContentView(R.layout.activity_verify2);
         }
+        CameraManager.setORIENTATION();
         ButterKnife.bind(this);
         initWindow();
         initDialog();
@@ -195,6 +197,7 @@ public class VerifyActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        Log.e("VerifyActivity",":onStart");
         GpioManager.getInstance().setSmdtStatusBar(this, false);
         CardManager.getInstance().startReadCard();
         AdvertManager.getInstance().updateAdvertise();
@@ -210,6 +213,9 @@ public class VerifyActivity extends BaseActivity {
     @Override
     public void onResume() {
         super.onResume();
+        Log.e("VerifyActivity",":onResume");
+        if(!Constants.VERSION) App.getInstance().sendBroadcast(Constants.TYPE_ID_FP,true);
+        if(!Constants.VERSION)  App.getInstance().sendBroadcast(Constants.TYPE_CAMERA,true);
         advertiseFlag = true;
         sendAdvertiseDelaySignal();
     }
@@ -217,6 +223,7 @@ public class VerifyActivity extends BaseActivity {
     @Override
     public void onPause() {
         super.onPause();
+        Log.e("VerifyActivity",":onPause");
         advertiseFlag = false;
         asyncHandler.removeCallbacks(advertiseRunnable);
     }
@@ -224,7 +231,8 @@ public class VerifyActivity extends BaseActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if(!Constants.VERSION)App.getInstance().sendBroadcast(0x23,false);
+        Log.e("VerifyActivity",":OnStop");
+        if(!Constants.VERSION)App.getInstance().sendBroadcast(Constants.TYPE_LED,false);
         CardManager.getInstance().closeReadCard();
         EventBus.getDefault().unregister(this);
         ServerManager.getInstance().stopHeartBeat();
@@ -235,6 +243,7 @@ public class VerifyActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.e("VerifyActivity",":onDestroy");
         if (presenter != null) {
             presenter.doDestroy();
             presenter = null;
@@ -244,8 +253,8 @@ public class VerifyActivity extends BaseActivity {
             updatePresenter = null;
         }
         if(!Constants.VERSION){
-            App.getInstance().sendBroadcast(0x11,false);
-            App.getInstance().sendBroadcast(0x12,false);
+            App.getInstance().sendBroadcast(Constants.TYPE_CAMERA,false);
+            App.getInstance().sendBroadcast(Constants.TYPE_ID_FP,false);
         }
         tvCamera.setDrawingCacheEnabled(false);
         CameraManager.getInstance().closeCamera();
@@ -267,9 +276,10 @@ public class VerifyActivity extends BaseActivity {
     }
 
     protected void initView() {
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         etPwd.setHint(ServerManager.getInstance().getHost());
         tvCamera.getViewTreeObserver().addOnGlobalLayoutListener(globalListener);
-        tvCamera.setRotationY(CameraManager.ORIENTATION);
+        tvCamera.setRotationY(Constants.VERSION?180:0);
         rsvRect.bringToFront();
     }
 
@@ -291,7 +301,7 @@ public class VerifyActivity extends BaseActivity {
             CameraManager.getInstance().openCamera(tvCamera, cameraListener);
         }
     };
-
+    Handler handler=new Handler(Looper.getMainLooper());
     private CameraManager.OnCameraOpenListener cameraListener = new CameraManager.OnCameraOpenListener() {
         @Override
         public void onCameraOpen(Camera.Size previewSize, String message) {
@@ -306,12 +316,13 @@ public class VerifyActivity extends BaseActivity {
                 resetLayoutParams(rsvRect, rootWidth, rootHeight);
                 rsvRect.setRootSize(rootWidth, rootHeight);
                 rsvRect.setZoomRate((float) rootWidth / FaceManager.zoomWidth);
-                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                handler.postDelayed(() -> {
                     try {
                         if (advertiseDialog != null) {
                             advertiseDialog.dismiss();
                         }
                     } catch (Exception e) {
+                        Log.e("advertiseDialog:","="+e.toString());
                         e.printStackTrace();
                     }
                 }, 500);
@@ -336,8 +347,10 @@ public class VerifyActivity extends BaseActivity {
                     Log.e("asd", "开始修复摄像头卡顿");
                     CameraManager.getInstance().closeCamera();
                     GpioManager.getInstance().closeCameraGpio();
+                    if(!Constants.VERSION) App.getInstance().sendBroadcast(Constants.TYPE_CAMERA,false);
                     Thread.sleep(800);
                     GpioManager.getInstance().openCameraGpio();
+                    if(!Constants.VERSION) App.getInstance().sendBroadcast(Constants.TYPE_CAMERA,true);
                     CameraManager.getInstance().openCamera(tvCamera, cameraListener);
                     Log.e("asd", "结束修复摄像头卡顿");
                 } catch (InterruptedException e) {
@@ -409,8 +422,8 @@ public class VerifyActivity extends BaseActivity {
                     advertiseFlag = true;
                     tvPass.setText("请放身份证");
                     tvPass.setVisibility(View.VISIBLE);
-                    if(!Constants.VERSION)App.getInstance().sendBroadcast(0x23,false);
-                    tv_face_tip.setVisibility(View.INVISIBLE);
+                    if(!Constants.VERSION)App.getInstance().sendBroadcast(Constants.TYPE_LED,false);
+                    tv_face_tip.setVisibility(View.GONE);
                     rvResult.setVisibility(View.GONE);
                     ivFaceBox.setVisibility(View.INVISIBLE);
                     tvLivenessHint.setVisibility(View.INVISIBLE);
@@ -432,7 +445,8 @@ public class VerifyActivity extends BaseActivity {
                 case ReadCard:
                     if (idCardRecord != null) {
                         tvPass.setVisibility(View.GONE);
-                        if(!Constants.VERSION)App.getInstance().sendBroadcast(0x23,true);
+                        tv_face_tip.setVisibility(View.VISIBLE);
+                        if(!Constants.VERSION)App.getInstance().sendBroadcast(Constants.TYPE_LED,true);
                         ivFaceBox.setVisibility(View.VISIBLE);
                         rvResult.clear();
                         rvResult.showCardImage(idCardRecord.getCardBitmap());
@@ -487,7 +501,6 @@ public class VerifyActivity extends BaseActivity {
 
     public void showFaceTips(String message) {
         runOnUiThread(() -> {
-            tv_face_tip.setVisibility(TextUtils.isEmpty(message)?View.GONE:View.VISIBLE);
             tv_face_tip.setText(message==null?"":message);
         });
     }
@@ -516,7 +529,8 @@ public class VerifyActivity extends BaseActivity {
                 ivFaceBox.setVisibility(View.VISIBLE);
             } else if (status == 1) {
                 tvPass.setVisibility(View.INVISIBLE);
-                if(!Constants.VERSION)App.getInstance().sendBroadcast(0x23,false);
+                tv_face_tip.setVisibility(View.GONE);
+                if(!Constants.VERSION)App.getInstance().sendBroadcast(Constants.TYPE_LED,false);
                 ivFaceBox.setVisibility(View.VISIBLE);
                 if (config.getLivenessFlag()) {
                     tvLivenessHint.setText("请缓慢眨眼");
@@ -525,8 +539,8 @@ public class VerifyActivity extends BaseActivity {
                 }
             } else if (status == 2) {
                 tvPass.setVisibility(View.VISIBLE);
-                if(!Constants.VERSION)App.getInstance().sendBroadcast(0x23,false);
-                tv_face_tip.setVisibility(View.INVISIBLE);
+                if(!Constants.VERSION)App.getInstance().sendBroadcast(Constants.TYPE_LED,false);
+                tv_face_tip.setVisibility(View.GONE);
                 ivFaceBox.setVisibility(View.INVISIBLE);
                 tvUploadHint.setVisibility(View.INVISIBLE);
                 advertiseFlag = true;
@@ -568,8 +582,9 @@ public class VerifyActivity extends BaseActivity {
                 advertiseFlag = false;
                 asyncHandler.removeCallbacks(advertiseRunnable);
                 tvPass.setVisibility(View.INVISIBLE);
+                tv_face_tip.setVisibility(View.GONE);
                 ivFaceBox.setVisibility(View.VISIBLE);
-                if(!Constants.VERSION)App.getInstance().sendBroadcast(0x23,false);
+                if(!Constants.VERSION)App.getInstance().sendBroadcast(Constants.TYPE_LED,false);
                 if (CameraManager.getInstance().getCamera() == null) {
                     controlAdvertDialog(false);
                 } else {
@@ -583,8 +598,8 @@ public class VerifyActivity extends BaseActivity {
                 tvLivenessHint.setVisibility(View.INVISIBLE);
                 ivFaceBox.setVisibility(View.INVISIBLE);
                 tvPass.setVisibility(View.VISIBLE);
-                if(!Constants.VERSION)App.getInstance().sendBroadcast(0x23,false);
-                tv_face_tip.setVisibility(View.INVISIBLE);
+                if(!Constants.VERSION)App.getInstance().sendBroadcast(Constants.TYPE_LED,false);
+                tv_face_tip.setVisibility(View.GONE);
                 tvUploadHint.setVisibility(View.INVISIBLE);
                 advertiseFlag = true;
                 sendAdvertiseDelaySignal();

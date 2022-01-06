@@ -338,6 +338,7 @@ private String TAG="verify";
      * @return 状态码
      */
     public int initFaceST4(Context context) {
+        Log.e("初始化人脸算法","initFaceST4");
         final String sLicence = FileUtil.readLicence();
         if (TextUtils.isEmpty(sLicence)) {
             return ERR_LICENCE;
@@ -358,6 +359,7 @@ private String TAG="verify";
     }
 
     public int initFaceST_11(Context context) {
+        Log.e("初始化人脸算法","initFaceST11");
         mxFaceAPI = new MXFaceAPI();
         mxLiveDetectApi = MXLiveDetectApi.INSTANCE;
         dtTool = new mxImageTool();

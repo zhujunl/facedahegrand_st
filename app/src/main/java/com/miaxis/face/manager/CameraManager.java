@@ -3,7 +3,6 @@ package com.miaxis.face.manager;
 import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
-import android.os.Build;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.TextureView;
@@ -32,14 +31,14 @@ public class CameraManager {
      * ================================ 静态内部类单例 ================================
      **/
 
-    public static final int PRE_WIDTH = Constants.VERSION?640:800;
-    public static final int PRE_HEIGHT = Constants.VERSION?480:600;
-    public static final int PIC_WIDTH = Constants.VERSION?640:800;
-    public static final int PIC_HEIGHT =Constants.VERSION?480:600;
+    public static final int PRE_WIDTH = Constants.VERSION?640:640;
+    public static final int PRE_HEIGHT = Constants.VERSION?480:480;
+    public static final int PIC_WIDTH = Constants.VERSION?640:640;
+    public static final int PIC_HEIGHT =Constants.VERSION?480:480;
     public static int ORIENTATION = 180;
     private static final int RETRY_TIMES = 3;
 
-    private Camera camera;
+    private static Camera camera;
     private SurfaceTexture surfaceTexture = null;
     private int retryTime = 0;
 
@@ -79,26 +78,9 @@ public class CameraManager {
                 }
             }
             Camera.Parameters parameters = camera.getParameters();
-            /*022-01-05 19:33:22.293 14236-14236/com.miaxis.faceid_cw D/Camera_edPrevi(): 0=240*320=76800
-                2022-01-05 19:33:22.294 14236-14236/com.miaxis.faceid_cw D/Camera_edPrevi(): 1=480*640=307200
-                2022-01-05 19:33:22.295 14236-14236/com.miaxis.faceid_cw D/Camera_edPrevi(): 2=600*800=480000
-                2022-01-05 19:33:22.296 14236-14236/com.miaxis.faceid_cw D/Camera_edPrevi(): 3=720*1280=921600*/
-            for (int i=0;i<parameters.getSupportedPictureSizes().size();i++){
-                Log.d("Camera_edPrevi()",i+"="+parameters.getSupportedPictureSizes().get(i).height+"*"+parameters.getSupportedPictureSizes().get(i).width+"="+parameters.getSupportedPictureSizes().get(i).height*parameters.getSupportedPictureSizes().get(i).width);
-                if(parameters.getSupportedPreviewSizes().get(i).width*parameters.getSupportedPreviewSizes().get(i).height>307200){
-                    ORIENTATION=0;
-                    break;
-                }
-            }
-            /*2022-01-05 19:34:47.718 14738-14738/com.miaxis.faceid_cw D/Camera_edPrevi(): 0=480*640=307200*/
-            /*2022-01-05 19:38:54.786 1974-1974/com.miaxis.faceid_cw D/Camera_edPrevi(): 0=1944*2592=5038848
-                2022-01-05 19:38:54.786 1974-1974/com.miaxis.faceid_cw D/Camera_edPrevi(): 1=1200*1600=1920000
-                2022-01-05 19:38:54.786 1974-1974/com.miaxis.faceid_cw D/Camera_edPrevi(): 2=1080*1920=2073600
-                2022-01-05 19:38:54.786 1974-1974/com.miaxis.faceid_cw D/Camera_edPrevi(): 3=720*1280=921600
-                2022-01-05 19:38:54.786 1974-1974/com.miaxis.faceid_cw D/Camera_edPrevi(): 4=768*1024=786432
-                2022-01-05 19:38:54.796 1974-1974/com.miaxis.faceid_cw D/Camera_edPrevi(): 5=600*800=480000
-                2022-01-05 19:38:54.796 1974-1974/com.miaxis.faceid_cw D/Camera_edPrevi(): 6=480*640=307200*/
-//            List<Camera.Size> sizeList = parameters.getSupportedPreviewSizes();
+
+            List<Camera.Size> pic=parameters.getSupportedPictureSizes();
+            List<Camera.Size> p=parameters.getSupportedPreviewSizes();
             parameters.setPreviewSize(PRE_WIDTH, PRE_HEIGHT);
             parameters.setPictureSize(PIC_WIDTH, PIC_HEIGHT);
             //对焦模式设置
@@ -236,6 +218,25 @@ public class CameraManager {
         monitorFlag = false;
     }
 
+    public static void setORIENTATION(){
+        for (int i = 0; i < RETRY_TIMES; i++) {
+            if (camera==null){
+                camera = Camera.open(0);
+                if (camera!=null){
+                    break;
+                }
+                SystemClock.sleep(100);
+            }
+        }
+        Camera.Parameters parameters = camera.getParameters();
+        for (int i=0;i<parameters.getSupportedPictureSizes().size();i++){
+            Log.d("Camera_edPrevi()",i+"="+parameters.getSupportedPictureSizes().get(i).height+"*"+parameters.getSupportedPictureSizes().get(i).width+"="+parameters.getSupportedPictureSizes().get(i).height*parameters.getSupportedPictureSizes().get(i).width);
+            if(parameters.getSupportedPreviewSizes().get(i).width*parameters.getSupportedPreviewSizes().get(i).height>307200){
+                ORIENTATION=0;
+                break;
+            }
+        }
+    }
 
 
 }

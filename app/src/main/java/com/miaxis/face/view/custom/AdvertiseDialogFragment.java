@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.viewpager.widget.ViewPager;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -118,12 +119,14 @@ public class AdvertiseDialogFragment extends BaseDialogFragment {
     @Override
     public void onStop() {
         super.onStop();
+        Log.e("VerifyActivity",":onStopView");
         banner.stopAutoPlay();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        Log.e("VerifyActivity",":onDestroyView");
         advertisePresenter.destroy();
         bind.unbind();
     }

@@ -74,7 +74,10 @@ public class TaskManager {
         App.getInstance().getThreadExecutor().execute(() -> {
             new UpdatePresenter(App.getInstance()).checkUpdateSync();
         });
-        ClearService.startActionClear(App.getInstance());
+        //ClearService.startActionClear(App.getInstance());
+        App.getInstance().getThreadExecutor().execute(()->{
+            ClearService.handleActionClear(App.getInstance());
+        });
     }
 
     private void startTask() {
