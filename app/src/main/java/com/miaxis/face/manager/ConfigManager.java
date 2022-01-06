@@ -77,7 +77,7 @@ public class ConfigManager {
                     .advertiseDelayTime(Constants.DEFAULT_ADVERTISE_DELAY_TIME) //广告显示延迟
                     .advertisementMode(Constants.DEFAULT_ADVERTISEMENT_MODE)
                     .version_delay(Constants.TASK_DELAY)
-                    .version_position(0)
+                    .version_position(2)
                     .build();
             ConfigModel.saveConfig(config);
         } else {

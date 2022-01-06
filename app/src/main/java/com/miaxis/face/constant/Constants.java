@@ -83,7 +83,7 @@ public class Constants {
     public static final boolean DEFAULT_BLACK_FLAG = false;
     public static final boolean DEFAULT_ADVERTISE_FLAG = true;
     public static final float DEFAULT_VERIFY_SCORE = 0.70f;
-    public static final int DEFAULT_QUALITY_SCORE = 80;
+    public static final int DEFAULT_QUALITY_SCORE = 50;
     public static final int DEFAULT_LIVENESS_QUALITY_SCORE = 25;
     public static final String DEFAULT_TITLE_STR = "";
     public static final String DEFAULT_PASSWORD = "666666";
@@ -103,7 +103,7 @@ public class Constants {
 
     public static final List<Integer> DELAYList= Arrays.asList(60 * 1000,2*60*1000,5*60*1000,10*60*1000,30*60*1000,60 * 60 * 1000,2*60*60*1000,5*60*60*1000,10*60*60*1000,24*60*60*1000);
 
-    public static final int TASK_DELAY = 1*60*1000;
+    public static final int TASK_DELAY = 5*60*1000;
 
     public static final int RESULT_CODE_FINISH = 51243123;
 

@@ -339,13 +339,19 @@ public class VerifyPresenter {
             }
         }
     };
-
+    final float pam=0.1f;
     private void onFaceVerify(MxRGBImage mxRGBImage, MXFaceInfoEx mxFaceInfoEx, byte[] feature) {
         if (idCardRecord != null && idCardRecord.getCardFeature() != null) {
             float faceMatchScore = FaceManager.getInstance().matchFeature(feature, idCardRecord.getCardFeature());
             byte[] fileImage = FaceManager.getInstance().imageEncode(mxRGBImage.getRgbImage(), mxRGBImage.getWidth(), mxRGBImage.getHeight());
             Bitmap faceBitmap = BitmapFactory.decodeByteArray(fileImage, 0, fileImage.length);
-            Bitmap rectBitmap = Bitmap.createBitmap(faceBitmap, mxFaceInfoEx.x, mxFaceInfoEx.y, mxFaceInfoEx.width, mxFaceInfoEx.height);//截取
+            float fw = pam * mxFaceInfoEx.width;
+            float fh = pam * mxFaceInfoEx.height;
+            int x=(int) Math.max(0,mxFaceInfoEx.x-fw);
+            int y=(int) Math.max(0,mxFaceInfoEx.y-fh);
+            int width=(int) Math.min(mxFaceInfoEx.width*(1+2*pam),faceBitmap.getWidth());
+            int height=(int) Math.min(mxFaceInfoEx.height*(1+2*pam),faceBitmap.getHeight());
+            Bitmap rectBitmap = Bitmap.createBitmap(faceBitmap, x, y,width, height);//截取
             boolean result = faceMatchScore > config.getVerifyScore();
             FaceManager.getInstance().stopLoop();
             faceDone = true;

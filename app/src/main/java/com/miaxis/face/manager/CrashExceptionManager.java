@@ -58,11 +58,11 @@ public class CrashExceptionManager implements Thread.UncaughtExceptionHandler {
     public void uncaughtException(Thread thread, Throwable ex) {
         ex.printStackTrace();
         Log.e("asd", "" + ex.getMessage());
-        new Thread(() -> {
-            Looper.prepare();
-            Toast.makeText(mContext, "很抱歉，程序出现异常，即将重新启动", Toast.LENGTH_LONG).show();
-            Looper.loop();
-        }).start();
+//        new Thread(() -> {
+//            Looper.prepare();
+//            Toast.makeText(mContext, "很抱歉，程序出现异常，即将重新启动", Toast.LENGTH_LONG).show();
+//            Looper.loop();
+//        }).start();
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {

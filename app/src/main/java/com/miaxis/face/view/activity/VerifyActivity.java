@@ -183,7 +183,10 @@ public class VerifyActivity extends BaseActivity {
         }else {
             setContentView(R.layout.activity_verify2);
         }
-        CameraManager.setORIENTATION();
+        String tip=CameraManager.setORIENTATION();
+        if(!TextUtils.isEmpty(tip)){
+            ToastManager.toast(tip);
+        }
         ButterKnife.bind(this);
         initWindow();
         initDialog();
@@ -334,7 +337,7 @@ public class VerifyActivity extends BaseActivity {
 
         @Override
         public void onCameraError() {
-            runOnUiThread(() -> {
+//            runOnUiThread(() -> {
                 try {
                     while (advertiseLock.isLocked()) {
                         try {
@@ -358,7 +361,7 @@ public class VerifyActivity extends BaseActivity {
                 } finally {
                     advertiseLock.unlock();
                 }
-            });
+//            });
         }
     };
 

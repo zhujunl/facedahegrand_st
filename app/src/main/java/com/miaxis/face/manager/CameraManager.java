@@ -218,24 +218,35 @@ public class CameraManager {
         monitorFlag = false;
     }
 
-    public static void setORIENTATION(){
-        for (int i = 0; i < RETRY_TIMES; i++) {
-            if (camera==null){
-                camera = Camera.open(0);
-                if (camera!=null){
-                    break;
+    public static String  setORIENTATION(){
+        try {
+            for (int i = 0; i < RETRY_TIMES; i++) {
+                if (camera==null){
+                    camera = Camera.open(0);
+                    if (camera!=null){
+                        break;
+                    }
+                    SystemClock.sleep(100);
                 }
-                SystemClock.sleep(100);
             }
-        }
-        Camera.Parameters parameters = camera.getParameters();
-        for (int i=0;i<parameters.getSupportedPictureSizes().size();i++){
-            Log.d("Camera_edPrevi()",i+"="+parameters.getSupportedPictureSizes().get(i).height+"*"+parameters.getSupportedPictureSizes().get(i).width+"="+parameters.getSupportedPictureSizes().get(i).height*parameters.getSupportedPictureSizes().get(i).width);
-            if(parameters.getSupportedPreviewSizes().get(i).width*parameters.getSupportedPreviewSizes().get(i).height>307200){
-                ORIENTATION=0;
-                break;
+            if (camera!=null){
+                Camera.Parameters parameters = camera.getParameters();
+                for (int i=0;i<parameters.getSupportedPictureSizes().size();i++){
+                    Log.d("Camera_edPrevi()",i+"="+parameters.getSupportedPictureSizes().get(i).height+"*"+parameters.getSupportedPictureSizes().get(i).width+"="+parameters.getSupportedPictureSizes().get(i).height*parameters.getSupportedPictureSizes().get(i).width);
+                    if(parameters.getSupportedPreviewSizes().get(i).width*parameters.getSupportedPreviewSizes().get(i).height>307200){
+                        ORIENTATION=0;
+                        break;
+                    }
+                }
+                return null;
+            }else {
+                return "摄像头打开失败";
             }
+        }catch (Exception e){
+            e.printStackTrace();
+            return "摄像头打开失败";
         }
+
     }
 
 

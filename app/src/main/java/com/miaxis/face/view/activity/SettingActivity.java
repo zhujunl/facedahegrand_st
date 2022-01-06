@@ -279,7 +279,7 @@ public class SettingActivity extends BaseActivity {
         etLivenessQualityScore.setText(String.valueOf(config.getLivenessQualityScore()));
         tvSelectTime.setText(config.getUpTime());
         etMonitorInterval.setText(String.valueOf(config.getIntervalTime()));
-        et_version_delay_time.setSelection(config.getVersion_delay()==null?2:config.getVersion_position());
+        et_version_delay_time.setSelection(config.getVersion_position()==null?2:config.getVersion_position());
         etTitleStr.setText(config.getTitleStr());
         etOrgName.setText(config.getOrgName());
         etPwd.setText(config.getPassword());

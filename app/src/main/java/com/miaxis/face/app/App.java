@@ -1,8 +1,10 @@
 package com.miaxis.face.app;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.liulishuo.filedownloader.FileDownloader;
@@ -22,6 +24,8 @@ import com.miaxis.face.net.FaceNetApi;
 import com.miaxis.face.util.FileUtil;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -34,10 +38,48 @@ public class App extends Application {
 
     private ExecutorService threadExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2);
 
+    List<Activity> activities=new ArrayList<>();
+
     @Override
     public void onCreate() {
         super.onCreate();
         Log.e("App","onCreate");
+        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
+            @Override
+            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+                Log.e("App",activity.getLocalClassName()+":onActivityCreated");
+            }
+
+            @Override
+            public void onActivityStarted(Activity activity) {
+                Log.e("App",activity.getLocalClassName()+":onActivityStarted");
+            }
+
+            @Override
+            public void onActivityResumed(Activity activity) {
+                Log.e("App",activity.getLocalClassName()+":onActivityResumed");
+            }
+
+            @Override
+            public void onActivityPaused(Activity activity) {
+                Log.e("App",activity.getLocalClassName()+":onActivityPaused");
+            }
+
+            @Override
+            public void onActivityStopped(Activity activity) {
+                Log.e("App",activity.getLocalClassName()+":onActivityStopped");
+            }
+
+            @Override
+            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+                Log.e("App",activity.getLocalClassName()+":onActivitySaveInstanceState");
+            }
+
+            @Override
+            public void onActivityDestroyed(Activity activity) {
+                Log.e("App",activity.getLocalClassName()+":onActivityDestroyed");
+            }
+        });
         instance = this;
         MultiDex.install(this);
     }

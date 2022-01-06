@@ -56,11 +56,6 @@ public class DaoManager {
         if (config==null)
             config=new Config();
         Log.d("config==","="+config.toString());
-        if (config!=null&&DaoMaster.SCHEMA_VERSION>3&&config.getQualityScore()<Constants.DEFAULT_QUALITY_SCORE){
-            config.setQualityScore(Constants.DEFAULT_QUALITY_SCORE);
-            daoSession.getConfigDao().update(config);
-        }
-
         ConfigOld old=getOldConfig(context);
         if(old!=null){
             Log.d("oldconfig==","="+old.toString());
