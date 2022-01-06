@@ -80,6 +80,7 @@ import com.miaxis.face.view.custom.AdvertiseDialogFragment;
 import com.miaxis.face.view.custom.RectSurfaceView;
 import com.miaxis.face.view.custom.ResultView;
 import com.miaxis.face.view.fragment.UndocumentedDialogFragment;
+import com.miaxis.livedetect.jni.MXLiveDetectApi;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -178,6 +179,7 @@ public class VerifyActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e("VerifyActivity",":onCreate");
         if(BuildConfig.EQUIPMENT_TYPE==1){
             setContentView(R.layout.activity_verify);
         }else {
@@ -219,6 +221,7 @@ public class VerifyActivity extends BaseActivity {
         Log.e("VerifyActivity",":onResume");
         if(!Constants.VERSION) App.getInstance().sendBroadcast(Constants.TYPE_ID_FP,true);
         if(!Constants.VERSION)  App.getInstance().sendBroadcast(Constants.TYPE_CAMERA,true);
+        if(!Constants.VERSION)SystemClock.sleep(500);
         advertiseFlag = true;
         sendAdvertiseDelaySignal();
     }
@@ -235,6 +238,10 @@ public class VerifyActivity extends BaseActivity {
     protected void onStop() {
         super.onStop();
         Log.e("VerifyActivity",":OnStop");
+        MXLiveDetectApi mxLiveDetectApi;
+        mxLiveDetectApi = MXLiveDetectApi.INSTANCE;
+        mxLiveDetectApi.free();
+        CameraManager.setSurfaceTexture();
         if(!Constants.VERSION)App.getInstance().sendBroadcast(Constants.TYPE_LED,false);
         CardManager.getInstance().closeReadCard();
         EventBus.getDefault().unregister(this);

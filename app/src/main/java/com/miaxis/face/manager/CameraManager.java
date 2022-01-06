@@ -39,7 +39,7 @@ public class CameraManager {
     private static final int RETRY_TIMES = 3;
 
     private static Camera camera;
-    private SurfaceTexture surfaceTexture = null;
+    private static SurfaceTexture surfaceTexture = null;
     private int retryTime = 0;
 
     private OnCameraOpenListener listener;
@@ -47,7 +47,7 @@ public class CameraManager {
     private long lastCameraCallBackTime;
     private MonitorThread monitorThread;
 
-    public void openCamera(@NonNull TextureView textureView, @NonNull CameraManager.OnCameraOpenListener listener) {
+    public synchronized void openCamera(@NonNull TextureView textureView, @NonNull CameraManager.OnCameraOpenListener listener) {
         try {
             this.listener = listener;
             openMonitor();
@@ -249,5 +249,7 @@ public class CameraManager {
 
     }
 
-
+    public static void setSurfaceTexture(){
+        surfaceTexture=null;
+    }
 }
