@@ -185,7 +185,7 @@ public class VerifyActivity extends BaseActivity {
         }else {
             setContentView(R.layout.activity_verify2);
         }
-        String tip=CameraManager.setORIENTATION();
+        String tip=CameraManager.getInstance().setORIENTATION();
         if(!TextUtils.isEmpty(tip)){
             ToastManager.toast(tip);
         }
@@ -224,6 +224,7 @@ public class VerifyActivity extends BaseActivity {
         if(!Constants.VERSION)SystemClock.sleep(500);
         advertiseFlag = true;
         sendAdvertiseDelaySignal();
+        if(CameraManager.getInstance().getSurfaceTexture()==null) CameraManager.getInstance().openCamera(tvCamera, cameraListener);
     }
 
     @Override
@@ -241,7 +242,7 @@ public class VerifyActivity extends BaseActivity {
         MXLiveDetectApi mxLiveDetectApi;
         mxLiveDetectApi = MXLiveDetectApi.INSTANCE;
         mxLiveDetectApi.free();
-        CameraManager.setSurfaceTexture();
+        CameraManager.getInstance().setSurfaceTexture();
         if(!Constants.VERSION)App.getInstance().sendBroadcast(Constants.TYPE_LED,false);
         CardManager.getInstance().closeReadCard();
         EventBus.getDefault().unregister(this);

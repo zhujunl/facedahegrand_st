@@ -105,15 +105,20 @@ public class VerifyPresenter {
     }
 
     private void loadWhiteList() {
-        if (config.getWhiteFlag()) {
-            App.getInstance().getThreadExecutor().execute(() -> {
-                try {
-                    whiteItemList = DaoManager.getInstance().getDaoSession().getWhiteItemDao().loadAll();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
+        try {
+            if (config.getWhiteFlag()) {
+                App.getInstance().getThreadExecutor().execute(() -> {
+                    try {
+                        whiteItemList = DaoManager.getInstance().getDaoSession().getWhiteItemDao().loadAll();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
     }
 
     private CardManager.OnCardReadListener cardListener = (cardStatus, idCardRecord) -> {

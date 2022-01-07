@@ -38,8 +38,8 @@ public class CameraManager {
     public static int ORIENTATION = 180;
     private static final int RETRY_TIMES = 3;
 
-    private static Camera camera;
-    private static SurfaceTexture surfaceTexture = null;
+    private  Camera camera;
+    private  SurfaceTexture surfaceTexture = null;
     private int retryTime = 0;
 
     private OnCameraOpenListener listener;
@@ -218,7 +218,7 @@ public class CameraManager {
         monitorFlag = false;
     }
 
-    public static String  setORIENTATION(){
+    public  String  setORIENTATION(){
         try {
             for (int i = 0; i < RETRY_TIMES; i++) {
                 if (camera==null){
@@ -249,7 +249,11 @@ public class CameraManager {
 
     }
 
-    public static void setSurfaceTexture(){
+    public  void setSurfaceTexture(){
         surfaceTexture=null;
+    }
+
+    public  SurfaceTexture getSurfaceTexture(){
+        return surfaceTexture;
     }
 }

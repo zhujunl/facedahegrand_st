@@ -2,9 +2,11 @@ package com.miaxis.face.app;
 
 import android.app.Activity;
 import android.app.Application;
+import android.app.smdt.SystemLogcat;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 
 import com.liulishuo.filedownloader.FileDownloader;
@@ -99,6 +101,7 @@ public class App extends Application {
             }else{
                 sendBroadcast(Constants.TYPE_ID_FP,true);
                 sendBroadcast(Constants.TYPE_CAMERA,true);
+                SystemClock.sleep(2000);
             }
             FileDownloader.setup(this);
             SoundManager.getInstance().init();
