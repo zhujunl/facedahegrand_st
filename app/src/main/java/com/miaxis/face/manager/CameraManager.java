@@ -12,6 +12,7 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 
+import com.miaxis.face.app.App;
 import com.miaxis.face.constant.Constants;
 
 public class CameraManager {
@@ -62,7 +63,7 @@ public class CameraManager {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            listener.onCameraOpen(null, "");
+            listener.onCameraOpen(null, "异常");
         }
     }
 
@@ -78,7 +79,13 @@ public class CameraManager {
                 }
             }
             Camera.Parameters parameters = camera.getParameters();
-
+            for (int i=0;i<parameters.getSupportedPictureSizes().size();i++){
+                Log.d("Camera_edPrevi()",i+"="+parameters.getSupportedPictureSizes().get(i).height+"*"+parameters.getSupportedPictureSizes().get(i).width+"="+parameters.getSupportedPictureSizes().get(i).height*parameters.getSupportedPictureSizes().get(i).width);
+                if(parameters.getSupportedPreviewSizes().get(i).width*parameters.getSupportedPreviewSizes().get(i).height>307200){
+                    ORIENTATION=0;
+                    break;
+                }
+            }
             List<Camera.Size> pic=parameters.getSupportedPictureSizes();
             List<Camera.Size> p=parameters.getSupportedPreviewSizes();
             parameters.setPreviewSize(PRE_WIDTH, PRE_HEIGHT);
@@ -145,7 +152,7 @@ public class CameraManager {
         this.retryTime = 0;
     }
 
-    private TextureView.SurfaceTextureListener textureListener = new TextureView.SurfaceTextureListener() {
+    public TextureView.SurfaceTextureListener textureListener = new TextureView.SurfaceTextureListener() {
         @Override
         public void onSurfaceTextureAvailable(SurfaceTexture st, int width, int height) {
             if (camera != null) {
@@ -194,6 +201,10 @@ public class CameraManager {
                         long cur = System.currentTimeMillis();
                         if ((cur - lastCameraCallBackTime) >= ConfigManager.getInstance().getConfig().getIntervalTime() * 1000) {
                             if (listener != null) {
+                                if (!Constants.VERSION) {
+                                    App.getInstance().sendBroadcast(Constants.TYPE_CAMERA, true);
+                                    SystemClock.sleep(1500);
+                                }
                                 listener.onCameraError();
                             }
                         }
@@ -240,11 +251,11 @@ public class CameraManager {
                 }
                 return null;
             }else {
-                return "摄像头打开失败";
+                return "摄像头打开失败1";
             }
         }catch (Exception e){
             e.printStackTrace();
-            return "摄像头打开失败";
+            return "摄像头打开失败2";
         }
 
     }

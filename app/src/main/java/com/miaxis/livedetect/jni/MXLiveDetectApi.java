@@ -28,14 +28,15 @@ public enum MXLiveDetectApi {
      */
     public int initialize(String modelPath) {
         int init = -1;
-        if (initialized) {
-            //throw new IllegalArgumentException("initialized !!");
-        } else {
+//        if (initialized) {
+//            //throw new IllegalArgumentException("initialized !!");
+//        } else {
+            free();
             init = nativeInitialize(modelPath);
             if (init == 0) {
                 initialized = true;
             }
-        }
+//        }
         return init;
     }
 

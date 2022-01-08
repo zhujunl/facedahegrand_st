@@ -177,9 +177,9 @@ public class FaceManager {
                     &&mxFaceInfoEx.y+mxFaceInfoEx.height<=bottom
             ){
                 if (faceHandleListener != null) {
-                    faceHandleListener.onFaceTips(null);
+                    faceHandleListener.onActionLiveDetect(0, "");
                 }
-                Log.e(TAG, "verify: 在框"+mxFaceInfoEx );
+               // Log.e(TAG, "verify: 在框"+mxFaceInfoEx );
                 result = faceQuality(zoomedRgbData, zoomWidth, zoomHeight, 1, new MXFaceInfoEx[]{mxFaceInfoEx});
                 if (result) {
                     Intermediary intermediary = new Intermediary();
@@ -194,19 +194,41 @@ public class FaceManager {
             }else {
                 if (faceHandleListener != null) {
                     faceHandleListener.onFaceTips("请将人脸移入框内");
+                    faceHandleListener.onActionLiveDetect(-6, "请将人脸移入框内");
                 }
-                Log.e(TAG, "verify: 不在框内"+mxFaceInfoEx );
+               // Log.e(TAG, "verify: 不在框内"+mxFaceInfoEx );
             }
         } else {
             if (faceHandleListener != null) {
                 faceHandleListener.onFaceDetect(0, null);
                 faceHandleListener.onFaceTips(null);
+                faceHandleListener.onActionLiveDetect(0, "");
             }
         }
     }
 private String TAG="verify";
     private void actionLiveDetect(byte[] detectData) throws Exception {
         Log.e("asd", "进入活体");
+        byte[] zoomedRgbData = cameraPreviewConvert(detectData,
+                CameraManager.PRE_WIDTH,
+                CameraManager.PRE_HEIGHT,
+                CameraManager.ORIENTATION,
+                zoomWidth,
+                zoomHeight);
+        if (zoomedRgbData == null) {
+            if (faceHandleListener != null) {
+                faceHandleListener.onFaceDetect(0, null);
+            }
+            throw new MyException("数据转码失败");
+        }
+        int[] faceNum = new int[]{MAX_FACE_NUM};
+        MXFaceInfoEx[] faceBuffer = makeFaceContainer(faceNum[0]);
+        boolean faceDetect = faceDetect(zoomedRgbData, zoomWidth, zoomHeight, faceNum, faceBuffer);
+        if (faceDetect) {
+            if (faceHandleListener != null) {
+                faceHandleListener.onFaceDetect(faceNum[0], faceBuffer);
+            }}
+        Log.e("detectData==","="+detectData.toString());
         MXImage original = new MXImage(detectData, CameraManager.PRE_WIDTH, CameraManager.PRE_HEIGHT, MXImage.FORMAT_YUV);
 //        mxImage = MXImages.crop(original, new Rect(140, 90, 640 - 120, 480 - 90));
         MXImage mxImage = MXImages.rotate(original, 180);
@@ -214,6 +236,7 @@ private String TAG="verify";
         mxImage = MXImages.scale(mxImage, 0.5f);
         mxImage.setTag(original);
         List<FaceInfo> faceInfoList = mxLiveDetectApi.faceDetect(mxImage);
+        Log.e("ListdetectData==","="+faceInfoList.size());
         if (faceInfoList != null && !faceInfoList.isEmpty()) {
             FaceInfo faceInfo = faceInfoList.get(0);
             int maxFaceLength = Math.abs(faceInfo.getArea().right - faceInfo.getArea().left);

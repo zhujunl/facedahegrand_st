@@ -20,6 +20,7 @@ import com.miaxis.face.bean.Task;
 import com.miaxis.face.bean.TaskResult;
 import com.miaxis.face.bean.Undocumented;
 import com.miaxis.face.bean.WhiteItem;
+import com.miaxis.face.constant.Constants;
 import com.miaxis.face.manager.AmapManager;
 import com.miaxis.face.manager.CameraManager;
 import com.miaxis.face.manager.CardManager;
@@ -329,6 +330,9 @@ public class VerifyPresenter {
                     case -5:
                         hint = "请缓慢眨眼";
                         break;
+                    case -6:
+                        hint = "请将人脸移入框内";
+                        break;
                     case 1:
                         hint = "眨眼检测通过";
                         break;
@@ -339,23 +343,23 @@ public class VerifyPresenter {
 
         @Override
         public void onFaceTips(String msg) {
-            if (view.get() != null) {
-                view.get().showFaceTips(msg);
-            }
+//            if (view.get() != null) {
+//                view.get().showFaceTips(msg);
+//            }
         }
     };
-    final float pam=0.1f;
+
     private void onFaceVerify(MxRGBImage mxRGBImage, MXFaceInfoEx mxFaceInfoEx, byte[] feature) {
         if (idCardRecord != null && idCardRecord.getCardFeature() != null) {
             float faceMatchScore = FaceManager.getInstance().matchFeature(feature, idCardRecord.getCardFeature());
             byte[] fileImage = FaceManager.getInstance().imageEncode(mxRGBImage.getRgbImage(), mxRGBImage.getWidth(), mxRGBImage.getHeight());
             Bitmap faceBitmap = BitmapFactory.decodeByteArray(fileImage, 0, fileImage.length);
-            float fw = pam * mxFaceInfoEx.width;
-            float fh = pam * mxFaceInfoEx.height;
+            float fw = Constants.pam * mxFaceInfoEx.width;
+            float fh = Constants.pam * mxFaceInfoEx.height;
             int x=(int) Math.max(0,mxFaceInfoEx.x-fw);
             int y=(int) Math.max(0,mxFaceInfoEx.y-fh);
-            int width=(int) Math.min(mxFaceInfoEx.width*(1+2*pam),faceBitmap.getWidth());
-            int height=(int) Math.min(mxFaceInfoEx.height*(1+2*pam),faceBitmap.getHeight());
+            int width=(int) Math.min(mxFaceInfoEx.width*(1+2*Constants.pam),faceBitmap.getWidth());
+            int height=(int) Math.min(mxFaceInfoEx.height*(1+2*Constants.pam),faceBitmap.getHeight());
             Bitmap rectBitmap = Bitmap.createBitmap(faceBitmap, x, y,width, height);//截取
             boolean result = faceMatchScore > config.getVerifyScore();
             FaceManager.getInstance().stopLoop();
@@ -579,7 +583,7 @@ public class VerifyPresenter {
             }
             if (playVoice) {
                 SoundManager.getInstance().stopPlay();
-  //              TTSManager.getInstance().playVoiceMessageFlush(voiceText);
+                TTSManager.getInstance().playVoiceMessageFlush(voiceText);
             }
             if (undocumented != null) {
                 try {

@@ -45,43 +45,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.e("App","onCreate");
-        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
-            @Override
-            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-                Log.e("App",activity.getLocalClassName()+":onActivityCreated");
-            }
-
-            @Override
-            public void onActivityStarted(Activity activity) {
-                Log.e("App",activity.getLocalClassName()+":onActivityStarted");
-            }
-
-            @Override
-            public void onActivityResumed(Activity activity) {
-                Log.e("App",activity.getLocalClassName()+":onActivityResumed");
-            }
-
-            @Override
-            public void onActivityPaused(Activity activity) {
-                Log.e("App",activity.getLocalClassName()+":onActivityPaused");
-            }
-
-            @Override
-            public void onActivityStopped(Activity activity) {
-                Log.e("App",activity.getLocalClassName()+":onActivityStopped");
-            }
-
-            @Override
-            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-                Log.e("App",activity.getLocalClassName()+":onActivitySaveInstanceState");
-            }
-
-            @Override
-            public void onActivityDestroyed(Activity activity) {
-                Log.e("App",activity.getLocalClassName()+":onActivityDestroyed");
-            }
-        });
+        Log.e("Loadin_App","onCreate");
         instance = this;
         MultiDex.install(this);
     }
@@ -91,18 +55,12 @@ public class App extends Application {
     }
 
     public void initApplication(@NonNull OnAppInitListener listener) {
+        Log.e("Loadin_App","initApplication");
         try {
             FileUtil.initDirectory(this);
             DaoManager.getInstance().initDbHelper(getApplicationContext(), "FaceDahe_New.db");
             WatchDogManager.getInstance().init(this);
             CrashExceptionManager.getInstance().init(this);
-            if(Constants.VERSION){
-                GpioManager.getInstance().init(this);
-            }else{
-                sendBroadcast(Constants.TYPE_ID_FP,true);
-                sendBroadcast(Constants.TYPE_CAMERA,true);
-                SystemClock.sleep(2000);
-            }
             FileDownloader.setup(this);
             SoundManager.getInstance().init();
             CardManager.getInstance().init();
@@ -115,6 +73,14 @@ public class App extends Application {
             TaskManager.getInstance().init();
             //TODO:定时续传日志，清理
             int result = Constants.VERSION?FaceManager.getInstance().initFaceST4(this):FaceManager.getInstance().initFaceST_11(this);
+            if(Constants.VERSION){
+                GpioManager.getInstance().init(this);
+            }else{
+                SystemClock.sleep(2000);
+                sendBroadcast(Constants.TYPE_ID_FP,true);
+                sendBroadcast(Constants.TYPE_CAMERA,true);
+                SystemClock.sleep(1000);
+            }
             listener.onInit(result == FaceManager.INIT_SUCCESS, FaceManager.getFaceInitResultDetail(result));
 //            listener.onInit(true, "");
         } catch (Exception e) {

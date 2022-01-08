@@ -335,18 +335,38 @@ public class SettingActivity extends BaseActivity {
         config.setLivenessFlag(rbLivenessOn.isChecked());
         config.setQueryFlag(rbQueryOn.isChecked());
         config.setAdvertiseFlag(rbAdvertiseOn.isChecked());
+        if(TextUtils.isEmpty(etVerifyScore.getText().toString().trim())){
+            ToastManager.toast("保存失败，请设置比对阈值");
+            return;
+        }
         if(Float.parseFloat(etVerifyScore.getText().toString().trim())>1.0F){
             ToastManager.toast("保存失败，比对阈值最高为1");
             return;
         }
         config.setVerifyScore(Float.parseFloat(etVerifyScore.getText().toString()));
+        if(TextUtils.isEmpty(etQualityScore.getText().toString().trim())){
+            ToastManager.toast("保存失败，请设置质量阈值");
+            return;
+        }
         config.setQualityScore(Integer.parseInt(etQualityScore.getText().toString()));
+        if(TextUtils.isEmpty(etLivenessQualityScore.getText().toString().trim())){
+            ToastManager.toast("保存失败，请设置活体质量阈值");
+            return;
+        }
         config.setLivenessQualityScore(Integer.parseInt(etLivenessQualityScore.getText().toString()));
         config.setTitleStr(etTitleStr.getText().toString());
         config.setPassword(etPwd.getText().toString());
         config.setUpTime(tvSelectTime.getText().toString());
+        if(TextUtils.isEmpty(etMonitorInterval.getText().toString().trim())){
+            ToastManager.toast("保存失败，请设置监控间隔");
+            return;
+        }
         config.setIntervalTime(Integer.parseInt(etMonitorInterval.getText().toString()));
         config.setOrgName(etOrgName.getText().toString());
+        if(TextUtils.isEmpty(etAdvertiseDelayTime.getText().toString().trim())){
+            ToastManager.toast("保存失败，请设置广告显示延迟");
+            return;
+        }
         config.setAdvertiseDelayTime(Integer.parseInt(etAdvertiseDelayTime.getText().toString()));
         if (rbGatherOnOne.isChecked()) {
             config.setGatherFingerFlag(0);

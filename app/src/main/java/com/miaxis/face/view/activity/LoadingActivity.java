@@ -3,6 +3,7 @@ package com.miaxis.face.view.activity;
 import android.app.smdt.SmdtManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -55,6 +56,7 @@ public class LoadingActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e("Loadin","OnCreate");
         setContentView(R.layout.activity_loading);
         ButterKnife.bind(this);
         initWindow();
@@ -97,7 +99,20 @@ public class LoadingActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
+        Log.e("Loadin","onDestroy");
         super.onDestroy();
+    }
+
+    @Override
+    protected void onStart() {
+        Log.e("Loadin","onStart");
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        Log.e("Loadin","onStop");
+        super.onStop();
     }
 
     @OnClick(R.id.tv_title)

@@ -4,6 +4,7 @@ import android.app.Application;
 import android.app.smdt.SmdtManager;
 import android.content.Context;
 import android.os.Build;
+import android.os.SystemClock;
 
 import com.miaxis.face.app.App;
 import com.miaxis.face.app.Face_App;

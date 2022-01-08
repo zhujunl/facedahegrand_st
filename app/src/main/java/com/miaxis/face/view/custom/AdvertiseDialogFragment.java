@@ -119,14 +119,14 @@ public class AdvertiseDialogFragment extends BaseDialogFragment {
     @Override
     public void onStop() {
         super.onStop();
-        Log.e("VerifyActivity",":onStopView");
+        Log.e("AdvertiseDialogFragment",":onStopView");
         banner.stopAutoPlay();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.e("VerifyActivity",":onDestroyView");
+        Log.e("AdvertiseDialogFragment",":onDestroyView");
         advertisePresenter.destroy();
         bind.unbind();
     }
