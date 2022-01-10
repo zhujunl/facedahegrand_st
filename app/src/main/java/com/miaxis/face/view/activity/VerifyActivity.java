@@ -238,7 +238,7 @@ public class VerifyActivity extends BaseActivity {
 //        MXLiveDetectApi mxLiveDetectApi;
 //        mxLiveDetectApi = MXLiveDetectApi.INSTANCE;
 //        mxLiveDetectApi.free();
-        CameraManager.getInstance().setSurfaceTexture();
+//        CameraManager.getInstance().setSurfaceTexture();
         if(!Constants.VERSION)App.getInstance().sendBroadcast(Constants.TYPE_LED,false);
         CardManager.getInstance().closeReadCard();
         EventBus.getDefault().unregister(this);
