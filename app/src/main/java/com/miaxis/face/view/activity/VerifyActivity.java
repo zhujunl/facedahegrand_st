@@ -220,7 +220,6 @@ public class VerifyActivity extends BaseActivity {
 //        if(!Constants.VERSION)  App.getInstance().sendBroadcast(Constants.TYPE_CAMERA,true);
         advertiseFlag = true;
         sendAdvertiseDelaySignal();
-        if(CameraManager.getInstance().getSurfaceTexture()==null) CameraManager.getInstance().openCamera(tvCamera, cameraListener);
     }
 
     @Override

@@ -63,7 +63,7 @@ public class CameraManager {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            listener.onCameraOpen(null, "异常");
+            listener.onCameraOpen(null, "异常: "+e);
         }
     }
 
