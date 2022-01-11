@@ -186,7 +186,6 @@ public class VerifyActivity extends BaseActivity {
         }else {
             setContentView(R.layout.activity_verify2);
         }
-        //String tip=CameraManager.getInstance().setORIENTATION();
         ButterKnife.bind(this);
         initWindow();
         initDialog();
@@ -216,8 +215,6 @@ public class VerifyActivity extends BaseActivity {
     public void onResume() {
         super.onResume();
         Log.e("VerifyActivity",":onResume");
-//        if(!Constants.VERSION) App.getInstance().sendBroadcast(Constants.TYPE_ID_FP,true);
-//        if(!Constants.VERSION)  App.getInstance().sendBroadcast(Constants.TYPE_CAMERA,true);
         advertiseFlag = true;
         sendAdvertiseDelaySignal();
     }
@@ -234,10 +231,6 @@ public class VerifyActivity extends BaseActivity {
     protected void onStop() {
         super.onStop();
         Log.e("VerifyActivity",":OnStop");
-//        MXLiveDetectApi mxLiveDetectApi;
-//        mxLiveDetectApi = MXLiveDetectApi.INSTANCE;
-//        mxLiveDetectApi.free();
-//        CameraManager.getInstance().setSurfaceTexture();
         if(!Constants.VERSION)App.getInstance().sendBroadcast(Constants.TYPE_LED,false);
         CardManager.getInstance().closeReadCard();
         EventBus.getDefault().unregister(this);
@@ -258,10 +251,6 @@ public class VerifyActivity extends BaseActivity {
             updatePresenter.doDestroy();
             updatePresenter = null;
         }
-//        if(!Constants.VERSION){
-//            App.getInstance().sendBroadcast(Constants.TYPE_CAMERA,false);
-//            App.getInstance().sendBroadcast(Constants.TYPE_ID_FP,false);
-//        }
         tvCamera.setDrawingCacheEnabled(false);
         CameraManager.getInstance().closeCamera();
         ServerManager.getInstance().stopServer();
@@ -641,7 +630,7 @@ public class VerifyActivity extends BaseActivity {
         asyncHandler.post(advertiseRunnable);
     }
 
-    private Runnable advertiseRunnable = new Runnable() {
+    private final Runnable advertiseRunnable = new Runnable() {
         @Override
         public void run() {
             try {

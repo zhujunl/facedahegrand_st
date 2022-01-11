@@ -4,7 +4,6 @@ import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.TextureView;
 
 import java.io.IOException;
@@ -68,7 +67,7 @@ public class CameraManager {
     }
 
     private void openVisibleCamera() {
-        try {
+//        try {
             for (int i = 0; i < RETRY_TIMES; i++) {
                 if (camera==null){
                     camera = Camera.open(0);
@@ -79,15 +78,12 @@ public class CameraManager {
                 }
             }
             Camera.Parameters parameters = camera.getParameters();
-            for (int i=0;i<parameters.getSupportedPictureSizes().size();i++){
-                Log.d("Camera_edPrevi()",i+"="+parameters.getSupportedPictureSizes().get(i).height+"*"+parameters.getSupportedPictureSizes().get(i).width+"="+parameters.getSupportedPictureSizes().get(i).height*parameters.getSupportedPictureSizes().get(i).width);
+            for (int i=0;i<parameters.getSupportedPreviewSizes().size();i++){
                 if(parameters.getSupportedPreviewSizes().get(i).width*parameters.getSupportedPreviewSizes().get(i).height>307200){
                     ORIENTATION=0;
                     break;
                 }
             }
-            List<Camera.Size> pic=parameters.getSupportedPictureSizes();
-            List<Camera.Size> p=parameters.getSupportedPreviewSizes();
             parameters.setPreviewSize(PRE_WIDTH, PRE_HEIGHT);
             parameters.setPictureSize(PIC_WIDTH, PIC_HEIGHT);
             //对焦模式设置
@@ -105,15 +101,15 @@ public class CameraManager {
             camera.setDisplayOrientation(ORIENTATION);
             camera.setPreviewCallback(visiblePreviewCallback);
             camera.startPreview();
-        } catch (Exception e) {
-            e.printStackTrace();
-//            new Thread(() -> {
-//                if (retryTime <= RETRY_TIMES) {
-//                    retryTime++;
-//                    openVisibleCamera();
-//                }
-//            }).start();
-        }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+////            new Thread(() -> {
+////                if (retryTime <= RETRY_TIMES) {
+////                    retryTime++;
+////                    openVisibleCamera();
+////                }
+////            }).start();
+//        }
     }
 
     public void closeCamera() {
@@ -180,7 +176,7 @@ public class CameraManager {
         }
     };
 
-    private Camera.PreviewCallback visiblePreviewCallback = (data, camera) -> {
+    private final Camera.PreviewCallback visiblePreviewCallback = (data, camera) -> {
         lastCameraCallBackTime = System.currentTimeMillis();
         FaceManager.getInstance().setLastVisiblePreviewData(data);
     };
@@ -199,7 +195,7 @@ public class CameraManager {
                     Thread.sleep(1000);
                     if (monitorFlag) {
                         long cur = System.currentTimeMillis();
-                        if ((cur - lastCameraCallBackTime) >= ConfigManager.getInstance().getConfig().getIntervalTime() * 1000) {
+                        if ((cur - lastCameraCallBackTime) >= ConfigManager.getInstance().getConfig().getIntervalTime() * 1000L) {
                             if (listener != null) {
                                 if (!Constants.VERSION) {
                                     App.getInstance().sendBroadcast(Constants.TYPE_CAMERA, true);
@@ -229,42 +225,4 @@ public class CameraManager {
         monitorFlag = false;
     }
 
-    public  String  setORIENTATION(){
-        try {
-            for (int i = 0; i < RETRY_TIMES; i++) {
-                if (camera==null){
-                    camera = Camera.open(0);
-                    if (camera!=null){
-                        break;
-                    }
-                    SystemClock.sleep(100);
-                }
-            }
-            if (camera!=null){
-                Camera.Parameters parameters = camera.getParameters();
-                for (int i=0;i<parameters.getSupportedPictureSizes().size();i++){
-                    Log.d("Camera_edPrevi()",i+"="+parameters.getSupportedPictureSizes().get(i).height+"*"+parameters.getSupportedPictureSizes().get(i).width+"="+parameters.getSupportedPictureSizes().get(i).height*parameters.getSupportedPictureSizes().get(i).width);
-                    if(parameters.getSupportedPreviewSizes().get(i).width*parameters.getSupportedPreviewSizes().get(i).height>307200){
-                        ORIENTATION=0;
-                        break;
-                    }
-                }
-                return null;
-            }else {
-                return "摄像头打开失败1";
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-            return "摄像头打开失败2";
-        }
-
-    }
-
-    public  void setSurfaceTexture(){
-        surfaceTexture=null;
-    }
-
-    public  SurfaceTexture getSurfaceTexture(){
-        return surfaceTexture;
-    }
 }
