@@ -408,7 +408,7 @@ public class SettingActivity extends BaseActivity {
 ////                Face_App.timerTask.run();
 //            }
 //        }).start();
-        App.getInstance().getThreadExecutor().execute(() -> TaskManager.getInstance().task());
+        App.getInstance().getThreadExecutor().execute(() -> TaskManager.getInstance().task(this));
         btnClearNow.setEnabled(false);
         ToastManager.toast("任务已开始执行");
     }

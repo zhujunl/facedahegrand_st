@@ -1,13 +1,17 @@
 package com.miaxis.face.presenter;
 
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInstaller;
 import android.net.Uri;
+import android.os.Build;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.core.content.FileProvider;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
@@ -25,6 +29,7 @@ import com.miaxis.face.util.LogUtil;
 import com.miaxis.face.util.MyUtil;
 import com.miaxis.face.util.PatternUtil;
 import com.miaxis.face.view.activity.SettingActivity;
+import com.miaxis.face.view.activity.VerifyActivity;
 
 import java.io.File;
 
@@ -66,15 +71,15 @@ public class UpdatePresenter {
                     Toast.makeText(context, "更新请求Url连接失败", Toast.LENGTH_SHORT).show();
                 });
     }
-    public void checkUpdate() {
-        Log.d("Task====","checkUpdate");
-        String updateUrl = config.getUpdateUrl();
-        checkUpdate(updateUrl)
-                .subscribe(this::onUpdateDataDownSync, throwable -> {
-                    throwable.printStackTrace();
-                    Log.e("asd", "" + throwable.getMessage());
-                });
-    }
+//    public void checkUpdate() {
+//        Log.d("Task====","checkUpdate");
+//        String updateUrl = config.getUpdateUrl();
+//        checkUpdate(updateUrl)
+//                .subscribe(this::onUpdateDataDownSync, throwable -> {
+//                    throwable.printStackTrace();
+//                    Log.e("asd", "" + throwable.getMessage());
+//                });
+//    }
 
 
 
@@ -227,8 +232,23 @@ public class UpdatePresenter {
     private void installApk(File file) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
-        context.startActivity(intent);
+        Log.e("intent.getFlags()",""+intent.getFlags());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            Uri contentUri = FileProvider.getUriForFile(context, "com.miaxis.faceid_cw.fileprovider", file);
+            intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
+            Log.e("intent.getFlags()",""+  context);
+            if (context instanceof VerifyActivity || context instanceof SettingActivity){
+                context.startActivity(intent);
+            }else {
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            }
+
+        } else {
+            intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+            context.startActivity(intent);
+        }
     }
 
     public void doDestroy() {

@@ -4,6 +4,7 @@ import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.TextureView;
 
 import java.io.IOException;
@@ -78,12 +79,15 @@ public class CameraManager {
                 }
             }
             Camera.Parameters parameters = camera.getParameters();
-            for (int i=0;i<parameters.getSupportedPreviewSizes().size();i++){
-                if(parameters.getSupportedPreviewSizes().get(i).width*parameters.getSupportedPreviewSizes().get(i).height>307200){
-                    ORIENTATION=0;
-                    break;
-                }
+            List<Camera.Size> supportedPreviewSizes = parameters.getSupportedPreviewSizes();
+            int maxWidth = 0;
+            int maxHeight = 0;
+            for (Camera.Size size : supportedPreviewSizes) {
+                maxWidth = Math.max(size.width, maxWidth);
+                maxHeight = Math.max(size.height, maxHeight);
+                Log.e("CameraPreview: ", size.width + "x" + size.height);
             }
+            ORIENTATION = maxWidth * maxHeight >= (200 * 10000) ? 0 : (!Constants.VERSION?0:180);
             parameters.setPreviewSize(PRE_WIDTH, PRE_HEIGHT);
             parameters.setPictureSize(PIC_WIDTH, PIC_HEIGHT);
             //对焦模式设置

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.liulishuo.filedownloader.FileDownloader;
@@ -70,7 +71,6 @@ public class App extends Application {
             initHsIdPhotoDecodeLib();
             TTSManager.getInstance().init(this);
 //            AdvertManager.getInstance().init();
-            TaskManager.getInstance().init();
             //TODO:定时续传日志，清理
             int result = Constants.VERSION?FaceManager.getInstance().initFaceST4(this):FaceManager.getInstance().initFaceST_11(this);
             if(Constants.VERSION){

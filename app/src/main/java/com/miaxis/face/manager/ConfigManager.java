@@ -89,6 +89,10 @@ public class ConfigManager {
                 config.setVerifyMode(Config.MODE_FACE_ONLY);
                 ConfigModel.saveConfig(config);
             }
+            if(TextUtils.isEmpty(String.valueOf(config.getQualityScore()))||config.getQualityScore()==0){
+                config.setQualityScore(Constants.DEFAULT_QUALITY_SCORE);
+                ConfigModel.saveConfig(config);
+            }
         }
     }
 

@@ -2,6 +2,7 @@ package com.miaxis.face.manager;
 
 import static com.miaxis.face.constant.Constants.DELAYList;
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -47,9 +48,11 @@ public class TaskManager {
     public static TimerTask timerTask;
     private Config config;
     private ScheduledExecutorService scheduledExecutorService;
+    private Context context;
 
-    public void init() {
+    public void init(Context context) {
         startTask();
+        this.context=context;
     }
 
     private void initTask() {
@@ -57,12 +60,13 @@ public class TaskManager {
         timerTask = new TimerTask() {
             @Override
             public void run() {
-                task();
+                task(context);
             }
         };
     }
 
-    public void task() {
+    public void task(Context con) {
+        context=con;
         Log.d("Task====","task");
         Config config = ConfigManager.getInstance().getConfig();
         if (config.getNetFlag() && config.getSequelFlag()) {
@@ -72,7 +76,7 @@ public class TaskManager {
             AdvertisePresenter.downloadAdvertiseUrl(config.getAdvertisementUrl());
         }
         App.getInstance().getThreadExecutor().execute(() -> {
-            new UpdatePresenter(App.getInstance()).checkUpdateSync();
+            new UpdatePresenter(context).checkUpdateSync();
         });
         //ClearService.startActionClear(App.getInstance());
         App.getInstance().getThreadExecutor().execute(()->{
@@ -95,6 +99,7 @@ public class TaskManager {
     }
 
     public void reSetTimer() {
+        Log.e("Taskmanager: ","重启");
         timerTask.cancel();
         initTask();
         timer.cancel();
@@ -136,6 +141,13 @@ public class TaskManager {
                 }
             }
         });
+    }
+
+    public void cancle(){
+        Log.e("Taskmanager: ","停止");
+        timerTask.cancel();
+        timer.cancel();
+        timer.purge();
     }
 
     public void close(){

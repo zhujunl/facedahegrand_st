@@ -73,6 +73,7 @@ import com.miaxis.face.manager.FaceManager;
 import com.miaxis.face.manager.GpioManager;
 import com.miaxis.face.manager.ServerManager;
 import com.miaxis.face.manager.TTSManager;
+import com.miaxis.face.manager.TaskManager;
 import com.miaxis.face.manager.ToastManager;
 import com.miaxis.face.manager.WatchDogManager;
 import com.miaxis.face.presenter.UpdatePresenter;
@@ -192,6 +193,7 @@ public class VerifyActivity extends BaseActivity {
         initData();
         initView();
         initTimeReceiver();
+        TaskManager.getInstance().init(this);
         updatePresenter.checkUpdateSync();
     }
 
@@ -217,6 +219,7 @@ public class VerifyActivity extends BaseActivity {
         Log.e("VerifyActivity",":onResume");
         advertiseFlag = true;
         sendAdvertiseDelaySignal();
+        TaskManager.getInstance().reSetTimer();
     }
 
     @Override
@@ -225,6 +228,7 @@ public class VerifyActivity extends BaseActivity {
         Log.e("VerifyActivity",":onPause");
         advertiseFlag = false;
         asyncHandler.removeCallbacks(advertiseRunnable);
+        TaskManager.getInstance().cancle();
     }
 
     @Override
@@ -277,7 +281,6 @@ public class VerifyActivity extends BaseActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         etPwd.setHint(ServerManager.getInstance().getHost());
         tvCamera.getViewTreeObserver().addOnGlobalLayoutListener(globalListener);
-        tvCamera.setRotationY(Constants.VERSION?180:0);
         rsvRect.bringToFront();
     }
 
@@ -297,6 +300,7 @@ public class VerifyActivity extends BaseActivity {
         public void onGlobalLayout() {
             tvCamera.getViewTreeObserver().removeOnGlobalLayoutListener(globalListener);
             CameraManager.getInstance().openCamera(tvCamera, cameraListener);
+            tvCamera.setRotationY(CameraManager.ORIENTATION);
         }
     };
     Handler handler=new Handler(Looper.getMainLooper());
@@ -855,5 +859,11 @@ public class VerifyActivity extends BaseActivity {
                 .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(view);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.e("resule:","re:"+requestCode+"---Code"+resultCode+"----Inte"+data);
     }
 }

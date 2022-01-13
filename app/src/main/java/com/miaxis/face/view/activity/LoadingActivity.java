@@ -1,7 +1,11 @@
 package com.miaxis.face.view.activity;
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.app.smdt.SmdtManager;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,6 +15,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresPermission;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.miaxis.face.R;
 import com.miaxis.face.app.App;
@@ -111,6 +120,31 @@ public class LoadingActivity extends BaseActivity {
         ivRecord.setVisibility(View.INVISIBLE);
     }
 
+    protected void initApplication(){
+        App.getInstance().getThreadExecutor().execute(() -> {
+            App.getInstance().initApplication((result, message) -> {
+                runOnUiThread(() -> {
+                    if (result) {
+                        tvLoading.setText("初始化算法成功，正在启动Http服务");
+                        App.getInstance().getThreadExecutor().execute(() -> {
+                            ServerManager.getInstance().startServer(25841, () -> {
+                                runOnUiThread(() -> {
+                                    ToastManager.toast("创建Http服务成功");
+                                    tvLoading.setText("初始化成功");
+                                    startActivity(new Intent(this, VerifyActivity.class));
+                                    finish();
+                                });
+                            });
+                        });
+                    } else {
+                        tvLoading.setText(message);
+                        LogUtil.writeLog(message);
+                        llTop.setVisibility(View.VISIBLE);
+                    }
+                });
+            });
+        });
+    }
     @Override
     protected void onDestroy() {
         Log.e("Loadin","onDestroy");
@@ -135,4 +169,126 @@ public class LoadingActivity extends BaseActivity {
         GpioManager.getInstance().reduction(this);
         finish();
     }
+
+    int targetSdkVersion = 0;
+    String[] PermissionString = {
+            Manifest.permission.INTERNET,
+            Manifest.permission.ACCESS_WIFI_STATE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.PROCESS_OUTGOING_CALLS,
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.READ_CONTACTS,
+            Manifest.permission.WRITE_CONTACTS,
+            Manifest.permission.RECEIVE_BOOT_COMPLETED,
+            Manifest.permission.SEND_SMS,
+            Manifest.permission.RECEIVE_SMS,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.KILL_BACKGROUND_PROCESSES,
+            Manifest.permission.GET_PACKAGE_SIZE,
+            Manifest.permission.VIBRATE,
+            Manifest.permission.CALL_PHONE,
+            Manifest.permission.WAKE_LOCK,
+            Manifest.permission.CHANGE_WIFI_STATE,
+            Manifest.permission.ACCESS_NETWORK_STATE,
+            Manifest.permission.SYSTEM_ALERT_WINDOW,
+            Manifest.permission.GET_ACCOUNTS,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.BLUETOOTH_ADMIN,
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.BLUETOOTH,
+            Manifest.permission.DISABLE_KEYGUARD,
+            Manifest.permission.ACCESS_LOCATION_EXTRA_COMMANDS,
+            Manifest.permission.CHANGE_NETWORK_STATE,
+            Manifest.permission.FOREGROUND_SERVICE,
+            Manifest.permission.CAMERA};
+
+    public void checkPermission() {
+        try {
+            final PackageInfo info = this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
+            targetSdkVersion = info.applicationInfo.targetSdkVersion;//获取应用的Target版本
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (targetSdkVersion >= Build.VERSION_CODES.M) {
+                    //第 1 步: 检查是否有相应的权限
+                    boolean isAllGranted = checkPermissionAllGranted(PermissionString);
+                    if (isAllGranted) {
+                        initApplication();
+                        return;
+                    }
+                    ActivityCompat.requestPermissions(this,PermissionString, 1);
+                }
+            }else {
+                initApplication();
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private boolean checkPermissionAllGranted(String[] permissions) {
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private AlertDialog mDialog;
+
+    //申请权限结果返回处理
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1) {
+            for (int i = 0; i < permissions.length; i++) {
+                //已授权
+                if (grantResults[i] ==  PackageManager.PERMISSION_GRANTED) {
+                    if(i==permissions.length-1){
+                        initApplication();
+                    }
+                    continue;
+                }
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[i])) {
+                    //选择禁止
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("授权");
+                    builder.setMessage("需要允许授权才可使用");
+                    int finalI = i;
+                    builder.setPositiveButton("去允许", (dialog, id) -> {
+                        if (mDialog != null && mDialog.isShowing()) {
+                            mDialog.dismiss();
+                        }
+                        ActivityCompat.requestPermissions(LoadingActivity.this, new String[]{permissions[finalI]}, 1);
+                    });
+                    mDialog = builder.create();
+                    mDialog.setCanceledOnTouchOutside(false);
+                    mDialog.show();
+                }
+                else {
+                    //选择禁止并勾选禁止后不再询问
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("授权");
+                    builder.setMessage("需要允许授权才可使用");
+                    builder.setPositiveButton("去授权", (dialog, id) -> {
+                        if (mDialog != null && mDialog.isShowing()) {
+                            mDialog.dismiss();
+                        }
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        Uri uri = Uri.fromParts("package", getPackageName(), null);
+                        intent.setData(uri);
+                        //调起应用设置页面
+                        startActivityForResult(intent, 2);
+                    });
+                    mDialog = builder.create();
+                    mDialog.setCanceledOnTouchOutside(false);
+                    mDialog.show();
+                }
+            }
+        }else {
+            initApplication();
+        }
+    }
+
 }

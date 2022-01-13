@@ -306,7 +306,7 @@ private String TAG="verify";
 
     private void extract(Intermediary intermediary) throws Exception {
         if (needNextFeature) {
-            Log.e("asd", "提特征中");
+            Log.e("asd", "提特征中"+"_____人脸质量："+intermediary.mxFaceInfoEx.quality);
             Config config = ConfigManager.getInstance().getConfig();
             if (intermediary.mxFaceInfoEx.quality > config.getQualityScore()) {
                 byte[] feature = extractFeature(intermediary.data, zoomWidth, zoomHeight, intermediary.mxFaceInfoEx);
