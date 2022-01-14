@@ -1,5 +1,6 @@
 package com.miaxis.face.presenter;
 
+import android.Manifest;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -7,11 +8,14 @@ import android.content.pm.PackageInstaller;
 import android.net.Uri;
 import android.os.Build;
 import android.os.SystemClock;
+import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.core.content.FileProvider;
+
+
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
@@ -24,6 +28,7 @@ import com.miaxis.face.exception.MyException;
 import com.miaxis.face.manager.ConfigManager;
 import com.miaxis.face.manager.ToastManager;
 import com.miaxis.face.net.FaceNetApi;
+import com.miaxis.face.util.DateUtil;
 import com.miaxis.face.util.FileUtil;
 import com.miaxis.face.util.LogUtil;
 import com.miaxis.face.util.MyUtil;
@@ -32,6 +37,8 @@ import com.miaxis.face.view.activity.SettingActivity;
 import com.miaxis.face.view.activity.VerifyActivity;
 
 import java.io.File;
+import java.lang.reflect.Field;
+import java.util.Date;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -142,6 +149,16 @@ public class UpdatePresenter {
             if (updateData != null) {
                 String curVersion = MyUtil.getCurVersion(context);
                 if (!TextUtils.equals(updateData.getVersion(), curVersion)) {
+                    File file=new File(FileUtil.FACE_MAIN_PATH );
+                    File[] files=file.listFiles();
+                    long max=0;
+                    for (File f:files){
+                        if(f.getName().contains(updateData.getVersion())&&!f.getName().contains(".temp")) {
+                            Date date=new Date(f.lastModified());
+                            max= Math.max(max,date.getTime());
+                            Log.e("files==", "=" + f.getName()+"   时间:"+ DateUtil.toAll(date)+"毫秒："+date.getTime());
+                        }
+                    }
                     downloadFile(updateData.getUrl(), FileUtil.FACE_MAIN_PATH + File.separator + updateData.getVersion() + "_" + System.currentTimeMillis() + ".apk");
                 }
             }
@@ -230,6 +247,9 @@ public class UpdatePresenter {
     }
 
     private void installApk(File file) {
+        if(file.getName().contains(MyUtil.getCurVersion(context))){
+            return;
+        }
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Log.e("intent.getFlags()",""+intent.getFlags());

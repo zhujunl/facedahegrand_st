@@ -43,7 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp" />
 
-        <androidx.core.widget.ContentLoadingProgressBar
+        <android.support.v4.widget.ContentLoadingProgressBar
             android:visibility="gone"
             android:layout_weight="1"
             android:id="@+id/pb_update"

@@ -1,6 +1,8 @@
 package com.miaxis.face.view.fragment;
 
-import androidx.core.widget.ContentLoadingProgressBar;
+
+
+import android.support.v4.widget.ContentLoadingProgressBar;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -64,7 +66,7 @@ public class HttpConnUtils {
 
 	}
 	public  static File downFile(String filepath,
-                                 ContentLoadingProgressBar pd, String curl) {
+								 ContentLoadingProgressBar pd, String curl) {
 		try {
 			URL url = new URL(curl);
 			File file = new File(filepath);

@@ -1,8 +1,9 @@
 package com.miaxis.face.manager;
 
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import androidx.annotation.NonNull;
+
 
 import com.miaxis.face.app.App;
 import com.miaxis.face.bean.Config;

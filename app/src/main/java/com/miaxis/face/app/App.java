@@ -3,11 +3,14 @@ package com.miaxis.face.app;
 import android.app.Activity;
 import android.app.Application;
 import android.app.smdt.SystemLogcat;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.multidex.MultiDex;
 import android.util.Log;
 
 import com.liulishuo.filedownloader.FileDownloader;
@@ -32,8 +35,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import androidx.annotation.NonNull;
-import androidx.multidex.MultiDex;
+
 
 public class App extends Application {
 
@@ -51,6 +53,12 @@ public class App extends Application {
         MultiDex.install(this);
     }
 
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
+
     public static App getInstance() {
         return instance;
     }
@@ -59,6 +67,7 @@ public class App extends Application {
         Log.e("Loadin_App","initApplication");
         try {
             FileUtil.initDirectory(this);
+            FileUtil.ClearAPK(this);
             DaoManager.getInstance().initDbHelper(getApplicationContext(), "FaceDahe_New.db");
             WatchDogManager.getInstance().init(this);
             CrashExceptionManager.getInstance().init(this);

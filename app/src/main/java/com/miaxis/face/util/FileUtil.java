@@ -27,6 +27,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Date;
 
 /**
  * Created by Administrator on 2017/5/21 0021.
@@ -559,4 +560,16 @@ public class FileUtil {
         return result;
     }
 
+    public static void ClearAPK(Context context){
+        File file=new File(FileUtil.FACE_MAIN_PATH );
+        if(!file.exists()){
+            return;
+        }
+        File[] files=file.listFiles();
+        for (File f:files){
+            if(f.getName().contains(MyUtil.getCurVersion(context))&&f.getName().contains(".apk")) {
+                f.delete();
+            }
+        }
+    }
 }

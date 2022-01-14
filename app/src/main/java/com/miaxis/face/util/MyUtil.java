@@ -6,10 +6,11 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
+import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.util.Base64;
 
-import androidx.fragment.app.FragmentManager;
+
 
 import com.google.gson.Gson;
 import com.miaxis.face.bean.Version;

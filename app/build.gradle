@@ -9,7 +9,7 @@ android {
         targetSdkVersion 28
         versionCode 11
         versionName "1.1.2_Dahe_New_ST"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
 
         ndk {
@@ -63,23 +63,29 @@ greendao {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.google.android.material:material:1.3.0'
-    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
+//Androidx    implementation 'com.google.android.material:material:1.3.0'
+    implementation 'com.android.support:design:28.0.0'
+//    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
+//        exclude group: 'com.android.support', module: 'support-annotations'
+//    })
 
-//    implementation 'com.android.support:appcompat-v7:28.0.0'
-//    implementation 'com.android.support.constraint:constraint-layout:2.0.4'
-//    testImplementation 'junit:junit:4.+'
-//    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-//    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
 
     //network - squareup
-    implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation 'androidx.recyclerview:recyclerview:1.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'com.jakewharton:butterknife:10.1.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
+//    implementation 'androidx.appcompat:appcompat:1.0.2'
+//    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+//    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:2.0.4'
+    implementation 'com.android.support:recyclerview-v7'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+//Androidx    implementation 'com.jakewharton:butterknife:10.1.0'
+//    annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
+    implementation 'com.jakewharton:butterknife:8.5.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+
     implementation 'org.greenrobot:greendao:3.3.0'
     implementation 'org.greenrobot:greendao-generator:3.3.0'
     implementation 'com.github.yuweiguocn:GreenDaoUpgradeHelper:v2.1.0'
@@ -94,8 +100,12 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.12.0'
     testImplementation 'junit:junit:4.12'
     implementation 'com.afollestad.material-dialogs:commons:0.9.6.0'
-    implementation 'com.github.bumptech.glide:glide:4.10.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
+
+//Androidx    implementation 'com.github.bumptech.glide:glide:4.10.0'
+//    annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
+    implementation 'com.github.bumptech.glide:glide:4.7.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
+
     implementation 'com.youth.banner:banner:1.4.10'
     implementation 'com.annimon:stream:1.2.1'
     implementation 'com.afollestad.material-dialogs:commons:0.9.6.0'
@@ -105,7 +115,9 @@ dependencies {
     implementation 'com.github.anrwatchdog:anrwatchdog:1.4.0'
     implementation 'org.apache.commons:commons-lang3:3.7'
     //Multidex
-    implementation 'androidx.multidex:multidex:2.0.1'
+//Androidx    implementation 'androidx.multidex:multidex:2.0.1'
+    implementation 'com.android.support:multidex:1.0.3'
+
     implementation files('src/main/libs/SM80FingerAPI.jar')
     implementation files('src/main/libs/IDCard_HID_Driver.jar')
     implementation files('src/main/libs/AMap_Location_V4.5.0_20190121.jar')

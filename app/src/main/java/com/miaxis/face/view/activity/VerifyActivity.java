@@ -25,6 +25,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseIntArray;
@@ -44,7 +45,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
+
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amap.api.services.weather.LocalWeatherLive;
@@ -59,6 +60,7 @@ import com.miaxis.face.BuildConfig;
 import com.miaxis.face.R;
 import com.miaxis.face.app.App;
 import com.miaxis.face.app.Face_App;
+import com.miaxis.face.app.GlideApp;
 import com.miaxis.face.bean.Config;
 import com.miaxis.face.bean.IDCardRecord;
 import com.miaxis.face.bean.Task;
@@ -220,6 +222,7 @@ public class VerifyActivity extends BaseActivity {
         advertiseFlag = true;
         sendAdvertiseDelaySignal();
         TaskManager.getInstance().reSetTimer();
+        controlAdvertDialog(false);
     }
 
     @Override
@@ -322,7 +325,7 @@ public class VerifyActivity extends BaseActivity {
                 rsvRect.setZoomRate((float) rootWidth / FaceManager.zoomWidth);
                 handler.postDelayed(() -> {
                     try {
-                        if (advertiseDialog.isVisible()) {
+                        if (advertiseDialog!=null) {
                             advertiseDialog.dismiss();
                         }
                     } catch (Exception e) {
@@ -845,7 +848,7 @@ public class VerifyActivity extends BaseActivity {
     }
 
     private void showGif(int rawId, ImageView view) {
-        Glide.with(this).load(rawId).listener(new RequestListener<Drawable>() {
+        GlideApp.with(this).load(rawId).listener(new RequestListener<Drawable>() {
             @Override
             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                 return false;
@@ -861,9 +864,4 @@ public class VerifyActivity extends BaseActivity {
                 .into(view);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.e("resule:","re:"+requestCode+"---Code"+resultCode+"----Inte"+data);
-    }
 }

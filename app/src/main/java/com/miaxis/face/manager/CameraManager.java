@@ -4,13 +4,13 @@ import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.TextureView;
 
 import java.io.IOException;
 import java.util.List;
 
-import androidx.annotation.NonNull;
 
 import com.miaxis.face.app.App;
 import com.miaxis.face.constant.Constants;

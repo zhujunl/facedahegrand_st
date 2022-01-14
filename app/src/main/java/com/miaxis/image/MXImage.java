@@ -2,9 +2,9 @@ package com.miaxis.image;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.IntDef;
+import android.support.annotation.NonNull;
 
-import androidx.annotation.IntDef;
-import androidx.annotation.NonNull;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

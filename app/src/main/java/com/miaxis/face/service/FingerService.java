@@ -3,7 +3,8 @@ package com.miaxis.face.service;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
-import androidx.annotation.Nullable;
+
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
