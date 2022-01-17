@@ -222,7 +222,6 @@ public class VerifyActivity extends BaseActivity {
         advertiseFlag = true;
         sendAdvertiseDelaySignal();
         TaskManager.getInstance().reSetTimer();
-        controlAdvertDialog(false);
     }
 
     @Override
