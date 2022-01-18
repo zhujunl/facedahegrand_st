@@ -31,7 +31,7 @@ public class MXFaceAPI {
 	public int mxInitAlg(Context context, String szModelPath, String szLicense)
 	{
 		int nRet = 0;
-		nRet = m_dllFaceApi.initAlg(context,szModelPath,szLicense);
+		nRet = m_dllFaceApi.initAlg(context,szModelPath,"");
 		if(nRet!=0){
 			return nRet;
 		}

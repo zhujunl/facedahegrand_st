@@ -81,7 +81,7 @@ public class App extends Application {
             TTSManager.getInstance().init(this);
 //            AdvertManager.getInstance().init();
             //TODO:定时续传日志，清理
-            int result = Constants.VERSION?FaceManager.getInstance().initFaceST4(this):FaceManager.getInstance().initFaceST_11(this);
+            int result = FaceManager.getInstance().initFaceST_11(this);
             if(Constants.VERSION){
                 GpioManager.getInstance().init(this);
             }else{
