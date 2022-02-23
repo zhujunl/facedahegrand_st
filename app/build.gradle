@@ -7,8 +7,8 @@ android {
         applicationId "com.miaxis.faceid_cw"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 11
-        versionName "1.1.3_Dahe_New_ST"
+        versionCode 12
+        versionName "1.1.4_Dahe_New_ST_HaiNan"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
 
@@ -36,12 +36,14 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField 'int', 'EQUIPMENT_TYPE', '1'//1是通用，2是定制
+            buildConfigField 'int','EQUIPMENT_PLACE', '1'//1是海南，2是河南
             signingConfig signingConfigs.debug
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField 'int', 'EQUIPMENT_TYPE', '1'
+            buildConfigField 'int','EQUIPMENT_PLACE', '1'//1是海南，2是河南（别忘改名字）
             signingConfig signingConfigs.release
         }
     }
@@ -119,9 +121,10 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3'
 
     implementation files('src/main/libs/SM80FingerAPI.jar')
-    implementation files('src/main/libs/IDCard_HID_Driver.jar')
+    //implementation files('src/main/libs/IDCard_HID_Driver.jar')
     implementation files('src/main/libs/AMap_Location_V4.5.0_20190121.jar')
     implementation files('src/main/libs/AMap_Search_V6.5.0_20180930.jar')
     implementation files('src/main/libs/MXFingerDriver.jar')
     implementation files('src/main/libs/smdt.jar')
+    implementation files('src/main/libs/IDCard_HID_Driver_New.jar')
 }

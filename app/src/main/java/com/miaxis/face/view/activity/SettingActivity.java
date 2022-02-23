@@ -2,12 +2,19 @@ package com.miaxis.face.view.activity;
 
 import static com.miaxis.face.constant.Constants.DELAYList;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -19,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.miaxis.face.R;
+import com.miaxis.face.view.custom.ClickControlledSpinner;
 import com.miaxis.face.app.App;
 import com.miaxis.face.bean.Config;
 import com.miaxis.face.constant.Constants;
@@ -31,8 +39,11 @@ import com.miaxis.face.manager.TaskManager;
 import com.miaxis.face.manager.ToastManager;
 import com.miaxis.face.net.FaceNetApi;
 import com.miaxis.face.presenter.UpdatePresenter;
+import com.miaxis.face.view.custom.LimitEditText;
+import com.miaxis.face.view.custom.LimitInputTextWatcher;
 import com.miaxis.face.util.MyUtil;
 import com.miaxis.face.util.PatternUtil;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -59,7 +70,7 @@ public class SettingActivity extends BaseActivity {
     @BindView(R.id.et_client_id)
     EditText etClientId;
     @BindView(R.id.s_verify_mode)
-    Spinner sVerifyMode;
+    ClickControlledSpinner sVerifyMode;
     @BindView(R.id.rb_net_on)
     RadioButton rbNetOn;
     @BindView(R.id.rb_net_off)
@@ -125,11 +136,11 @@ public class SettingActivity extends BaseActivity {
     @BindView(R.id.rg_advertise_mode)
     RadioGroup rgAdvertiseMode;
     @BindView(R.id.et_verify_score)
-    EditText etVerifyScore;
+    LimitEditText etVerifyScore;
     @BindView(R.id.et_quality_score)
-    EditText etQualityScore;
+    LimitEditText etQualityScore;
     @BindView(R.id.et_liveness_quality_score)
-    EditText etLivenessQualityScore;
+    LimitEditText etLivenessQualityScore;
     @BindView(R.id.tv_select_time)
     TextView tvSelectTime;
     @BindView(R.id.btn_clear_now)
@@ -137,15 +148,15 @@ public class SettingActivity extends BaseActivity {
     @BindView(R.id.tv_result_count)
     TextView tvResultCount;
     @BindView(R.id.et_monitor_interval)
-    EditText etMonitorInterval;
+    LimitEditText etMonitorInterval;
     @BindView(R.id.et_title_str)
-    EditText etTitleStr;
+    LimitEditText etTitleStr;
     @BindView(R.id.et_org_name)
-    EditText etOrgName;
+    LimitEditText etOrgName;
     @BindView(R.id.et_pwd)
-    EditText etPwd;
+    LimitEditText etPwd;
     @BindView(R.id.et_advertise_delay_time)
-    EditText etAdvertiseDelayTime;
+    LimitEditText etAdvertiseDelayTime;
     @BindView(R.id.btn_white_manage)
     Button btnWhiteManage;
     @BindView(R.id.btn_black_manage)
@@ -172,6 +183,8 @@ public class SettingActivity extends BaseActivity {
 
     private UpdatePresenter updatePresenter;
 
+    private LimitEditText.Tage tage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -197,6 +210,34 @@ public class SettingActivity extends BaseActivity {
         }
         ArrayAdapter<String> myAdapter = new ArrayAdapter<>(this, R.layout.spinner_style_display, R.id.tvDisplay, verifyModeList);
         sVerifyMode.setAdapter(myAdapter);
+        sVerifyMode.setOnClickMyListener(()->{
+            if(sVerifyMode.getDialog()){
+                final EditText et = new EditText(SettingActivity.this);
+                et.setInputType(0x00000012);//键盘设置为密码键盘
+                AlertDialog.Builder builder = new AlertDialog.Builder(SettingActivity.this);
+                builder.setTitle("请输入二次密码")
+                        .setView(et)
+                        .setCancelable(false)
+                        .setPositiveButton("确定", (anInterface, i) -> {
+                            if(et.getText().toString().trim().equals("556677")){
+                                sVerifyMode.setDialog(false);
+                                sVerifyMode.performClick();
+                                builder.create().dismiss();
+                            }else {
+                                ToastManager.toast("二次密码错误");
+                            }
+                            et.setText("");
+                            hide_keyboard_from(et);
+                        })
+                        .setNegativeButton("取消", (anInterface, i) -> {
+                            et.setText("");
+                            hide_keyboard_from(et);
+                            builder.create().dismiss();
+                        })
+                        .create().show();
+            }
+        });
+
         sVerifyMode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -209,10 +250,12 @@ public class SettingActivity extends BaseActivity {
                         config.setVerifyMode(Config.MODE_FACE_ONLY);
                     }
                 }
+                sVerifyMode.setDialog(true);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
+                sVerifyMode.setDialog(true);
                 config.setVerifyMode(0);
             }
         });
@@ -238,14 +281,22 @@ public class SettingActivity extends BaseActivity {
         config = ConfigManager.getInstance().getConfig();
         hasFingerDevice = FingerManager.getInstance().checkHasFingerDevice();
         updatePresenter = new UpdatePresenter(this);
+        tage= (bo, view) -> {
+            if(bo){
+                showDialog(view);
+            }
+        };
     }
 
     private void initView() {
 //        GpioManager.getInstance().setSmdtStatusBar(this, false);
         tvVersion.setText(MyUtil.getCurVersion(this));
         etUpdateUrl.setText(config.getUpdateUrl());
+        etUpdateUrl.addTextChangedListener(new LimitInputTextWatcher(etUpdateUrl));
         etUploadUrl.setText(config.getUploadRecordUrl());
+        etUploadUrl.addTextChangedListener(new LimitInputTextWatcher(etUploadUrl));
         etAdvertisementUrl.setText(config.getAdvertisementUrl());
+        etAdvertisementUrl.addTextChangedListener(new LimitInputTextWatcher(etAdvertisementUrl));
         tvDeviceSerial.setText(config.getDeviceSerialNumber());
         etClientId.setText(config.getClientId());
         if (hasFingerDevice) {
@@ -295,6 +346,14 @@ public class SettingActivity extends BaseActivity {
                 tvResultCount.setText(notUpCount + " / " + count);
             });
         });
+        etVerifyScore.setTageListener(tage,etVerifyScore);
+        etQualityScore.setTageListener(tage,etQualityScore);
+        etLivenessQualityScore.setTageListener(tage,etLivenessQualityScore);
+        etMonitorInterval.setTageListener(tage,etMonitorInterval);
+        etTitleStr.setTageListener(tage,etTitleStr);
+        etOrgName.setTageListener(tage,etOrgName);
+        etPwd.setTageListener(tage,etPwd);
+        etAdvertiseDelayTime.setTageListener(tage,etAdvertiseDelayTime);
     }
 
     @OnClick(R.id.tv_select_time)
@@ -408,9 +467,33 @@ public class SettingActivity extends BaseActivity {
 ////                Face_App.timerTask.run();
 //            }
 //        }).start();
-        App.getInstance().getThreadExecutor().execute(() -> TaskManager.getInstance().task(this));
-        btnClearNow.setEnabled(false);
-        ToastManager.toast("任务已开始执行");
+        if(sVerifyMode.getDialog()){
+            final EditText et = new EditText(SettingActivity.this);
+            et.setInputType(0x00000012);//键盘设置为密码键盘
+            AlertDialog.Builder builder = new AlertDialog.Builder(SettingActivity.this);
+            builder.setTitle("请输入二次密码")
+                    .setView(et)
+                    .setCancelable(false)
+                    .setPositiveButton("确定", (anInterface, i) -> {
+                        if(et.getText().toString().trim().equals("556677")){
+                            App.getInstance().getThreadExecutor().execute(() -> TaskManager.getInstance().task(this));
+                            btnClearNow.setEnabled(false);
+                            ToastManager.toast("任务已开始执行");
+                            builder.create().dismiss();
+                        }else {
+                            ToastManager.toast("二次密码错误");
+                        }
+                        et.setText("");
+                        hide_keyboard_from(et);
+                    })
+                    .setNegativeButton("取消", (anInterface, i) -> {
+                        et.setText("");
+                        hide_keyboard_from(et);
+                        builder.create().dismiss();
+                    })
+                    .create().show();
+        }
+
     }
 
     @OnClick(R.id.btn_update)
@@ -455,5 +538,87 @@ public class SettingActivity extends BaseActivity {
         }
     }
 
+    private void showDialog(LimitEditText edit) {
+        final EditText et = new EditText(this);
+        String string=edit.getString();
+        et.setInputType(0x00000012);//键盘设置为密码键盘
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("请输入二次密码")
+                .setView(et)
+                .setCancelable(false)
+                .setPositiveButton("确定", (anInterface, i) -> {
+                    if(et.getText().toString().trim().equals("556677")){
+                        edit.setTage(true);
+                        builder.create().dismiss();
+                    }else {
+                        edit.setText(string);
+                        edit.setTage(false);
+                        edit.editflag=0;
+                        ToastManager.toast("二次密码错误");
+                    }
+                    et.setText("");
+                    hide_keyboard_from(et);
+                })
+                .setNegativeButton("取消", (anInterface, i) -> {
+                    edit.setText(string);
+                    et.setText("");
+                    hide_keyboard_from(et);
+                    edit.setTage(false);
+                    edit.editflag=0;
+                    builder.create().dismiss();
+                })
+                .create().show();
+    }
+
+    public void hide_keyboard_from( View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            View v = getCurrentFocus();
+            if (isShouldHideInput(v, ev)) { //隐藏软键盘
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+
+            }
+            return super.dispatchTouchEvent(ev);
+        }
+        // 必不可少，否则所有的组件都不会有TouchEvent了
+        if (getWindow().superDispatchTouchEvent(ev)) {
+            return true;
+        }
+        return onTouchEvent(ev);
+    }
+
+    /**
+     * 判断当前点击的控件是否为EditText
+     * @param v
+     * @param event
+     * @return
+     */
+    public boolean isShouldHideInput(View v, MotionEvent event) {
+        if (v != null && (v instanceof EditText)) { //点击view==EditText
+            ((TextView) v).setCursorVisible(true);
+            int[] leftTop = {0, 0};
+            //获取输入框当前位置
+            v.getLocationInWindow(leftTop);
+            int left = leftTop[0];
+            int top = leftTop[1];
+            int bottom = top + v.getHeight();
+            int right = left + v.getWidth();
+            if (event.getX() > left && event.getX() < right && event.getY() > top && event.getY() < bottom) {
+                // 点击的是输入框区域，保留点击EditText的事件
+                return false;
+            } else {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

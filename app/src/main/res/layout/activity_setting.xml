@@ -159,7 +159,7 @@
 
                 <View style="@style/VerticalLine" />
 
-                <Spinner
+                <com.miaxis.face.view.custom.ClickControlledSpinner
                     android:id="@+id/s_verify_mode"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
@@ -175,7 +175,7 @@
 
                 <View style="@style/VerticalLine" />
 
-                <RadioGroup
+                <com.miaxis.face.view.custom.MyRadioGroup
                     android:id="@+id/rg_net"
                     style="@style/SettingRadioGroup">
 
@@ -195,7 +195,7 @@
 
                     <View style="@style/SpaceBody" />
 
-                </RadioGroup>
+                </com.miaxis.face.view.custom.MyRadioGroup>
 
             </LinearLayout>
 
@@ -206,7 +206,7 @@
 
                 <View style="@style/VerticalLine" />
 
-                <RadioGroup
+                <com.miaxis.face.view.custom.MyRadioGroup
                     android:id="@+id/rg_encrypt"
                     style="@style/SettingRadioGroup">
 
@@ -226,7 +226,7 @@
 
                     <View style="@style/SpaceBody" />
 
-                </RadioGroup>
+                </com.miaxis.face.view.custom.MyRadioGroup>
 
             </LinearLayout>
 
@@ -237,7 +237,7 @@
 
                 <View style="@style/VerticalLine" />
 
-                <RadioGroup
+                <com.miaxis.face.view.custom.MyRadioGroup
                     android:id="@+id/rg_result"
                     style="@style/SettingRadioGroup">
 
@@ -257,7 +257,7 @@
 
                     <View style="@style/SpaceBody" />
 
-                </RadioGroup>
+                </com.miaxis.face.view.custom.MyRadioGroup>
 
             </LinearLayout>
 
@@ -268,7 +268,7 @@
 
                 <View style="@style/VerticalLine" />
 
-                <RadioGroup
+                <com.miaxis.face.view.custom.MyRadioGroup
                     android:id="@+id/rg_sequel"
                     style="@style/SettingRadioGroup">
 
@@ -288,7 +288,7 @@
 
                     <View style="@style/SpaceBody" />
 
-                </RadioGroup>
+                </com.miaxis.face.view.custom.MyRadioGroup>
 
             </LinearLayout>
 
@@ -299,7 +299,7 @@
 
                 <View style="@style/VerticalLine" />
 
-                <RadioGroup
+                <com.miaxis.face.view.custom.MyRadioGroup
                     android:id="@+id/rg_gather"
                     style="@style/SettingRadioGroup">
 
@@ -326,7 +326,7 @@
 
                     <View style="@style/SpaceBody" />
 
-                </RadioGroup>
+                </com.miaxis.face.view.custom.MyRadioGroup>
 
             </LinearLayout>
 
@@ -337,7 +337,7 @@
 
                 <View style="@style/VerticalLine" />
 
-                <RadioGroup
+                <com.miaxis.face.view.custom.MyRadioGroup
                     android:id="@+id/rg_save_local"
                     style="@style/SettingRadioGroup">
 
@@ -357,7 +357,7 @@
 
                     <View style="@style/SpaceBody" />
 
-                </RadioGroup>
+                </com.miaxis.face.view.custom.MyRadioGroup>
 
             </LinearLayout>
 
@@ -368,7 +368,7 @@
 
                 <View style="@style/VerticalLine" />
 
-                <RadioGroup
+                <com.miaxis.face.view.custom.MyRadioGroup
                     android:id="@+id/rg_document"
                     style="@style/SettingRadioGroup">
 
@@ -388,7 +388,7 @@
 
                     <View style="@style/SpaceBody" />
 
-                </RadioGroup>
+                </com.miaxis.face.view.custom.MyRadioGroup>
 
             </LinearLayout>
 
@@ -399,7 +399,7 @@
 
                 <View style="@style/VerticalLine" />
 
-                <RadioGroup
+                <com.miaxis.face.view.custom.MyRadioGroup
                     android:id="@+id/rg_liveness"
                     style="@style/SettingRadioGroup">
 
@@ -419,7 +419,7 @@
 
                     <View style="@style/SpaceBody" />
 
-                </RadioGroup>
+                </com.miaxis.face.view.custom.MyRadioGroup>
 
             </LinearLayout>
 
@@ -430,7 +430,7 @@
 
                 <View style="@style/VerticalLine" />
 
-                <RadioGroup
+                <com.miaxis.face.view.custom.MyRadioGroup
                     android:id="@+id/rg_query"
                     style="@style/SettingRadioGroup">
 
@@ -450,7 +450,7 @@
 
                     <View style="@style/SpaceBody" />
 
-                </RadioGroup>
+                </com.miaxis.face.view.custom.MyRadioGroup>
 
             </LinearLayout>
 
@@ -461,7 +461,7 @@
 
                 <View style="@style/VerticalLine" />
 
-                <RadioGroup
+                <com.miaxis.face.view.custom.MyRadioGroup
                     android:id="@+id/rg_advertise"
                     style="@style/SettingRadioGroup">
 
@@ -481,7 +481,7 @@
 
                     <View style="@style/SpaceBody" />
 
-                </RadioGroup>
+                </com.miaxis.face.view.custom.MyRadioGroup>
 
             </LinearLayout>
 
@@ -492,7 +492,7 @@
 
                 <View style="@style/VerticalLine" />
 
-                <RadioGroup
+                <com.miaxis.face.view.custom.MyRadioGroup
                     android:id="@+id/rg_advertise_mode"
                     style="@style/SettingRadioGroup">
 
@@ -519,7 +519,7 @@
 
                     <View style="@style/SpaceBody" />
 
-                </RadioGroup>
+                </com.miaxis.face.view.custom.MyRadioGroup>
 
             </LinearLayout>
 
@@ -530,10 +530,11 @@
 
                 <View style="@style/VerticalLine" />
 
-                <EditText
+                <com.miaxis.face.view.custom.LimitEditText
                     android:id="@+id/et_verify_score"
-                    style="@style/SettingEditItem"
-                    android:inputType="numberDecimal" />
+                    android:tag="false"
+                    android:inputType="numberDecimal"
+                    style="@style/SettingEditItem"/>
 
             </LinearLayout>
 
@@ -544,10 +545,10 @@
 
                 <View style="@style/VerticalLine" />
 
-                <EditText
+                <com.miaxis.face.view.custom.LimitEditText
                     android:id="@+id/et_quality_score"
                     style="@style/SettingEditItem"
-                    android:inputType="number" />
+                    android:inputType="numberDecimal" />
 
             </LinearLayout>
 
@@ -558,7 +559,7 @@
 
                 <View style="@style/VerticalLine" />
 
-                <EditText
+                <com.miaxis.face.view.custom.LimitEditText
                     android:id="@+id/et_liveness_quality_score"
                     style="@style/SettingEditItem"
                     android:inputType="numberDecimal" />
@@ -626,7 +627,7 @@
 
                 <View style="@style/VerticalLine" />
 
-                <EditText
+                <com.miaxis.face.view.custom.LimitEditText
                     android:id="@+id/et_monitor_interval"
                     style="@style/SettingEditItem"
                     android:inputType="numberDecimal" />
@@ -640,7 +641,7 @@
 
                 <View style="@style/VerticalLine" />
 
-                <EditText
+                <com.miaxis.face.view.custom.LimitEditText
                     android:id="@+id/et_title_str"
                     style="@style/SettingEditItem" />
 
@@ -653,7 +654,7 @@
 
                 <View style="@style/VerticalLine" />
 
-                <EditText
+                <com.miaxis.face.view.custom.LimitEditText
                     android:id="@+id/et_org_name"
                     style="@style/SettingEditItem" />
 
@@ -667,7 +668,7 @@
 
                 <View style="@style/VerticalLine" />
 
-                <EditText
+                <com.miaxis.face.view.custom.LimitEditText
                     android:id="@+id/et_pwd"
                     style="@style/SettingEditItem"
                     android:digits="0123456789"
@@ -683,9 +684,9 @@
 
                 <View style="@style/VerticalLine" />
 
-                <EditText
+                <com.miaxis.face.view.custom.LimitEditText
                     android:id="@+id/et_advertise_delay_time"
-                   style="@style/SettingEditItem"
+                    style="@style/SettingEditItem"
                     android:digits="0123456789"
                     android:inputType="number" />
 

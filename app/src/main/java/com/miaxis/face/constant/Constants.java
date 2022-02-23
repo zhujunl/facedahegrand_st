@@ -2,6 +2,7 @@ package com.miaxis.face.constant;
 
 import android.os.Build;
 
+import com.miaxis.face.BuildConfig;
 import com.miaxis.face.bean.Config;
 
 import java.util.ArrayList;
@@ -62,10 +63,12 @@ public class Constants {
     public static final int VERIFY_MODE_FINGER_FIRST_DOUBLE = 5;
     public static final int VERIFY_MODE_LOCAL_FEATURE = 6;
 
-    public static final String DEFAULT_UPDATE_URL = "http://www.haikouhotel.net:8080/SPCSite/advert/advInterface.aspx?param=getapp";
-//    public static final String DEFAULT_UPLOAD_URL = "https://test.shxxyun.com/TSSApi/exchange/data/";
-    public static final String DEFAULT_UPLOAD_URL = "http://www.mydahe.net:12190/ytj/";//http://192.168.0.1:12190/ytj
-    public static final String DEFAULT_ADVERTISEMENT_URL = "http://www.haikouhotel.net:8080/SPCSite/advert/advInterface.aspx?param=getadvjoin ";
+    public static final String DEFAULT_UPDATE_URL = BuildConfig.EQUIPMENT_PLACE==1?"http://www.haikouhotel.net:8080/SPCSite/advert/advInterface.aspx?param=getapp":
+            "http://www.shangqiuhotel.net:8080/SPCSite/advert/advInterface.aspx?param=getapp";
+    //    public static final String DEFAULT_UPLOAD_URL = "https://test.shxxyun.com/TSSApi/exchange/data/";
+    public static final String DEFAULT_UPLOAD_URL ="http://192.168.0.1:12190/ytj"; // "http://www.mydahe.net:12190/ytj/";
+    public static final String DEFAULT_ADVERTISEMENT_URL = BuildConfig.EQUIPMENT_PLACE==1?"http://www.haikouhotel.net:8080/SPCSite/advert/advInterface.aspx?param=getadvjoin ":
+            "http://www.shangqiuhotel.net:8080/SPCSite/advert/advInterface.aspx?param=getadvjoin";
     public static final int DEFAULT_VERIFY_MODE = VERIFY_MODE_FACE_ONLY;
     public static final String DEFAULT_ACCOUNT = "zjzz";
 //    public static final String DEFAULT_CLIENT_ID = "FY-0d373485ac6848cc8269f16eb963848f";

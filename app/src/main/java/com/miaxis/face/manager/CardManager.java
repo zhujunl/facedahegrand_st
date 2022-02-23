@@ -1,19 +1,34 @@
 package com.miaxis.face.manager;
 
 import android.graphics.Bitmap;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 
+import com.miaxis.face.BuildConfig;
 import com.miaxis.face.app.App;
 import com.miaxis.face.bean.IDCardRecord;
+import com.miaxis.face.exception.MyException;
+import com.miaxis.face.util.FileUtil;
+import com.miaxis.face.util.IdCardParser;
 import com.zkteco.android.IDReader.WLTService;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.zz.idcard_hid_driver.IdCardDriver;
+import org.zz.idcard_hid_driver.UsbBase;
+import org.zz.idcard_hid_driver.zzStringTrans;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class CardManager {
@@ -34,13 +49,15 @@ public class CardManager {
      **/
 
     private static final String[] FOLK = {"汉", "蒙古", "回", "藏", "维吾尔", "苗", "彝", "壮", "布依", "朝鲜",
-            "满", "侗", "瑶", "白", "土家", "哈尼", "哈萨克", "傣", "黎", "傈僳", "佤", "畲",
-            "高山", "拉祜", "水", "东乡", "纳西", "景颇", "柯尔克孜", "土", "达斡尔", "仫佬", "羌",
-            "布朗", "撒拉", "毛南", "仡佬", "锡伯", "阿昌", "普米", "塔吉克", "怒", "乌孜别克",
-            "俄罗斯", "鄂温克", "德昂", "保安", "裕固", "京", "塔塔尔", "独龙", "鄂伦春", "赫哲",
-            "门巴", "珞巴", "基诺", "", "", "穿青人", "家人", "", "", "", "", "", "", "",
-            "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
-            "", "", "", "", "", "", "", "", "", "", "", "", "其他", "外国血统", "",
+            "满", "侗", "瑶", "白", "土家", "哈尼", "哈萨克", "傣", "黎", "傈僳",
+            "佤", "畲", "高山", "拉祜", "水", "东乡", "纳西", "景颇", "柯尔克孜", "土",
+            "达斡尔", "仫佬", "羌","布朗", "撒拉", "毛南", "仡佬", "锡伯", "阿昌", "普米",
+            "塔吉克", "怒", "乌孜别克", "俄罗斯", "鄂温克", "德昂", "保安", "裕固", "京", "塔塔尔",
+            "独龙", "鄂伦春", "赫哲", "门巴", "珞巴", "基诺", "", "", "穿青人", "家人",
+            "", "", "", "", "", "", "", "", "", "",
+            "", "", "", "", "", "", "", "", "", "",
+            "", "", "", "", "", "", "", "", "", "",
+            "", "", "", "", "", "", "其他", "外国血统", "",
             ""};
     private static final int GET_CARD_ID = 0;
     private static final int NO_CARD = 134;
@@ -53,11 +70,13 @@ public class CardManager {
 
     public void init() {
         idCardDriver = new IdCardDriver(App.getInstance());
+        idCardDriver.mxSetTraceLevel(1);
     }
 
     public void startReadCard() {
         run = true;
-        new Thread(new ReadIdCardThread()).start();
+        new ReadIdCardThread().start();
+        //new Thread(new ReadIdCardThread()).start();
     }
 
     public void closeReadCard() {
@@ -83,7 +102,7 @@ public class CardManager {
             byte[] curCardId;
             int re;
             while (run) {
-                curCardId = new byte[64];
+                curCardId = new byte[4096];
                 if (idCardDriver == null) {
                     init();
                 }
@@ -95,6 +114,8 @@ public class CardManager {
                             try {
                                 readCardFull(getCardIdStr(curCardId));
                             } catch (Exception e) {
+//                                FileUtil.writeFile(UsbBase.fileName,System.currentTimeMillis()+"  "+"读取异常："+exception(e)+"\n",true);
+                                e.printStackTrace();
                                 continue;
                             }
                         }
@@ -113,19 +134,37 @@ public class CardManager {
             }
         }
     }
-
+    public static String exception(Throwable t)  {
+        if (t == null)
+            return null;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            t.printStackTrace(new PrintStream(baos));
+        } catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            try {
+                baos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return baos.toString();
+    }
     private void readCardFull(String curCardId) throws Exception {
         IDCardRecord idCardRecord = null;
         byte[] bCardFullInfo = new byte[256 + 1024 + 1024];
         int re = idCardDriver.mxReadCardFullInfo(bCardFullInfo);
+
         String type = isGreenCard(bCardFullInfo);
         if (re == 1 || re == 0) {
             if ("I".equals(type)) {
-                idCardRecord = analysisGreenCard(bCardFullInfo, curCardId);
-            } else if ("J".equals(type)) {
-                idCardRecord = analysiGATCardInfo(bCardFullInfo, curCardId);
+                idCardRecord=IdGreenCardOarser(bCardFullInfo,curCardId);
+            } else if ("-1".equals(type)){
+                ToastManager.toast("身份证号码读取失败");
+                throw new Exception("身份证号码读取失败");
             } else {
-                idCardRecord = analysisIdCardInfo(bCardFullInfo, curCardId);
+                idCardRecord=IdCardParser(bCardFullInfo,curCardId);
             }
             if (re == 0) {
                 byte[] bFingerData0 = new byte[FINGER_DATA_SIZE];
@@ -163,7 +202,8 @@ public class CardManager {
                     e.printStackTrace();
                 }
             }
-        } else {
+        } else {Log.e("readCard:","=="+"失败"+"----re="+re);
+            ToastManager.toast(re+"读卡失败，重新读取");
             throw new Exception("读卡失败");
         }
         listener.onCardRead(CardStatus.ReadCard, idCardRecord);
@@ -310,11 +350,21 @@ public class CardManager {
         }
     }
 
-    private String isGreenCard(byte[] bCardInfo) {
-        byte[] id_isGreen = new byte[2];
-        id_isGreen[0] = bCardInfo[248];
-        id_isGreen[1] = bCardInfo[249];
-        return unicode2String(id_isGreen).trim();
+    private String isGreenCard(byte[] bCardInfo) throws Exception{
+        byte[] CardId=new byte[2];
+        CardId[0]=bCardInfo[122];
+        CardId[1]=bCardInfo[123];
+        String card=unicode2String(CardId);
+        if(NumberUtils.isDigits(card)){
+            int id=Integer.parseInt(card);
+            if (id>0&&id<9){
+                return "";
+            }else {
+                return "-1";
+            }
+        }else {
+            return "I";
+        }
     }
 
     /* 解析身份证信息 */
@@ -393,7 +443,7 @@ public class CardManager {
         idCardRecord.setCardId(cardId);
         byte[] id_Name = new byte[30]; // 姓名
         byte[] id_Sex = new byte[2]; // 性别 1为男 其他为女
-        byte[] id_Rev = new byte[4]; // 预留区
+        byte[] id_Rev = new byte[4]; // 民族预留区
         byte[] id_Born = new byte[16]; // 出生日期
         byte[] id_Home = new byte[70]; // 住址
         byte[] id_Code = new byte[36]; // 身份证号
@@ -406,7 +456,22 @@ public class CardManager {
         byte[] id_NewAddr = new byte[14]; //
         byte[] id_pImage = new byte[1024]; // 图片区域
         int iLen = 0;
-        idCardRecord.setCardType("J");
+//        idCardRecord.setCardType("J");
+        byte[] CardTypes = new byte[2];
+        CardTypes[0] = bCardInfo[248];
+        CardTypes[1] = bCardInfo[249];
+//        bCardInfo[32]=0x20;
+//        bCardInfo[33]=0x00;
+//        bCardInfo[34]=0x20;
+//        bCardInfo[35]=0x00;
+
+
+        String CardType =unicode2String(CardTypes);
+        if(!TextUtils.isEmpty(CardType.trim())){
+            idCardRecord.setCardType("J");
+        }else {
+            idCardRecord.setCardType("");
+        }
 
         System.arraycopy(bCardInfo, iLen, id_Name, 0, id_Name.length);
         iLen = iLen + id_Name.length;
@@ -422,7 +487,15 @@ public class CardManager {
 
         System.arraycopy(bCardInfo, iLen, id_Rev, 0, id_Rev.length);
         iLen = iLen + id_Rev.length;
-        idCardRecord.setNation("");
+        String nation=unicode2String(id_Rev);
+        if (!TextUtils.isEmpty(nation.trim())){
+            int iRev = Integer.parseInt(unicode2String(id_Rev));
+            idCardRecord.setNation(FOLK[iRev - 1]);
+            idCardRecord.setCardType("");
+        }else {
+            idCardRecord.setCardType("J");
+            idCardRecord.setNation("");
+        }
 
         System.arraycopy(bCardInfo, iLen, id_Born, 0, id_Born.length);
         iLen = iLen + id_Born.length;
@@ -451,12 +524,18 @@ public class CardManager {
 
         System.arraycopy(bCardInfo, iLen, id_PassNum, 0, id_PassNum.length);
         iLen = iLen + id_PassNum.length;
-        idCardRecord.setPassNumber(unicode2String(id_PassNum).trim());
-
+        String passNum=unicode2String(id_PassNum);
+        if(!TextUtils.isEmpty(passNum.trim())){
+            idCardRecord.setCardType("J");
+            idCardRecord.setPassNumber(passNum.trim());
+        }
         System.arraycopy(bCardInfo, iLen, id_IssueNum, 0, id_IssueNum.length);
         iLen = iLen + id_IssueNum.length;
-        idCardRecord.setIssueCount(unicode2String(id_IssueNum).trim());
-
+        String IssueNum=unicode2String(id_IssueNum);
+        if (!TextUtils.isEmpty(IssueNum.trim())){
+            idCardRecord.setCardType("J");
+            idCardRecord.setIssueCount(IssueNum.trim());
+        }
         System.arraycopy(bCardInfo, iLen, id_NewAddr, 0, id_NewAddr.length);
         iLen = iLen + id_NewAddr.length;
 
@@ -465,6 +544,7 @@ public class CardManager {
         if (bitmap != null) {
             idCardRecord.setCardBitmap(bitmap);
         }
+        Log.e("idCardRe=====",idCardRecord.toString());
         return idCardRecord;
     }
 
@@ -545,7 +625,64 @@ public class CardManager {
         if (bitmap != null) {
             idCardRecord.setCardBitmap(bitmap);
         }
+        Log.e("idCardRe=====",idCardRecord.toString());
         return idCardRecord;
     }
 
+    public IDCardRecord IdCardParser(byte[] bCardInfo, String cardId){
+        IDCardRecord idCardRecord = new IDCardRecord();
+        idCardRecord.setCardId(cardId);
+        idCardRecord.setName(IdCardParser.getName(bCardInfo));
+        if(IdCardParser.getGender(bCardInfo).equals("1")){
+            idCardRecord.setSex("男");
+        }else {
+            idCardRecord.setSex("女");
+        }
+        idCardRecord.setNation(IdCardParser.getNation(bCardInfo));
+        idCardRecord.setBirthday(IdCardParser.getBirthday(bCardInfo));
+        idCardRecord.setAddress(IdCardParser.getAddress(bCardInfo));
+        idCardRecord.setCardNumber(IdCardParser.getCardNum(bCardInfo));
+        idCardRecord.setIssuingAuthority(IdCardParser.getIssuingAuthority(bCardInfo));
+        idCardRecord.setValidateStart(IdCardParser.getStartTime(bCardInfo));
+        idCardRecord.setValidateEnd(IdCardParser.getEndTime(bCardInfo));
+        idCardRecord.setPassNumber(IdCardParser.getPassNum(bCardInfo));
+        idCardRecord.setIssueCount(IdCardParser.getIssueNum(bCardInfo));
+        idCardRecord.setCardType(getCardType(bCardInfo));
+        idCardRecord.setCardBitmap(IdCardParser.getFaceBit(bCardInfo));
+        return idCardRecord;
+    }
+
+    public IDCardRecord IdGreenCardOarser(byte[] bCardInfo, String cardId){
+        IDCardRecord idCardRecord = new IDCardRecord();
+        idCardRecord.setCardId(cardId);
+        idCardRecord.setName(IdCardParser.getEnglishName(bCardInfo));
+        if(IdCardParser.getEnglishGender(bCardInfo).equals("1")){
+            idCardRecord.setSex("男");
+        }else {
+            idCardRecord.setSex("女");
+        }
+        idCardRecord.setCardNumber(IdCardParser.getCardNum(bCardInfo));
+        idCardRecord.setNation(IdCardParser.getNationality(bCardInfo));
+        idCardRecord.setChineseName(IdCardParser.getChineseName(bCardInfo));
+        idCardRecord.setValidateStart(IdCardParser.getStartTime(bCardInfo));
+        idCardRecord.setValidateEnd(IdCardParser.getEndTime(bCardInfo));
+        idCardRecord.setBirthday(IdCardParser.getEnglishBir(bCardInfo));
+        idCardRecord.setVersion(IdCardParser.getVersion(bCardInfo));
+        idCardRecord.setIssuingAuthority(IdCardParser.getAcceptMatter(bCardInfo));
+        idCardRecord.setCardType(IdCardParser.getCardType(bCardInfo));
+        idCardRecord.setCardBitmap(IdCardParser.getFaceBit(bCardInfo));
+        return idCardRecord;
+    }
+    /* 区分港澳台与二代证，不区分外国人*/
+    private String getCardType(byte[] idCardData){
+        if(TextUtils.isEmpty(IdCardParser.getCardType(idCardData))){
+            if(TextUtils.isEmpty(IdCardParser.getPassNum(idCardData))&&!TextUtils.isEmpty(IdCardParser.getNation(idCardData))){
+                return "";
+            }else {
+                return "J";
+            }
+        }else {
+            return IdCardParser.getCardType(idCardData);
+        }
+    }
 }
