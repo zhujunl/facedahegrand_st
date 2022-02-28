@@ -458,7 +458,7 @@ public class VerifyActivity extends BaseActivity {
                         tvPass.setVisibility(View.GONE);
                         tvLivenessHint.setVisibility(View.VISIBLE);
                         if(!Constants.VERSION)App.getInstance().sendBroadcast(Constants.TYPE_LED,true);
-                        ivFaceBox.setVisibility(View.VISIBLE);
+                        ivFaceBox.setVisibility(BuildConfig.EQUIPMENT_TYPE==2?View.VISIBLE:View.INVISIBLE);
                         rvResult.clear();
                         rvResult.showCardImage(idCardRecord.getCardBitmap());
                         rvResult.setVisibility(View.VISIBLE);
@@ -491,11 +491,11 @@ public class VerifyActivity extends BaseActivity {
                 if (config.getLivenessFlag()) {
                     tvLivenessHint.setText("请缓慢眨眼");
                     tvLivenessHint.setVisibility(View.VISIBLE);
-                    ivFaceBox.setVisibility(View.VISIBLE);
+                    ivFaceBox.setVisibility(BuildConfig.EQUIPMENT_TYPE==2?View.VISIBLE:View.INVISIBLE);
                 }
             } else {
                 tvLivenessHint.setVisibility(View.INVISIBLE);
-                ivFaceBox.setVisibility(View.VISIBLE);
+                ivFaceBox.setVisibility(BuildConfig.EQUIPMENT_TYPE==2?View.VISIBLE:View.INVISIBLE);;
             }
         });
     }
@@ -538,14 +538,14 @@ public class VerifyActivity extends BaseActivity {
             if (status == 0) {
                 rsvRect.clearDraw();
                 tvLivenessHint.setVisibility(View.INVISIBLE);
-                ivFaceBox.setVisibility(View.VISIBLE);
+                ivFaceBox.setVisibility(BuildConfig.EQUIPMENT_TYPE==2?View.VISIBLE:View.INVISIBLE);;
             } else if (status == 1) {
                 tvPass.setVisibility(View.INVISIBLE);
-                ivFaceBox.setVisibility(View.VISIBLE);
+                ivFaceBox.setVisibility(BuildConfig.EQUIPMENT_TYPE==2?View.VISIBLE:View.INVISIBLE);;
                 if (config.getLivenessFlag()) {
                     tvLivenessHint.setText("请缓慢眨眼");
                     tvLivenessHint.setVisibility(View.VISIBLE);
-                    ivFaceBox.setVisibility(View.VISIBLE);
+                    ivFaceBox.setVisibility(BuildConfig.EQUIPMENT_TYPE==2?View.VISIBLE:View.INVISIBLE);;
                 }
             } else if (status == 2) {
                 tvPass.setVisibility(View.VISIBLE);
@@ -579,7 +579,7 @@ public class VerifyActivity extends BaseActivity {
     public void uploadStatus(String message) {
         runOnUiThread(() -> {
             tvLivenessHint.setVisibility(View.INVISIBLE);
-            ivFaceBox.setVisibility(View.VISIBLE);
+            ivFaceBox.setVisibility(BuildConfig.EQUIPMENT_TYPE==2?View.VISIBLE:View.INVISIBLE);;
             tvUploadHint.setText(message);
             tvUploadHint.setVisibility(View.VISIBLE);
         });
@@ -592,7 +592,7 @@ public class VerifyActivity extends BaseActivity {
                 asyncHandler.removeCallbacks(advertiseRunnable);
                 tvPass.setVisibility(View.INVISIBLE);
                 tvLivenessHint.setVisibility(View.GONE);
-                ivFaceBox.setVisibility(View.VISIBLE);
+                ivFaceBox.setVisibility(BuildConfig.EQUIPMENT_TYPE==2?View.VISIBLE:View.INVISIBLE);;
                 if(!Constants.VERSION)App.getInstance().sendBroadcast(Constants.TYPE_LED,false);
                 if (CameraManager.getInstance().getCamera() == null) {
                     controlAdvertDialog(false);
@@ -624,7 +624,7 @@ public class VerifyActivity extends BaseActivity {
                     if (config.getLivenessFlag()) {
                         tvLivenessHint.setText("请缓慢眨眼");
                         tvLivenessHint.setVisibility(View.VISIBLE);
-                        ivFaceBox.setVisibility(View.VISIBLE);
+                        ivFaceBox.setVisibility(BuildConfig.EQUIPMENT_TYPE==2?View.VISIBLE:View.INVISIBLE);;
                     }
                 }
             }

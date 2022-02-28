@@ -172,10 +172,10 @@ public class FaceManager {
                 faceHandleListener.onFaceDetect(faceNum[0], faceBuffer);
             }
             MXFaceInfoEx mxFaceInfoEx = sortMXFaceInfoEx(faceBuffer);//640*480
-            if (mxFaceInfoEx.x>=left&&mxFaceInfoEx.y>=top
-                   && mxFaceInfoEx.x+mxFaceInfoEx.width<=right
-                    &&mxFaceInfoEx.y+mxFaceInfoEx.height<=bottom
-            ){
+//            if (mxFaceInfoEx.x>=left&&mxFaceInfoEx.y>=top
+//                   && mxFaceInfoEx.x+mxFaceInfoEx.width<=right
+//                    &&mxFaceInfoEx.y+mxFaceInfoEx.height<=bottom
+//            ){
                 if (faceHandleListener != null) {
                     faceHandleListener.onActionLiveDetect(0, "");
                 }
@@ -191,13 +191,13 @@ public class FaceManager {
                     nova = true;
 //              Log.e("asd", "检测耗时" + (System.currentTimeMillis() - time) + "-----" + mxFaceInfoEx.quality);
                 }
-            }else {
-                if (faceHandleListener != null) {
-                    faceHandleListener.onFaceTips("请将人脸移入框内");
-                    faceHandleListener.onActionLiveDetect(-6, "请将人脸移入框内");
-                }
-               // Log.e(TAG, "verify: 不在框内"+mxFaceInfoEx );
-            }
+//            }else {
+//                if (faceHandleListener != null) {
+//                    faceHandleListener.onFaceTips("请将人脸移入框内");
+//                    faceHandleListener.onActionLiveDetect(-6, "请将人脸移入框内");
+//                }
+//               // Log.e(TAG, "verify: 不在框内"+mxFaceInfoEx );
+//            }
         } else {
             if (faceHandleListener != null) {
                 faceHandleListener.onFaceDetect(0, null);

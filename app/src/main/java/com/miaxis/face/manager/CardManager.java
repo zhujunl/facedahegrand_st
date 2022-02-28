@@ -638,7 +638,7 @@ public class CardManager {
         }else {
             idCardRecord.setSex("女");
         }
-        idCardRecord.setNation(IdCardParser.getNation(bCardInfo));
+        idCardRecord.setNation(TextUtils.isEmpty(IdCardParser.getNation(bCardInfo).trim())?"":FOLK[Integer.parseInt(IdCardParser.getNation(bCardInfo))-1]);
         idCardRecord.setBirthday(IdCardParser.getBirthday(bCardInfo));
         idCardRecord.setAddress(IdCardParser.getAddress(bCardInfo));
         idCardRecord.setCardNumber(IdCardParser.getCardNum(bCardInfo));
