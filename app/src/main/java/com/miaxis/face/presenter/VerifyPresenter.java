@@ -285,13 +285,13 @@ public class VerifyPresenter {
 
     private FaceManager.OnFaceHandleListener faceListener = new FaceManager.OnFaceHandleListener() {
         @Override
-        public void onFeatureExtract(MxRGBImage mxRGBImage, MXFaceInfoEx mxFaceInfoEx, byte[] feature) {
+        public void onFeatureExtract(MxRGBImage mxRGBImage, MXFaceInfoEx mxFaceInfoEx, byte[] feature,int x,int y,int width,int height) {
             if (undocumentedFlag) {
                 onUndocumentedFeature(mxRGBImage, mxFaceInfoEx);
             } else if (taskFlag) {
                 onTaskFeatureBack(mxRGBImage, feature);
             } else {
-                onFaceVerify(mxRGBImage, mxFaceInfoEx, feature);
+                onFaceVerify(mxRGBImage, mxFaceInfoEx, feature,x,y,width,height);
             }
         }
 
@@ -349,17 +349,17 @@ public class VerifyPresenter {
         }
     };
 
-    private void onFaceVerify(MxRGBImage mxRGBImage, MXFaceInfoEx mxFaceInfoEx, byte[] feature) {
+    private void onFaceVerify(MxRGBImage mxRGBImage, MXFaceInfoEx mxFaceInfoEx, byte[] feature,int x,int y,int width,int height) {
         if (idCardRecord != null && idCardRecord.getCardFeature() != null) {
             float faceMatchScore = FaceManager.getInstance().matchFeature(feature, idCardRecord.getCardFeature());
             byte[] fileImage = FaceManager.getInstance().imageEncode(mxRGBImage.getRgbImage(), mxRGBImage.getWidth(), mxRGBImage.getHeight());
             Bitmap faceBitmap = BitmapFactory.decodeByteArray(fileImage, 0, fileImage.length);
-            float fw = Constants.pam * mxFaceInfoEx.width;
-            float fh = Constants.pam * mxFaceInfoEx.height;
-            int x=(int) Math.max(0,mxFaceInfoEx.x-fw);
-            int y=(int) Math.max(0,mxFaceInfoEx.y-fh);
-            int width=(int) Math.min(mxFaceInfoEx.width*(1+2*Constants.pam),faceBitmap.getWidth());
-            int height=(int) Math.min(mxFaceInfoEx.height*(1+2*Constants.pam),faceBitmap.getHeight());
+//            float fw = Constants.pam * mxFaceInfoEx.width;
+//            float fh = Constants.pam * mxFaceInfoEx.height;
+//            int x=(int) Math.max(0,mxFaceInfoEx.x-fw);
+//            int y=(int) Math.max(0,mxFaceInfoEx.y-fh);
+//            int width=(int) Math.min(mxFaceInfoEx.width*(1+2*Constants.pam),faceBitmap.getWidth());
+//            int height=(int) Math.min(mxFaceInfoEx.height*(1+2*Constants.pam),faceBitmap.getHeight());
             Bitmap rectBitmap = Bitmap.createBitmap(faceBitmap, x, y,width, height);//截取
             boolean result = faceMatchScore > config.getVerifyScore();
             FaceManager.getInstance().stopLoop();

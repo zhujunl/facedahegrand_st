@@ -86,8 +86,8 @@ public class App extends Application {
                 GpioManager.getInstance().init(this);
             }else{
                 SystemClock.sleep(2000);
-                sendBroadcast(Constants.TYPE_ID_FP,true);
-                sendBroadcast(Constants.TYPE_CAMERA,true);
+                sendBroadcast(Constants.MOLD_POWER,Constants.TYPE_ID_FP,true);
+                sendBroadcast(Constants.MOLD_POWER,Constants.TYPE_CAMERA,true);
                 SystemClock.sleep(1000);
             }
             listener.onInit(result == FaceManager.INIT_SUCCESS, FaceManager.getFaceInitResultDetail(result));
@@ -130,10 +130,13 @@ public class App extends Application {
         return 0;
     }
 
-    public void sendBroadcast(int type,boolean value){
-        Intent intent = new Intent("com.miaxis.power");
-        intent.putExtra("type",type);
-        intent.putExtra("value",value);
-        getInstance().sendBroadcast(intent);
+    public void sendBroadcast(String mold,int type,boolean value){
+        if(!Constants.VERSION){
+            Intent intent = new Intent(mold);
+            if(type!=-1)intent.putExtra("type",type);
+            intent.putExtra("value",value);
+            getInstance().sendBroadcast(intent);
+        }
+
     }
 }

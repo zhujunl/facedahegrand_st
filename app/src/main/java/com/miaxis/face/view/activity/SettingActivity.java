@@ -519,6 +519,8 @@ public class SettingActivity extends BaseActivity {
     @OnClick(R.id.btn_exit)
     void singOut() {
 //        Face_App.getInstance().unableDog();
+        App.getInstance().sendBroadcast(Constants.MOLD_STATUS,-1,true);
+        App.getInstance().sendBroadcast(Constants.MOLD_NAV,-1,true);
         GpioManager.getInstance().reduction(this);
         Intent intent = new Intent("com.miaxis.face.view.activity");
         intent.putExtra("closeAll", 1);

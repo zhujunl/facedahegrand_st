@@ -14,6 +14,7 @@ import com.miaxis.face.bean.Config;
 import com.miaxis.face.bean.Intermediary;
 import com.miaxis.face.bean.MxRGBImage;
 import com.miaxis.face.bean.PhotoFaceFeature;
+import com.miaxis.face.constant.Constants;
 import com.miaxis.face.exception.MyException;
 import com.miaxis.face.util.FileUtil;
 import com.miaxis.image.MXImage;
@@ -81,7 +82,7 @@ public class FaceManager {
     private OnFaceHandleListener faceHandleListener;
 
     public interface OnFaceHandleListener {
-        void onFeatureExtract(MxRGBImage mxRGBImage, MXFaceInfoEx mxFaceInfoEx, byte[] feature);
+        void onFeatureExtract(MxRGBImage mxRGBImage, MXFaceInfoEx mxFaceInfoEx, byte[] feature,int x,int y,int width,int height);
 
         void onFaceDetect(int faceNum, MXFaceInfoEx[] faceInfoExes);
 
@@ -308,14 +309,21 @@ private String TAG="verify";
         if (needNextFeature) {
             Log.e("asd", "提特征中"+"_____人脸质量："+intermediary.mxFaceInfoEx.quality);
             Config config = ConfigManager.getInstance().getConfig();
-            if (intermediary.mxFaceInfoEx.quality > config.getQualityScore()) {
+            float fw = Constants.pam * intermediary.mxFaceInfoEx.width;
+            float fh = Constants.pam * intermediary.mxFaceInfoEx.height;
+            int x=(int) Math.max(0,intermediary.mxFaceInfoEx.x-fw);
+            int y=(int) Math.max(0,intermediary.mxFaceInfoEx.y-fh);
+            int width=(int) Math.min(intermediary.mxFaceInfoEx.width*(1+2* Constants.pam),zoomWidth);
+            int height=(int) Math.min(intermediary.mxFaceInfoEx.height*(1+2*Constants.pam),zoomHeight);
+            Log.e("asd", "提特征中"+"_____人脸图片：x="+x+",y="+y+",width="+width+",height="+height);
+            if (intermediary.mxFaceInfoEx.quality > config.getQualityScore()&&x+width<=zoomWidth&&y+height<=zoomHeight) {
                 byte[] feature = extractFeature(intermediary.data, zoomWidth, zoomHeight, intermediary.mxFaceInfoEx);
                 if (feature != null) {
                     needNextFeature = false;
                     if (faceHandleListener != null) {
                         faceHandleListener.onFeatureExtract(new MxRGBImage(intermediary.data, zoomWidth, zoomHeight),
                                 intermediary.mxFaceInfoEx,
-                                feature);
+                                feature,x,y,width,height);
                     }
                 }
             } else {

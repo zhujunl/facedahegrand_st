@@ -237,7 +237,7 @@ public class VerifyActivity extends BaseActivity {
     protected void onStop() {
         super.onStop();
         Log.e("VerifyActivity",":OnStop");
-        if(!Constants.VERSION)App.getInstance().sendBroadcast(Constants.TYPE_LED,false);
+        App.getInstance().sendBroadcast(Constants.MOLD_POWER,Constants.TYPE_LED,false);
         CardManager.getInstance().closeReadCard();
         EventBus.getDefault().unregister(this);
         ServerManager.getInstance().stopHeartBeat();
@@ -433,7 +433,7 @@ public class VerifyActivity extends BaseActivity {
                         tvLivenessHint.setVisibility(View.GONE);
                     }
                     Log.d("Viewv==","="+(tvLivenessHint.getVisibility()==View.VISIBLE));
-                    if(!Constants.VERSION)App.getInstance().sendBroadcast(Constants.TYPE_LED,false);
+                    App.getInstance().sendBroadcast(Constants.MOLD_POWER,Constants.TYPE_LED,false);
                     tvPass.setVisibility(View.VISIBLE);
                     rvResult.setVisibility(View.GONE);
                     ivFaceBox.setVisibility(View.INVISIBLE);
@@ -457,7 +457,7 @@ public class VerifyActivity extends BaseActivity {
                     if (idCardRecord != null) {
                         tvPass.setVisibility(View.GONE);
                         tvLivenessHint.setVisibility(View.VISIBLE);
-                        if(!Constants.VERSION)App.getInstance().sendBroadcast(Constants.TYPE_LED,true);
+                        App.getInstance().sendBroadcast(Constants.MOLD_POWER,Constants.TYPE_LED,true);
                         ivFaceBox.setVisibility(BuildConfig.EQUIPMENT_TYPE==2?View.VISIBLE:View.INVISIBLE);
                         rvResult.clear();
                         rvResult.showCardImage(idCardRecord.getCardBitmap());
@@ -518,6 +518,7 @@ public class VerifyActivity extends BaseActivity {
         });
     }
     public void faceVerifyResult(boolean result, Bitmap bitmap, String message) {
+        App.getInstance().sendBroadcast(Constants.MOLD_POWER,Constants.TYPE_LED,false);
         runOnUiThread(() -> {
             rsvRect.clearDraw();
             rvResult.setFaceResult(result);
@@ -593,7 +594,7 @@ public class VerifyActivity extends BaseActivity {
                 tvPass.setVisibility(View.INVISIBLE);
                 tvLivenessHint.setVisibility(View.GONE);
                 ivFaceBox.setVisibility(BuildConfig.EQUIPMENT_TYPE==2?View.VISIBLE:View.INVISIBLE);;
-                if(!Constants.VERSION)App.getInstance().sendBroadcast(Constants.TYPE_LED,false);
+                App.getInstance().sendBroadcast(Constants.MOLD_POWER,Constants.TYPE_LED,false);
                 if (CameraManager.getInstance().getCamera() == null) {
                     controlAdvertDialog(false);
                 } else {
@@ -607,7 +608,7 @@ public class VerifyActivity extends BaseActivity {
                 tvLivenessHint.setVisibility(View.INVISIBLE);
                 ivFaceBox.setVisibility(View.INVISIBLE);
                 tvPass.setVisibility(View.VISIBLE);
-                if(!Constants.VERSION)App.getInstance().sendBroadcast(Constants.TYPE_LED,false);
+                App.getInstance().sendBroadcast(Constants.MOLD_POWER,Constants.TYPE_LED,false);
                 tvUploadHint.setVisibility(View.INVISIBLE);
                 advertiseFlag = true;
                 sendAdvertiseDelaySignal();

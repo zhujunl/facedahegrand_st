@@ -202,7 +202,7 @@ public class CameraManager {
                         if ((cur - lastCameraCallBackTime) >= ConfigManager.getInstance().getConfig().getIntervalTime() * 1000L) {
                             if (listener != null) {
                                 if (!Constants.VERSION) {
-                                    App.getInstance().sendBroadcast(Constants.TYPE_CAMERA, true);
+                                    App.getInstance().sendBroadcast(Constants.MOLD_POWER,Constants.TYPE_CAMERA, true);
                                     SystemClock.sleep(1500);
                                 }
                                 listener.onCameraError();

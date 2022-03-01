@@ -153,6 +153,11 @@ public class Constants {
     public static final int TYPE_LED_BLUE = 0x22;// LED 原MR990蓝灯
     public static final int TYPE_LED = 0x23;// LED
 
+    public static final String MOLD_POWER="com.miaxis.power";
+    public static final String MOLD_STATUS="com.miaxis.status_bar";
+    public static final String MOLD_NAV="com.miaxis.navigation";
+    public static final String MOLD_INSTALL="com.miaxis.install";
+
     public static final boolean VERSION= !Build.VERSION.RELEASE.equals("11");//版本为Android11，VERSION为false
     public static final float pam=0.3f;//人脸图片截取扩大
 }

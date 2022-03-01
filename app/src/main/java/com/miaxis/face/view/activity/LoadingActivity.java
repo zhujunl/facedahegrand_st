@@ -85,6 +85,8 @@ public class LoadingActivity extends BaseActivity {
         initWindow();
         initTitle();
         gifLoading.setMovieResource(R.raw.loading);
+        App.getInstance().sendBroadcast(Constants.MOLD_STATUS,-1,false);
+        App.getInstance().sendBroadcast(Constants.MOLD_NAV,-1,false);
         App.getInstance().getThreadExecutor().execute(() -> {
             App.getInstance().initApplication((result, message) -> {
                 runOnUiThread(() -> {
