@@ -1,12 +1,14 @@
 package com.miaxis.face.presenter;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInstaller;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
@@ -14,8 +16,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 
-
-
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
@@ -24,6 +25,7 @@ import com.miaxis.face.app.App;
 import com.miaxis.face.bean.Config;
 import com.miaxis.face.bean.ResponseEntity;
 import com.miaxis.face.bean.UpdateData;
+import com.miaxis.face.constant.Constants;
 import com.miaxis.face.exception.MyException;
 import com.miaxis.face.manager.ConfigManager;
 import com.miaxis.face.manager.ToastManager;
@@ -68,6 +70,11 @@ public class UpdatePresenter {
                 .content("请求服务器中，请稍后")
                 .progress(true, 100)
                 .show();
+        if(!Constants.VERSION){
+            if(waitDialog.getContentView()!=null){
+                waitDialog.getContentView().setTextSize(13);
+            }
+        }
         checkUpdate(urlStr)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::onUpdateDataDownWithDialog, throwable -> {
@@ -137,6 +144,23 @@ public class UpdatePresenter {
                         .onPositive((dialog, which) -> downUpdateFile(updateData.getVersion(), updateData.getUrl()))
                         .negativeText("取消")
                         .show();
+                if(!Constants.VERSION){
+                    if (updateMaterialDialog.getWindow()!=null){
+                        updateMaterialDialog.getWindow().setLayout(530,210);
+                    }
+                    if(updateMaterialDialog.getTitleView()!=null){
+                        updateMaterialDialog.getTitleView().setTextSize(15);
+                    }
+                    if(updateMaterialDialog.getContentView()!=null){
+                        updateMaterialDialog.getContentView().setTextSize(13);
+                    }
+                    if(updateMaterialDialog.getActionButton(DialogAction.NEGATIVE)!=null){
+                        updateMaterialDialog.getActionButton(DialogAction.NEGATIVE).setTextSize(13);
+                    }
+                    if(updateMaterialDialog.getActionButton(DialogAction.POSITIVE)!=null){
+                        updateMaterialDialog.getActionButton(DialogAction.POSITIVE).setTextSize(13);
+                    }
+                }
             }
         } else {
             Toast.makeText(context, "更新请求Url返回码并非200", Toast.LENGTH_SHORT).show();
@@ -173,6 +197,17 @@ public class UpdatePresenter {
                 .onPositive((dialog, which) -> FileDownloader.getImpl().pauseAll())
                 .cancelable(false)
                 .show();
+        if(!Constants.VERSION){
+            if (downloadProgressDialog.getWindow()!=null){
+                downloadProgressDialog.getWindow().setLayout(530,210);
+            }
+            if(downloadProgressDialog.getTitleView()!=null){
+                downloadProgressDialog.getTitleView().setTextSize(15);
+            }
+            if(downloadProgressDialog.getActionButton(DialogAction.POSITIVE)!=null){
+                downloadProgressDialog.getActionButton(DialogAction.POSITIVE).setTextSize(13);
+            }
+        }
         downloadFile(url, FileUtil.FACE_MAIN_PATH + File.separator + version + "_" + System.currentTimeMillis() + ".apk");
     }
 
@@ -217,7 +252,7 @@ public class UpdatePresenter {
 
                     @Override
                     protected void error(BaseDownloadTask task, Throwable e) {
-                        onDownloadFinish("下载时出现错误，已停止下载");
+                        onDownloadFinish("下载时出现错误，已停止下载"+e);
                     }
 
                     @Override
@@ -250,22 +285,17 @@ public class UpdatePresenter {
         if(file.getName().contains(MyUtil.getCurVersion(context))){
             return;
         }
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        Log.e("intent.getFlags()",""+intent.getFlags());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            Uri contentUri = FileProvider.getUriForFile(context, "com.miaxis.faceid_cw.fileprovider", file);
-            intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
-            Log.e("intent.getFlags()",""+  context);
-            if (context instanceof VerifyActivity || context instanceof SettingActivity){
-                context.startActivity(intent);
-            }else {
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(intent);
-            }
-
-        } else {
+        if(!Constants.VERSION){
+            Uri uri = FileProvider.getUriForFile(context, context.getPackageName() + ".fileprovider", file);
+            Intent intent = new Intent(Constants.MOLD_INSTALL);
+            intent.putExtra("uri",uri);//需要安装的APK URI，APK需具备访问权限
+            intent.putExtra("auto",true);//true 安装完成后⾃动打开，false 仅安装
+            intent.putExtra("delay",0);//更新安装后自动打开延迟时间（0~7）
+            context.sendBroadcast(intent);
+        }else {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            Log.e("intent.getFlags()",""+intent.getFlags());
             intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
             context.startActivity(intent);
         }

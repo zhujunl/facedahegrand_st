@@ -14,9 +14,6 @@ import com.miaxis.face.bean.Config;
 import com.miaxis.face.bean.DaheResponseEntity;
 import com.miaxis.face.bean.IDCardRecord;
 import com.miaxis.face.bean.RecordDto;
-import com.miaxis.face.bean.Task;
-import com.miaxis.face.bean.TaskOver;
-import com.miaxis.face.bean.TaskResult;
 import com.miaxis.face.bean.Undocumented;
 import com.miaxis.face.net.FaceNetApi;
 import com.miaxis.face.util.EncryptUtil;
@@ -57,6 +54,10 @@ public class RecordManager {
 
     public interface OnRecordUploadResultListener {
         void onUploadResult(boolean result, String message, boolean playVoice, String voiceText);
+    }
+
+    public interface NetworkDateListener{
+        void setTime(Date date);
     }
 
     public void cancelRequest() {
@@ -280,7 +281,7 @@ public class RecordManager {
         return GSON.toJson(recordDto);
     }
 
-    public void uploadHeartBeat(String data) {
+    public void uploadHeartBeat(String data,NetworkDateListener networkDateListener) {
         try {
             String cmd = "Heartbeat";
             String json = makeUploadResultJson(cmd, data);
@@ -288,6 +289,8 @@ public class RecordManager {
             uploadCall = FaceNetApi.uploadRecord(config.getUploadRecordUrl(), json);
             Response<DaheResponseEntity> execute = uploadCall.execute();
             DaheResponseEntity body = execute.body();
+            Date date=execute.headers().getDate("Date");
+            networkDateListener.setTime(date);
             if (body != null) {
                 Log.e("asd", "心跳回执：" + body.getErrCode() + "，Msg:" + body.getErrMsg());
             }

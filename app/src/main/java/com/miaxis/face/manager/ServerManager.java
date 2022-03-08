@@ -221,14 +221,14 @@ public class ServerManager {
         }
     }
 
-    public void startHeartBeat() {
+    public void startHeartBeat(RecordManager.NetworkDateListener networkDateListener) {
         handlerThread = new HandlerThread("HeartBeat");
         handlerThread.start();
         handler = new Handler(handlerThread.getLooper()) {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-                heartBeat();
+                heartBeat(networkDateListener);
             }
         };
         handler.sendMessage(handler.obtainMessage(0));
@@ -244,12 +244,12 @@ public class ServerManager {
         }
     }
 
-    private void heartBeat() {
+    private void heartBeat(RecordManager.NetworkDateListener networkDateListener) {
         try {
             handler.removeMessages(0);
             Config config = ConfigManager.getInstance().getConfig();
             String data = "{\"webapi\": \"" + getHost() + "\",\"deviceSN\":\"" + config.getDeviceSerialNumber() + "\"}";
-            RecordManager.getInstance().uploadHeartBeat(data);
+            RecordManager.getInstance().uploadHeartBeat(data,networkDateListener);
         } catch (Exception e) {
             Log.e("asd", "" + e.getMessage());
         } finally {

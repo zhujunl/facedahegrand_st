@@ -5,10 +5,11 @@ import static com.miaxis.face.constant.Constants.DELAYList;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
+import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -189,7 +190,11 @@ public class SettingActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Long tim = System.currentTimeMillis();
-        setContentView(R.layout.activity_setting);
+        if(Constants.VERSION){
+            setContentView(R.layout.activity_setting);
+        }else {
+            setContentView(R.layout.activity_setting_860s);
+        }
         Log.e("asd", "asdadasdsadsa" + (System.currentTimeMillis() - tim));
         ButterKnife.bind(this);
         initWindow();
@@ -208,7 +213,7 @@ public class SettingActivity extends BaseActivity {
             verifyModeList.add(faceOnly);
 //            verifyModeList.add(local);
         }
-        ArrayAdapter<String> myAdapter = new ArrayAdapter<>(this, R.layout.spinner_style_display, R.id.tvDisplay, verifyModeList);
+        ArrayAdapter<String> myAdapter = new ArrayAdapter<>(this,Constants.VERSION?R.layout.spinner_style_display:R.layout.spinner_style_display_860s, R.id.tvDisplay, verifyModeList);
         sVerifyMode.setAdapter(myAdapter);
         sVerifyMode.setOnClickMyListener(()->{
             if(sVerifyMode.getDialog()){
@@ -262,7 +267,7 @@ public class SettingActivity extends BaseActivity {
 
 
         List<String> versionList=Arrays.asList(getResources().getStringArray(R.array.versiondelay));
-        ArrayAdapter<String> versionAdapter=new ArrayAdapter<>(this,R.layout.spinner_style_display,R.id.tvDisplay,versionList);
+        ArrayAdapter<String> versionAdapter=new ArrayAdapter<>(this,Constants.VERSION?R.layout.spinner_style_display:R.layout.spinner_style_display_860s,R.id.tvDisplay,versionList);
         et_version_delay_time.setAdapter(versionAdapter);
         et_version_delay_time.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -519,12 +524,12 @@ public class SettingActivity extends BaseActivity {
     @OnClick(R.id.btn_exit)
     void singOut() {
 //        Face_App.getInstance().unableDog();
-        App.getInstance().sendBroadcast(Constants.MOLD_STATUS,-1,true);
-        App.getInstance().sendBroadcast(Constants.MOLD_NAV,-1,true);
         GpioManager.getInstance().reduction(this);
         Intent intent = new Intent("com.miaxis.face.view.activity");
         intent.putExtra("closeAll", 1);
-        sendBroadcast(intent);
+        App.getInstance().sendBroadcast(Constants.MOLD_STATUS,-1,true);
+        App.getInstance().sendBroadcast(Constants.MOLD_NAV,-1,true);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
     @OnClick(R.id.btn_white_manage)

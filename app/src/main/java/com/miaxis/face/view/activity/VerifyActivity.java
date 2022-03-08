@@ -73,6 +73,7 @@ import com.miaxis.face.manager.ConfigManager;
 import com.miaxis.face.manager.DaoManager;
 import com.miaxis.face.manager.FaceManager;
 import com.miaxis.face.manager.GpioManager;
+import com.miaxis.face.manager.RecordManager;
 import com.miaxis.face.manager.ServerManager;
 import com.miaxis.face.manager.TTSManager;
 import com.miaxis.face.manager.TaskManager;
@@ -184,10 +185,14 @@ public class VerifyActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.e("VerifyActivity",":onCreate");
-        if(BuildConfig.EQUIPMENT_TYPE==1){
-            setContentView(R.layout.activity_verify);
+        if(Constants.VERSION){
+            if(BuildConfig.EQUIPMENT_TYPE==1){
+                setContentView(R.layout.activity_verify);
+            }else {
+                setContentView(R.layout.activity_verify2);
+            }
         }else {
-            setContentView(R.layout.activity_verify2);
+            setContentView(R.layout.activity_verify_860s);
         }
         ButterKnife.bind(this);
         initWindow();
@@ -208,7 +213,7 @@ public class VerifyActivity extends BaseActivity {
         AdvertManager.getInstance().updateAdvertise();
         initWithConfig();
         WatchDogManager.getInstance().startANRWatchDog();
-        ServerManager.getInstance().startHeartBeat();
+        ServerManager.getInstance().startHeartBeat(networkDateListener);
         if (presenter != null) {
             ServerManager.getInstance().setListener(presenter.taskListener);
         }
@@ -262,7 +267,7 @@ public class VerifyActivity extends BaseActivity {
         ServerManager.getInstance().stopServer();
         asyncHandler.removeCallbacks(advertiseRunnable);
         GpioManager.getInstance().closeLed();
-        unregisterReceiver(timeReceiver);
+//        unregisterReceiver(timeReceiver);
         GpioManager.getInstance().setSmdtStatusBar(this, true);
         System.exit(0);
     }
@@ -817,32 +822,38 @@ public class VerifyActivity extends BaseActivity {
      * 日期时间
      */
     private void initTimeReceiver() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_TIME_TICK);
-        registerReceiver(timeReceiver, filter);
-        onTimeEvent();
+//        IntentFilter filter = new IntentFilter();
+//        filter.addAction(Intent.ACTION_TIME_TICK);
+//        registerReceiver(timeReceiver, filter);
+        Date da=new Date();
+        onTimeEvent(da);
     }
 
-    private BroadcastReceiver timeReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (Intent.ACTION_TIME_TICK.equals(intent.getAction())) {
-                onTimeEvent();//每一分钟更新时间
-            }
-        }
-    };
+//    private BroadcastReceiver timeReceiver = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            if (Intent.ACTION_TIME_TICK.equals(intent.getAction())) {
+//                onTimeEvent();//每一分钟更新时间
+//            }
+//        }
+//    };
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onWeatherChanged(LocalWeatherLive localWeatherLive) {
         tvWeather.setText(String.format("%s %s℃", localWeatherLive.getWeather(), localWeatherLive.getTemperature()));
     }
 
+    RecordManager.NetworkDateListener networkDateListener= date -> {
+        if(date!=null){
+            runOnUiThread(()->onTimeEvent(date));
+        }
+    };
     /**
      * 处理 时间变化 事件， 实时更新时间
      */
-    private void onTimeEvent() {
-        String date = dateFormat.format(new Date());
-        String time = timeFormat.format(new Date());
+    private void onTimeEvent(Date da) {
+        String date = dateFormat.format(da);
+        String time = timeFormat.format(da);
         tvTime.setText(time);
         tvDate.setText(date);
     }

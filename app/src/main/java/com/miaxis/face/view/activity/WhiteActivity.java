@@ -15,6 +15,7 @@ import com.miaxis.face.R;
 import com.miaxis.face.adapter.WhiteItemAdapter;
 import com.miaxis.face.bean.Config;
 import com.miaxis.face.bean.WhiteItem;
+import com.miaxis.face.constant.Constants;
 import com.miaxis.face.event.LoadProgressEvent;
 import com.miaxis.face.greendao.gen.WhiteItemDao;
 import com.miaxis.face.manager.ConfigManager;
@@ -81,7 +82,11 @@ public class WhiteActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_white);
+        if(Constants.VERSION){
+            setContentView(R.layout.activity_white);
+        }else {
+            setContentView(R.layout.activity_white_860s);
+        }
         ButterKnife.bind(this);
 
         initData();

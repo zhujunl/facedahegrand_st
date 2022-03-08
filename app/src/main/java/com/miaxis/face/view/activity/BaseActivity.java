@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -23,13 +24,15 @@ import com.miaxis.face.manager.GpioManager;
 public class BaseActivity extends AppCompatActivity {
 
     private MyBaseActivityBroadcastReceiver myBaseActivityBroad;
+    private LocalBroadcastManager localBroadcastManager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        localBroadcastManager=LocalBroadcastManager.getInstance(this);
         myBaseActivityBroad = new MyBaseActivityBroadcastReceiver();
         IntentFilter intentFilter = new IntentFilter("com.miaxis.face.view.activity");
-        registerReceiver(myBaseActivityBroad, intentFilter);
+        localBroadcastManager.registerReceiver(myBaseActivityBroad, intentFilter);
     }
 
     @Override
@@ -77,7 +80,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(myBaseActivityBroad);//注销广播
+        localBroadcastManager.unregisterReceiver(myBaseActivityBroad);//注销广播
     }
 
     public void hideInputMethod() {

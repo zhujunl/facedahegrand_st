@@ -8,7 +8,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 28
         versionCode 13
-        versionName "1.1.5_Dahe_New_ST_HaiNan"
+        versionName "1.1.5_Dahe_New_ST_HeNan"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
 
@@ -36,14 +36,14 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField 'int', 'EQUIPMENT_TYPE', '1'//1是通用，2是定制
-            buildConfigField 'int','EQUIPMENT_PLACE', '1'//1是海南，2是河南
+            buildConfigField 'int','EQUIPMENT_PLACE', '2'//1是海南，2是河南
             signingConfig signingConfigs.debug
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField 'int', 'EQUIPMENT_TYPE', '1'
-            buildConfigField 'int','EQUIPMENT_PLACE', '1'//1是海南，2是河南（别忘改名字）
+            buildConfigField 'int','EQUIPMENT_PLACE', '2'//1是海南，2是河南（别忘改名字）
             signingConfig signingConfigs.release
         }
     }

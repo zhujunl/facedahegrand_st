@@ -12,6 +12,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.miaxis.face.BuildConfig;
 import com.miaxis.face.R;
 import com.miaxis.face.app.GlideApp;
+import com.miaxis.face.constant.Constants;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,7 +46,8 @@ public class ResultView extends LinearLayout {
     }
 
     private void init() {
-        View v = BuildConfig.EQUIPMENT_TYPE==1? inflate(getContext(), R.layout.view_result, this):inflate(getContext(), R.layout.view_result2, this);
+        View v = Constants.VERSION?BuildConfig.EQUIPMENT_TYPE==1? inflate(getContext(), R.layout.view_result, this):inflate(getContext(), R.layout.view_result2, this)
+                :inflate(getContext(), R.layout.view_result_860s, this);
         ButterKnife.bind(this, v);
         bringToFront();
         GlideApp.with(this).load(R.raw.put_finger).into(ivFingerResult);

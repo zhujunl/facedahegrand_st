@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.miaxis.face.R;
 import com.miaxis.face.bean.IDCardRecord;
 import com.miaxis.face.bean.Record;
+import com.miaxis.face.constant.Constants;
 import com.miaxis.face.manager.ConfigManager;
 import com.miaxis.face.util.DateUtil;
 
@@ -62,7 +63,7 @@ public class RecordAdapter extends BaseAdapter {
     public View getView(int i, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_record, null);
+            convertView = LayoutInflater.from(context).inflate(Constants.VERSION ?R.layout.item_record:R.layout.item_record_860s, null);
             holder = new ViewHolder(convertView);
             convertView.setTag(holder);
         } else {

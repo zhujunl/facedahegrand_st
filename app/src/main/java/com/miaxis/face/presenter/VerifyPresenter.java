@@ -354,12 +354,6 @@ public class VerifyPresenter {
             float faceMatchScore = FaceManager.getInstance().matchFeature(feature, idCardRecord.getCardFeature());
             byte[] fileImage = FaceManager.getInstance().imageEncode(mxRGBImage.getRgbImage(), mxRGBImage.getWidth(), mxRGBImage.getHeight());
             Bitmap faceBitmap = BitmapFactory.decodeByteArray(fileImage, 0, fileImage.length);
-//            float fw = Constants.pam * mxFaceInfoEx.width;
-//            float fh = Constants.pam * mxFaceInfoEx.height;
-//            int x=(int) Math.max(0,mxFaceInfoEx.x-fw);
-//            int y=(int) Math.max(0,mxFaceInfoEx.y-fh);
-//            int width=(int) Math.min(mxFaceInfoEx.width*(1+2*Constants.pam),faceBitmap.getWidth());
-//            int height=(int) Math.min(mxFaceInfoEx.height*(1+2*Constants.pam),faceBitmap.getHeight());
             Bitmap rectBitmap = Bitmap.createBitmap(faceBitmap, x, y,width, height);//截取
             boolean result = faceMatchScore > config.getVerifyScore();
             FaceManager.getInstance().stopLoop();
