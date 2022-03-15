@@ -1,5 +1,7 @@
 package com.miaxis.face.util;
 
+import android.util.Log;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -34,6 +36,12 @@ public class DateUtil {
     public static Date fromMonthDay(String date) throws ParseException {
         SimpleDateFormat myFmt = new SimpleDateFormat("yyyy-MM-dd");
         return myFmt.parse(date);
+    }
+
+    public static Date LongtoDate(Long date) throws ParseException {
+        SimpleDateFormat LTD =   new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+        String time=LTD.format(date);
+        return LTD.parse(time);
     }
 
     public static Date addOneDay(Date date) {

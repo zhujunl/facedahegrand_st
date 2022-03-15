@@ -160,4 +160,6 @@ public class Constants {
 
     public static final boolean VERSION= !Build.VERSION.RELEASE.equals("11");//版本为Android11，VERSION为false
     public static final float pam=0.3f;//人脸图片截取扩大
+    public static final long DIFFTIME=60000;//时间差
+    public static final int CAMERAERROR=0;
 }

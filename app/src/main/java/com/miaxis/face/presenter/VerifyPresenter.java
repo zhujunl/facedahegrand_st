@@ -35,6 +35,7 @@ import com.miaxis.face.manager.SoundManager;
 import com.miaxis.face.manager.TTSManager;
 import com.miaxis.face.manager.ToastManager;
 import com.miaxis.face.model.IDCardRecordModel;
+import com.miaxis.face.util.DateUtil;
 import com.miaxis.face.util.FileUtil;
 import com.miaxis.face.util.MyUtil;
 import com.miaxis.face.view.activity.VerifyActivity;
@@ -43,6 +44,7 @@ import org.zz.api.MXFaceInfoEx;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -70,6 +72,8 @@ public class VerifyPresenter {
     private boolean fingerDone = false;
     private boolean undocumentedDone = false;
     private boolean taskDone = false;
+
+    private long difftime=0;
 
     private List<WhiteItem> whiteItemList;
 
@@ -205,7 +209,13 @@ public class VerifyPresenter {
             SoundManager.getInstance().playSound(SoundManager.SOUND_VALIDATE_FAIL);
             idCardRecord.setDescribe("身份证已过期");
             idCardRecord.setVerifyResult(false);
-            idCardRecord.setVerifyTime(new Date());
+            Date date=new Date();
+            try {
+                idCardRecord.setVerifyTime(DateUtil.LongtoDate(date.getTime()+difftime));
+            } catch (ParseException e) {
+                e.printStackTrace();
+                idCardRecord.setVerifyTime(date);
+            }
             idCardRecord.setUpload(false);
             saveLocalRecord(idCardRecord);
             return true;
@@ -228,7 +238,13 @@ public class VerifyPresenter {
         SoundManager.getInstance().playSound(SoundManager.SOUND_FAIL);
         idCardRecord.setDescribe("不在白名单内");
         idCardRecord.setVerifyResult(false);
-        idCardRecord.setVerifyTime(new Date());
+        Date date=new Date();
+        try {
+            idCardRecord.setVerifyTime(DateUtil.LongtoDate(date.getTime()+difftime));
+        } catch (ParseException e) {
+            e.printStackTrace();
+            idCardRecord.setVerifyTime(date);
+        }
         idCardRecord.setUpload(false);
         saveLocalRecord(idCardRecord);
         return false;
@@ -407,7 +423,13 @@ public class VerifyPresenter {
             }
         } else {
             GpioManager.getInstance().closeLed();
-            idCardRecord.setVerifyTime(new Date());
+            Date date=new Date();
+            try {
+                idCardRecord.setVerifyTime(DateUtil.LongtoDate(date.getTime()+difftime));
+            } catch (ParseException e) {
+                e.printStackTrace();
+                idCardRecord.setVerifyTime(date);
+            }
             boolean success = ConfigManager.isPass(idCardRecord.getVerifyMode(),
                     idCardRecord.getFaceResult(),
                     idCardRecord.getFingerResult());
@@ -815,6 +837,14 @@ public class VerifyPresenter {
         task = null;
         taskFlag = false;
         taskDone = false;
+    }
+
+    public void setDifftime(long time){
+        if (Math.abs(time)<Constants.DIFFTIME){
+            difftime=0;
+            return;
+        }
+        difftime=time;
     }
 
 }

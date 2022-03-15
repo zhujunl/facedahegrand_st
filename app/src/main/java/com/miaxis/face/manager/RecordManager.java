@@ -15,10 +15,14 @@ import com.miaxis.face.bean.DaheResponseEntity;
 import com.miaxis.face.bean.IDCardRecord;
 import com.miaxis.face.bean.RecordDto;
 import com.miaxis.face.bean.Undocumented;
+import com.miaxis.face.constant.Constants;
 import com.miaxis.face.net.FaceNetApi;
+import com.miaxis.face.presenter.UpdatePresenter;
+import com.miaxis.face.util.DateUtil;
 import com.miaxis.face.util.EncryptUtil;
 import com.miaxis.face.util.FileUtil;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -49,6 +53,8 @@ public class RecordManager {
     private static final String SIGN_KEY = "dhmyyjtforhotel2017";
 
     private volatile boolean uploading = false;
+
+    private long difftime=0;
 
     private Call<DaheResponseEntity> uploadCall;
 
@@ -97,6 +103,8 @@ public class RecordManager {
 //        });
 //    }
 
+
+
     private void uploadResultSync(@NonNull String json, @NonNull OnRecordUploadResultListener listener) {
         try {
             Config config = ConfigManager.getInstance().getConfig();
@@ -133,7 +141,7 @@ public class RecordManager {
         String account = config.getAccount();
         String client = config.getClientId();
         String nonce = String.valueOf(System.currentTimeMillis());
-        String timeStamp = TIME_STAMP_FORMAT.format(new Date());
+        String timeStamp = TIME_STAMP_FORMAT.format(getDate());
         boolean ase = false;
         if (config.getEncrypt()) {
             String encrypt = EncryptUtil.encryptAES(data, SECRET_KEY);
@@ -281,7 +289,13 @@ public class RecordManager {
         return GSON.toJson(recordDto);
     }
 
-    public void uploadHeartBeat(String data,NetworkDateListener networkDateListener) {
+    public NetworkDateListener networkDateListener;
+
+    public void setListener(NetworkDateListener networkDateListener){
+        this.networkDateListener=networkDateListener;
+    }
+
+    public void uploadHeartBeat(String data) {
         try {
             String cmd = "Heartbeat";
             String json = makeUploadResultJson(cmd, data);
@@ -289,8 +303,10 @@ public class RecordManager {
             uploadCall = FaceNetApi.uploadRecord(config.getUploadRecordUrl(), json);
             Response<DaheResponseEntity> execute = uploadCall.execute();
             DaheResponseEntity body = execute.body();
-            Date date=execute.headers().getDate("Date");
-            networkDateListener.setTime(date);
+
+            if (networkDateListener!=null){
+                networkDateListener.setTime(execute.headers().getDate("Date"));
+            }
             if (body != null) {
                 Log.e("asd", "心跳回执：" + body.getErrCode() + "，Msg:" + body.getErrMsg());
             }
@@ -299,4 +315,29 @@ public class RecordManager {
         }
     }
 
+    private Date date;
+
+    public Date getDate() {
+        if (date!=null){
+            return date;
+        }else {
+            return new Date();
+        }
+    }
+
+    public void setDate(long difftime) {
+        Date da=new Date();
+        if (Math.abs(difftime)< Constants.DIFFTIME){
+            this.date=da;
+            return;
+        }
+        try {
+            long time=da.getTime()+difftime;
+            this.date=DateUtil.LongtoDate(time);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            this.date=da;
+        }
+        Log.e("date===",this.date.toString()+"   now====="+da.toString());
+    }
 }

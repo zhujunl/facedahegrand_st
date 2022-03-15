@@ -81,6 +81,7 @@ import com.miaxis.face.manager.ToastManager;
 import com.miaxis.face.manager.WatchDogManager;
 import com.miaxis.face.presenter.UpdatePresenter;
 import com.miaxis.face.presenter.VerifyPresenter;
+import com.miaxis.face.util.DateUtil;
 import com.miaxis.face.view.custom.AdvertiseDialogFragment;
 import com.miaxis.face.view.custom.RectSurfaceView;
 import com.miaxis.face.view.custom.ResultView;
@@ -93,6 +94,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.zz.api.MXFaceInfoEx;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -201,6 +203,7 @@ public class VerifyActivity extends BaseActivity {
         initView();
         initTimeReceiver();
         TaskManager.getInstance().init(this);
+        RecordManager.getInstance().setListener(networkDateListener);
         updatePresenter.checkUpdateSync();
     }
 
@@ -213,7 +216,7 @@ public class VerifyActivity extends BaseActivity {
         AdvertManager.getInstance().updateAdvertise();
         initWithConfig();
         WatchDogManager.getInstance().startANRWatchDog();
-        ServerManager.getInstance().startHeartBeat(networkDateListener);
+        ServerManager.getInstance().startHeartBeat();
         if (presenter != null) {
             ServerManager.getInstance().setListener(presenter.taskListener);
         }
@@ -825,6 +828,10 @@ public class VerifyActivity extends BaseActivity {
         }
     }
 
+    RecordManager.NetworkDateListener networkDateListener;
+
+    private long nowtime=0;
+
     /**
      * 日期时间
      */
@@ -832,15 +839,29 @@ public class VerifyActivity extends BaseActivity {
 //        IntentFilter filter = new IntentFilter();
 //        filter.addAction(Intent.ACTION_TIME_TICK);
 //        registerReceiver(timeReceiver, filter);
-        Date da=new Date();
-        onTimeEvent(da);
+        Date date=new Date();
+        networkDateListener= da -> {
+            if(da!=null){
+                long time=da.getTime()-date.getTime();
+                presenter.setDifftime(time);
+                RecordManager.getInstance().setDate(time);
+                nowtime=da.getTime();
+                runOnUiThread(()->onTimeEvent(da));
+            }else {
+                nowtime=da.getTime();
+                runOnUiThread(()->{
+                    onTimeEvent(nowtime);
+                });
+            }
+        };
     }
 
 //    private BroadcastReceiver timeReceiver = new BroadcastReceiver() {
 //        @Override
 //        public void onReceive(Context context, Intent intent) {
 //            if (Intent.ACTION_TIME_TICK.equals(intent.getAction())) {
-//                onTimeEvent();//每一分钟更新时间
+//                nowtime=nowtime+Constants.DIFFTIME;
+//                onTimeEvent(nowtime);//每一分钟更新时间
 //            }
 //        }
 //    };
@@ -850,20 +871,46 @@ public class VerifyActivity extends BaseActivity {
         tvWeather.setText(String.format("%s %s℃", localWeatherLive.getWeather(), localWeatherLive.getTemperature()));
     }
 
-    RecordManager.NetworkDateListener networkDateListener= date -> {
-        if(date!=null){
-            runOnUiThread(()->onTimeEvent(date));
-        }
-    };
     /**
      * 处理 时间变化 事件， 实时更新时间
      */
+    private void onTimeEvent(long ti) {
+        Date date=new Date();
+        String date1 =dateFormat.format(date);;
+        String time=dateFormat.format(date); ;
+        try {
+            date1= dateFormat.format(DateUtil.LongtoDate(ti));
+            time =timeFormat.format(DateUtil.LongtoDate(ti));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        tvTime.setText(time);
+        tvDate.setText(date1);
+    }
+
     private void onTimeEvent(Date da) {
-        String date = dateFormat.format(da);
+        String date1 = dateFormat.format(da);
         String time = timeFormat.format(da);
         tvTime.setText(time);
-        tvDate.setText(date);
+        tvDate.setText(date1);
     }
+
+//    public void setSystem(Date date){
+//        SimpleDateFormat format=new SimpleDateFormat("yyyyMMdd.HHmmss",Locale.getDefault());
+//        String dateTime =format.format(date);
+//        ArrayList<String> list=new ArrayList<>();
+//        Map<String,String> map=System.getenv();
+//        for(String env:map.keySet()){
+//            list.add(env+"="+map.get(env));
+//        }
+//        String[] str=list.toArray(new String[0]);
+//        String commend="date -s\""+dateTime+"\"";
+//        try {
+//            Runtime.getRuntime().exec(new String[]{"su","-c",commend},str);
+//        }catch (IOException e){
+//            e.printStackTrace();
+//        }
+//    }
 
     private void showGif(int rawId, ImageView view) {
         GlideApp.with(this).load(rawId).listener(new RequestListener<Drawable>() {
