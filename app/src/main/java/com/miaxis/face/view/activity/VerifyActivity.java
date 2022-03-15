@@ -178,7 +178,7 @@ public class VerifyActivity extends BaseActivity {
     private int mState = 0;         // 记录点击次数
     private long firstTime = 0;
     private int toType;             // 0 SettingActivity   1 RecordActivity
-
+    private int cameraError=0;
 
 
     @Override
@@ -315,21 +315,27 @@ public class VerifyActivity extends BaseActivity {
         @Override
         public void onCameraOpen(Camera.Size previewSize, String message) {
             if (previewSize == null) {
-                ToastManager.toast("摄像头打开失败"+message);
+                cameraError++;
                 App.getInstance().getThreadExecutor().execute(()->{
                     controlAdvertDialog(true);
                     controlAdvertDialog(false);
                 });
+                runOnUiThread(()-> {
+                    ToastManager.toast("摄像头打开失败" + message);
+                });
             } else {
-                int rootWidth = flCameraRoot.getWidth();
-                int rootHeight = flCameraRoot.getHeight() * previewSize.width / previewSize.height;
-                resetLayoutParams(tvCamera, rootWidth, rootHeight);
-                resetLayoutParams(rsvRect, rootWidth, rootHeight);
-                rsvRect.setRootSize(rootWidth, rootHeight);
-                rsvRect.setZoomRate((float) rootWidth / FaceManager.zoomWidth);
+                runOnUiThread(()->{
+                    int rootWidth = flCameraRoot.getWidth();
+                    int rootHeight = flCameraRoot.getHeight() * previewSize.width / previewSize.height;
+                    resetLayoutParams(tvCamera, rootWidth, rootHeight);
+                    resetLayoutParams(rsvRect, rootWidth, rootHeight);
+                    rsvRect.setRootSize(rootWidth, rootHeight);
+                    rsvRect.setZoomRate((float) rootWidth / FaceManager.zoomWidth);
+                });
                 handler.postDelayed(() -> {
                     try {
                         if (advertiseDialog!=null) {
+                            cameraError=0;
                             advertiseDialog.dismiss();
                         }
                     } catch (Exception e) {
@@ -337,6 +343,7 @@ public class VerifyActivity extends BaseActivity {
                         e.printStackTrace();
                     }
                 }, 500);
+                sendAdvertiseDelaySignal();
             }
             if (presenter != null && presenter.isOnTask()) {
                 presenter.handleTask();
@@ -346,27 +353,27 @@ public class VerifyActivity extends BaseActivity {
         @Override
         public void onCameraError() {
 //            runOnUiThread(() -> {
-                try {
-                    while (advertiseLock.isLocked()) {
-                        try {
-                            Thread.sleep(100);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+            try {
+                while (advertiseLock.isLocked()) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-                    advertiseLock.lock();
-                    Log.e("asd", "开始修复摄像头卡顿");
-                    CameraManager.getInstance().closeCamera();
-                    GpioManager.getInstance().closeCameraGpio();
-                    Thread.sleep(800);
-                    GpioManager.getInstance().openCameraGpio();
-                    CameraManager.getInstance().openCamera(tvCamera, cameraListener);
-                    Log.e("asd", "结束修复摄像头卡顿");
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } finally {
-                    advertiseLock.unlock();
                 }
+                advertiseLock.lock();
+                Log.e("asd", "开始修复摄像头卡顿");
+                CameraManager.getInstance().closeCamera();
+                GpioManager.getInstance().closeCameraGpio();
+                Thread.sleep(800);
+                GpioManager.getInstance().openCameraGpio();
+                CameraManager.getInstance().openCamera(tvCamera, cameraListener);
+                Log.e("asd", "结束修复摄像头卡顿");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                advertiseLock.unlock();
+            }
 //            });
         }
     };
@@ -383,7 +390,7 @@ public class VerifyActivity extends BaseActivity {
                     }
                     advertiseLock.lock();
                     runOnUiThread(()->{
-                        if (!advertiseDialog.isAdded()) {
+                        if (!advertiseDialog.isAdded()&&cameraError==0) {
                             advertiseDialog.show(getSupportFragmentManager(), "ad");
                         }
                     });
@@ -413,10 +420,10 @@ public class VerifyActivity extends BaseActivity {
                     }
                     advertiseLock.lock();
                     GpioManager.getInstance().openCameraGpio();
-                    //runOnUiThread(() -> {
+                    runOnUiThread(() -> {
                         CameraManager.getInstance().openCamera(tvCamera, cameraListener);
                         cameraOpenTime = System.currentTimeMillis();
-                   // });
+                    });
                     Thread.sleep(800);
                 } catch (Exception e) {
                     e.printStackTrace();

@@ -51,16 +51,24 @@ public class CameraManager {
     public synchronized void openCamera(@NonNull TextureView textureView, @NonNull CameraManager.OnCameraOpenListener listener) {
         try {
             this.listener = listener;
+            if (surfaceTexture == null) {
+                textureView.setSurfaceTextureListener(textureListener);
+            }
+
             openMonitor();
             resetRetryTime();
 //            textureViewFlip(textureView);
             openVisibleCamera();
-            listener.onCameraOpen(camera.getParameters().getPreviewSize(), "");
-            if (surfaceTexture == null) {
-                textureView.setSurfaceTextureListener(textureListener);
-            } else {
+            if (surfaceTexture != null) {
                 camera.setPreviewTexture(surfaceTexture);
             }
+            textureView.setRotationY(CameraManager.ORIENTATION);
+            listener.onCameraOpen(camera.getParameters().getPreviewSize(), "");
+//            if (surfaceTexture == null) {
+//                textureView.setSurfaceTextureListener(textureListener);
+//            } else {
+//                camera.setPreviewTexture(surfaceTexture);
+//            }
         } catch (Exception e) {
             e.printStackTrace();
             listener.onCameraOpen(null, "异常: "+e);
@@ -69,42 +77,49 @@ public class CameraManager {
 
     private void openVisibleCamera() {
 //        try {
-            for (int i = 0; i < RETRY_TIMES; i++) {
-                if (camera==null){
+        for (int i = 0; i < RETRY_TIMES; i++) {
+            if (camera==null){
+                try {
                     camera = Camera.open(0);
-                    if (camera!=null){
-                        break;
-                    }
-                    SystemClock.sleep(100);
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
-            }
-            Camera.Parameters parameters = camera.getParameters();
-            List<Camera.Size> supportedPreviewSizes = parameters.getSupportedPreviewSizes();
-            int maxWidth = 0;
-            int maxHeight = 0;
-            for (Camera.Size size : supportedPreviewSizes) {
-                maxWidth = Math.max(size.width, maxWidth);
-                maxHeight = Math.max(size.height, maxHeight);
-                Log.e("CameraPreview: ", size.width + "x" + size.height);
-            }
-            ORIENTATION = maxWidth * maxHeight >= (200 * 10000) ? 0 : (!Constants.VERSION?0:180);
-            parameters.setPreviewSize(PRE_WIDTH, PRE_HEIGHT);
-            parameters.setPictureSize(PIC_WIDTH, PIC_HEIGHT);
-            //对焦模式设置
-            List<String> supportedFocusModes = parameters.getSupportedFocusModes();
-            if (supportedFocusModes != null && supportedFocusModes.size() > 0) {
-                if (supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
-                    parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
-                } else if (supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)) {
-                    parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
-                } else if (supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO)) {
-                    parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+                if (camera!=null){
+                    break;
                 }
+                SystemClock.sleep(500);
             }
+        }
+        Camera.Parameters parameters = camera.getParameters();
+        List<Camera.Size> supportedPreviewSizes = parameters.getSupportedPreviewSizes();
+        int maxWidth = 0;
+        int maxHeight = 0;
+        for (Camera.Size size : supportedPreviewSizes) {
+            maxWidth = Math.max(size.width, maxWidth);
+            maxHeight = Math.max(size.height, maxHeight);
+        }
+        ORIENTATION = maxWidth * maxHeight >= (200 * 10000) ? 0 : (!Constants.VERSION?0:180);
+        parameters.setPreviewSize(PRE_WIDTH, PRE_HEIGHT);
+        parameters.setPictureSize(PIC_WIDTH, PIC_HEIGHT);
+        //对焦模式设置
+        List<String> supportedFocusModes = parameters.getSupportedFocusModes();
+        if (supportedFocusModes != null && supportedFocusModes.size() > 0) {
+            if (supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+            } else if (supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)) {
+                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
+            } else if (supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO)) {
+                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+            }
+        }
+        try {
             camera.setParameters(parameters);
-            camera.setDisplayOrientation(ORIENTATION);
-            camera.setPreviewCallback(visiblePreviewCallback);
-            camera.startPreview();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        camera.setDisplayOrientation(ORIENTATION);
+        camera.setPreviewCallback(visiblePreviewCallback);
+        camera.startPreview();
 //        } catch (Exception e) {
 //            e.printStackTrace();
 ////            new Thread(() -> {
@@ -155,13 +170,13 @@ public class CameraManager {
     public TextureView.SurfaceTextureListener textureListener = new TextureView.SurfaceTextureListener() {
         @Override
         public void onSurfaceTextureAvailable(SurfaceTexture st, int width, int height) {
-            if (camera != null) {
-                try {
-                    surfaceTexture = st;
+            try {
+                surfaceTexture = st;
+                if (camera!=null){
                     camera.setPreviewTexture(surfaceTexture);
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 
