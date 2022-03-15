@@ -318,18 +318,9 @@ public class RecordManager {
     private Date date;
 
     public Date getDate() {
-        if (date!=null){
-            return date;
-        }else {
-            return new Date();
-        }
-    }
-
-    public void setDate(long difftime) {
         Date da=new Date();
         if (Math.abs(difftime)< Constants.DIFFTIME){
-            this.date=da;
-            return;
+            return da;
         }
         try {
             long time=da.getTime()+difftime;
@@ -338,6 +329,10 @@ public class RecordManager {
             e.printStackTrace();
             this.date=da;
         }
-        Log.e("date===",this.date.toString()+"   now====="+da.toString());
+        return date;
+    }
+
+    public void setDate(long difftime) {
+        this.difftime=difftime;
     }
 }
