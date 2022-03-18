@@ -201,9 +201,13 @@ public class VerifyActivity extends BaseActivity {
         initDialog();
         initData();
         initView();
-        initTimeReceiver();
+        if (Constants.VERSION) {
+            initTimeReceiver();
+        }else {
+            initTime();
+            RecordManager.getInstance().setListener(networkDateListener);
+        }
         TaskManager.getInstance().init(this);
-        RecordManager.getInstance().setListener(networkDateListener);
         updatePresenter.checkUpdateSync();
     }
 
@@ -270,7 +274,7 @@ public class VerifyActivity extends BaseActivity {
         ServerManager.getInstance().stopServer();
         asyncHandler.removeCallbacks(advertiseRunnable);
         GpioManager.getInstance().closeLed();
-//        unregisterReceiver(timeReceiver);
+        if(Constants.VERSION)unregisterReceiver(timeReceiver);
         GpioManager.getInstance().setSmdtStatusBar(this, true);
         System.exit(0);
     }
@@ -830,41 +834,39 @@ public class VerifyActivity extends BaseActivity {
 
     RecordManager.NetworkDateListener networkDateListener;
 
-    private long nowtime=0;
-
     /**
      * 日期时间
      */
     private void initTimeReceiver() {
-//        IntentFilter filter = new IntentFilter();
-//        filter.addAction(Intent.ACTION_TIME_TICK);
-//        registerReceiver(timeReceiver, filter);
-        Date date=new Date();
-        networkDateListener= da -> {
-            if(da!=null){
-                long time=da.getTime()-date.getTime();
-                presenter.setDifftime(time);
-                RecordManager.getInstance().setDate(time);
-                nowtime=da.getTime();
-                runOnUiThread(()->onTimeEvent(da));
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_TIME_TICK);
+        registerReceiver(timeReceiver, filter);
+        onTimeEvent();
+    }
+
+    public void initTime(){
+        networkDateListener= date -> {
+            if(date!=null){
+                Log.e("Time:","11111   start:"+date.getTime());
+                presenter.setDifftime(date);
+                RecordManager.getInstance().setDate(date);
+                runOnUiThread(()->onTimeEvent(date));
             }else {
-                nowtime=da.getTime();
                 runOnUiThread(()->{
-                    onTimeEvent(nowtime);
+                    onTimeEvent(new Date());
                 });
             }
         };
     }
 
-//    private BroadcastReceiver timeReceiver = new BroadcastReceiver() {
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            if (Intent.ACTION_TIME_TICK.equals(intent.getAction())) {
-//                nowtime=nowtime+Constants.DIFFTIME;
-//                onTimeEvent(nowtime);//每一分钟更新时间
-//            }
-//        }
-//    };
+    private BroadcastReceiver timeReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (Intent.ACTION_TIME_TICK.equals(intent.getAction())) {
+                onTimeEvent();//每一分钟更新时间
+            }
+        }
+    };
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onWeatherChanged(LocalWeatherLive localWeatherLive) {
@@ -895,22 +897,15 @@ public class VerifyActivity extends BaseActivity {
         tvDate.setText(date1);
     }
 
-//    public void setSystem(Date date){
-//        SimpleDateFormat format=new SimpleDateFormat("yyyyMMdd.HHmmss",Locale.getDefault());
-//        String dateTime =format.format(date);
-//        ArrayList<String> list=new ArrayList<>();
-//        Map<String,String> map=System.getenv();
-//        for(String env:map.keySet()){
-//            list.add(env+"="+map.get(env));
-//        }
-//        String[] str=list.toArray(new String[0]);
-//        String commend="date -s\""+dateTime+"\"";
-//        try {
-//            Runtime.getRuntime().exec(new String[]{"su","-c",commend},str);
-//        }catch (IOException e){
-//            e.printStackTrace();
-//        }
-//    }
+    private void onTimeEvent() {
+        Date date=new Date();
+        String date1 = dateFormat.format(date);
+        String time = timeFormat.format(date);
+        tvTime.setText(time);
+        tvDate.setText(date1);
+    }
+
+
 
     private void showGif(int rawId, ImageView view) {
         GlideApp.with(this).load(rawId).listener(new RequestListener<Drawable>() {

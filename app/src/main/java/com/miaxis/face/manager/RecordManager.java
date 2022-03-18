@@ -54,7 +54,7 @@ public class RecordManager {
 
     private volatile boolean uploading = false;
 
-    private long difftime=0;
+    private Date difftime=new Date();
 
     private Call<DaheResponseEntity> uploadCall;
 
@@ -141,7 +141,7 @@ public class RecordManager {
         String account = config.getAccount();
         String client = config.getClientId();
         String nonce = String.valueOf(System.currentTimeMillis());
-        String timeStamp = TIME_STAMP_FORMAT.format(getDate());
+        String timeStamp = TIME_STAMP_FORMAT.format(Constants.VERSION?new Date():getDate());
         boolean ase = false;
         if (config.getEncrypt()) {
             String encrypt = EncryptUtil.encryptAES(data, SECRET_KEY);
@@ -307,32 +307,43 @@ public class RecordManager {
             if (networkDateListener!=null){
                 networkDateListener.setTime(execute.headers().getDate("Date"));
             }
+            Log.e("asd", "心跳回执：" + body.getErrCode() + "，Msg:" + body.getErrMsg());
             if (body != null) {
                 Log.e("asd", "心跳回执：" + body.getErrCode() + "，Msg:" + body.getErrMsg());
             }
         } catch (Exception e) {
             e.printStackTrace();
+            if (networkDateListener!=null){
+                networkDateListener.setTime(null);
+            }
         }
     }
 
-    private Date date;
-
     public Date getDate() {
         Date da=new Date();
-        if (Math.abs(difftime)< Constants.DIFFTIME){
+        Date date;
+        Log.d("diff:","now:"+da.toString());
+        if (Math.abs(difftime.getTime()-da.getTime())< Constants.DIFFTIME){
             return da;
         }
         try {
-            long time=da.getTime()+difftime;
-            this.date=DateUtil.LongtoDate(time);
+            long time=difftime.getTime()-da.getTime();
+            Log.e("Time:","11111   endrt:"+da.getTime());
+            Log.e("Time:","22222   :"+difftime);
+            Log.e("Time:","33333   :"+time);
+            date=DateUtil.LongtoDate(da.getTime()+time);
+            Log.e("Time_Date:","11111   :"+da);
+            Log.e("Time_Date:","33333   :"+date);
+            Log.e("Time_Date:","================================ :");
         } catch (ParseException e) {
             e.printStackTrace();
-            this.date=da;
+            date=da;
         }
         return date;
     }
 
-    public void setDate(long difftime) {
+    public void setDate(Date difftime) {
+        Log.e("diff:","difftime："+difftime);
         this.difftime=difftime;
     }
 }

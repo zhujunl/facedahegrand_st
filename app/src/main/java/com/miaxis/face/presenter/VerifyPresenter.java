@@ -9,6 +9,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.miaxis.face.app.App;
@@ -209,13 +210,7 @@ public class VerifyPresenter {
             SoundManager.getInstance().playSound(SoundManager.SOUND_VALIDATE_FAIL);
             idCardRecord.setDescribe("身份证已过期");
             idCardRecord.setVerifyResult(false);
-            Date date=new Date();
-            try {
-                idCardRecord.setVerifyTime(DateUtil.LongtoDate(date.getTime()+difftime));
-            } catch (ParseException e) {
-                e.printStackTrace();
-                idCardRecord.setVerifyTime(date);
-            }
+            idCardRecord.setVerifyTime(Constants.VERSION?new Date():getDate());
             idCardRecord.setUpload(false);
             saveLocalRecord(idCardRecord);
             return true;
@@ -238,13 +233,7 @@ public class VerifyPresenter {
         SoundManager.getInstance().playSound(SoundManager.SOUND_FAIL);
         idCardRecord.setDescribe("不在白名单内");
         idCardRecord.setVerifyResult(false);
-        Date date=new Date();
-        try {
-            idCardRecord.setVerifyTime(DateUtil.LongtoDate(date.getTime()+difftime));
-        } catch (ParseException e) {
-            e.printStackTrace();
-            idCardRecord.setVerifyTime(date);
-        }
+        idCardRecord.setVerifyTime(Constants.VERSION?new Date():getDate());
         idCardRecord.setUpload(false);
         saveLocalRecord(idCardRecord);
         return false;
@@ -423,13 +412,7 @@ public class VerifyPresenter {
             }
         } else {
             GpioManager.getInstance().closeLed();
-            Date date=new Date();
-            try {
-                idCardRecord.setVerifyTime(DateUtil.LongtoDate(date.getTime()+difftime));
-            } catch (ParseException e) {
-                e.printStackTrace();
-                idCardRecord.setVerifyTime(date);
-            }
+            idCardRecord.setVerifyTime(Constants.VERSION?new Date():getDate());
             boolean success = ConfigManager.isPass(idCardRecord.getVerifyMode(),
                     idCardRecord.getFaceResult(),
                     idCardRecord.getFingerResult());
@@ -839,12 +822,24 @@ public class VerifyPresenter {
         taskDone = false;
     }
 
-    public void setDifftime(long time){
-        if (Math.abs(time)<Constants.DIFFTIME){
-            difftime=0;
-            return;
-        }
-        difftime=time;
+    public void setDifftime(Date time){
+//        difftime=time;
     }
 
+    public Date getDate(){
+        Date da=new Date();
+        Date date;
+        Log.d("diff:","now:"+da.toString());
+        if (Math.abs(difftime)< Constants.DIFFTIME){
+            return da;
+        }
+        try {
+            long time=da.getTime()-10000+difftime;
+            date=DateUtil.LongtoDate(time);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            date=da;
+        }
+        return date;
+    }
 }
