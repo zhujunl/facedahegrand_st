@@ -2,7 +2,6 @@ package com.miaxis.face.view.activity;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.smdt.SmdtManager;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -23,19 +22,12 @@ import android.widget.TextView;
 
 import com.miaxis.face.R;
 import com.miaxis.face.app.App;
-import com.miaxis.face.app.Face_App;
 import com.miaxis.face.constant.Constants;
-import com.miaxis.face.event.InitCWEvent;
-import com.miaxis.face.event.ReInitEvent;
 import com.miaxis.face.manager.GpioManager;
 import com.miaxis.face.manager.ServerManager;
 import com.miaxis.face.manager.ToastManager;
 import com.miaxis.face.util.LogUtil;
 import com.miaxis.face.view.custom.GifView;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindColor;
 import butterknife.BindView;

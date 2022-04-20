@@ -5,15 +5,12 @@ import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.TextureView;
-
-import java.io.IOException;
-import java.util.List;
-
 
 import com.miaxis.face.app.App;
 import com.miaxis.face.constant.Constants;
+
+import java.util.List;
 
 public class CameraManager {
 
@@ -32,10 +29,10 @@ public class CameraManager {
      * ================================ 静态内部类单例 ================================
      **/
 
-    public static final int PRE_WIDTH = Constants.VERSION?640:640;
-    public static final int PRE_HEIGHT = Constants.VERSION?480:480;
-    public static final int PIC_WIDTH = Constants.VERSION?640:640;
-    public static final int PIC_HEIGHT =Constants.VERSION?480:480;
+    public static int PRE_WIDTH = 640;
+    public static int PRE_HEIGHT = 480;
+    public static int PIC_WIDTH = 640;
+    public static int PIC_HEIGHT = 480;
     public static int ORIENTATION = 180;
     private static final int RETRY_TIMES = 3;
 
@@ -98,7 +95,13 @@ public class CameraManager {
             maxWidth = Math.max(size.width, maxWidth);
             maxHeight = Math.max(size.height, maxHeight);
         }
-        ORIENTATION = maxWidth * maxHeight >= (200 * 10000) ? 0 : (!Constants.VERSION?0:180);
+        ORIENTATION = maxWidth * maxHeight >= (200 * 10000) ? 0 : (!Constants.VERSION?0:180);//处理摄像头，500W不需要旋转
+        if(ORIENTATION==0){
+            PRE_WIDTH = 800;
+            PRE_HEIGHT = 600;
+            PIC_WIDTH = 800;
+            PIC_HEIGHT = 600;
+        }
         parameters.setPreviewSize(PRE_WIDTH, PRE_HEIGHT);
         parameters.setPictureSize(PIC_WIDTH, PIC_HEIGHT);
         //对焦模式设置

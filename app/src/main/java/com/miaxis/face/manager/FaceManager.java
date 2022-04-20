@@ -2,13 +2,10 @@ package com.miaxis.face.manager;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Rect;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
-import android.text.TextUtils;
 import android.util.Log;
-import android.util.Size;
 
 import com.miaxis.face.bean.Config;
 import com.miaxis.face.bean.Intermediary;
@@ -94,6 +91,8 @@ public class FaceManager {
     }
 
     public void startLoop() {
+        zoomWidth = CameraManager.PRE_WIDTH;
+        zoomHeight = CameraManager.PRE_HEIGHT;
         detectLoop = true;
         extractLoop = true;
         actionLiveResult = false;
@@ -146,12 +145,6 @@ public class FaceManager {
         }
     }
 
-
-    int left=100;
-    int top=30;
-    int right=left+120;
-    int bottom=top+190;
-
     private void verify(byte[] detectData) throws Exception {
         byte[] zoomedRgbData = cameraPreviewConvert(detectData,
                 CameraManager.PRE_WIDTH,
@@ -172,15 +165,10 @@ public class FaceManager {
             if (faceHandleListener != null) {
                 faceHandleListener.onFaceDetect(faceNum[0], faceBuffer);
             }
-            MXFaceInfoEx mxFaceInfoEx = sortMXFaceInfoEx(faceBuffer);//640*480
-//            if (mxFaceInfoEx.x>=left&&mxFaceInfoEx.y>=top
-//                   && mxFaceInfoEx.x+mxFaceInfoEx.width<=right
-//                    &&mxFaceInfoEx.y+mxFaceInfoEx.height<=bottom
-//            ){
+            MXFaceInfoEx mxFaceInfoEx = sortMXFaceInfoEx(faceBuffer);
                 if (faceHandleListener != null) {
                     faceHandleListener.onActionLiveDetect(0, "");
                 }
-               // Log.e(TAG, "verify: 在框"+mxFaceInfoEx );
                 result = faceQuality(zoomedRgbData, zoomWidth, zoomHeight, 1, new MXFaceInfoEx[]{mxFaceInfoEx});
                 if (result) {
                     Intermediary intermediary = new Intermediary();
@@ -192,13 +180,6 @@ public class FaceManager {
                     nova = true;
 //              Log.e("asd", "检测耗时" + (System.currentTimeMillis() - time) + "-----" + mxFaceInfoEx.quality);
                 }
-//            }else {
-//                if (faceHandleListener != null) {
-//                    faceHandleListener.onFaceTips("请将人脸移入框内");
-//                    faceHandleListener.onActionLiveDetect(-6, "请将人脸移入框内");
-//                }
-//               // Log.e(TAG, "verify: 不在框内"+mxFaceInfoEx );
-//            }
         } else {
             if (faceHandleListener != null) {
                 faceHandleListener.onFaceDetect(0, null);

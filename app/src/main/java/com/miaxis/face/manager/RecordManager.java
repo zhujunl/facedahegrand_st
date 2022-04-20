@@ -4,8 +4,6 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
-
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -17,7 +15,6 @@ import com.miaxis.face.bean.RecordDto;
 import com.miaxis.face.bean.Undocumented;
 import com.miaxis.face.constant.Constants;
 import com.miaxis.face.net.FaceNetApi;
-import com.miaxis.face.presenter.UpdatePresenter;
 import com.miaxis.face.util.DateUtil;
 import com.miaxis.face.util.EncryptUtil;
 import com.miaxis.face.util.FileUtil;
@@ -322,19 +319,12 @@ public class RecordManager {
     public Date getDate() {
         Date da=new Date();
         Date date;
-        Log.d("diff:","now:"+da.toString());
         if (Math.abs(difftime.getTime()-da.getTime())< Constants.DIFFTIME){
             return da;
         }
         try {
             long time=difftime.getTime()-da.getTime();
-            Log.e("Time:","11111   endrt:"+da.getTime());
-            Log.e("Time:","22222   :"+difftime);
-            Log.e("Time:","33333   :"+time);
             date=DateUtil.LongtoDate(da.getTime()+time);
-            Log.e("Time_Date:","11111   :"+da);
-            Log.e("Time_Date:","33333   :"+date);
-            Log.e("Time_Date:","================================ :");
         } catch (ParseException e) {
             e.printStackTrace();
             date=da;
@@ -343,7 +333,6 @@ public class RecordManager {
     }
 
     public void setDate(Date difftime) {
-        Log.e("diff:","difftime："+difftime);
         this.difftime=difftime;
     }
 }

@@ -1,36 +1,19 @@
 package com.miaxis.face.view.activity;
 
-import static com.miaxis.face.constant.Constants.LEFT_VOLUME;
-import static com.miaxis.face.constant.Constants.LOOP;
-import static com.miaxis.face.constant.Constants.PRIORITY;
-import static com.miaxis.face.constant.Constants.RIGHT_VOLUME;
-import static com.miaxis.face.constant.Constants.SOUND_RATE;
-
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
-import android.graphics.Point;
-import android.graphics.SurfaceTexture;
 import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
-import android.media.AudioManager;
-import android.media.SoundPool;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
-import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.SparseIntArray;
-import android.view.Display;
-import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,21 +28,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
-
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amap.api.services.weather.LocalWeatherLive;
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.miaxis.face.BuildConfig;
 import com.miaxis.face.R;
 import com.miaxis.face.app.App;
-import com.miaxis.face.app.Face_App;
 import com.miaxis.face.app.GlideApp;
 import com.miaxis.face.bean.Config;
 import com.miaxis.face.bean.IDCardRecord;
@@ -71,11 +49,9 @@ import com.miaxis.face.manager.CameraManager;
 import com.miaxis.face.manager.CardManager;
 import com.miaxis.face.manager.ConfigManager;
 import com.miaxis.face.manager.DaoManager;
-import com.miaxis.face.manager.FaceManager;
 import com.miaxis.face.manager.GpioManager;
 import com.miaxis.face.manager.RecordManager;
 import com.miaxis.face.manager.ServerManager;
-import com.miaxis.face.manager.TTSManager;
 import com.miaxis.face.manager.TaskManager;
 import com.miaxis.face.manager.ToastManager;
 import com.miaxis.face.manager.WatchDogManager;
@@ -86,7 +62,6 @@ import com.miaxis.face.view.custom.AdvertiseDialogFragment;
 import com.miaxis.face.view.custom.RectSurfaceView;
 import com.miaxis.face.view.custom.ResultView;
 import com.miaxis.face.view.fragment.UndocumentedDialogFragment;
-import com.miaxis.livedetect.jni.MXLiveDetectApi;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -97,9 +72,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -337,7 +310,7 @@ public class VerifyActivity extends BaseActivity {
                     resetLayoutParams(tvCamera, rootWidth, rootHeight);
                     resetLayoutParams(rsvRect, rootWidth, rootHeight);
                     rsvRect.setRootSize(rootWidth, rootHeight);
-                    rsvRect.setZoomRate((float) rootWidth / FaceManager.zoomWidth);
+                    rsvRect.setZoomRate((float) rootWidth / CameraManager.PRE_WIDTH);
                 });
                 handler.postDelayed(() -> {
                     try {
