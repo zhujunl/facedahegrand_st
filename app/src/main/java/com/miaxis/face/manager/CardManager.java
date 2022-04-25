@@ -1,34 +1,25 @@
 package com.miaxis.face.manager;
 
 import android.graphics.Bitmap;
-import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 
-import com.miaxis.face.BuildConfig;
 import com.miaxis.face.app.App;
 import com.miaxis.face.bean.IDCardRecord;
-import com.miaxis.face.exception.MyException;
-import com.miaxis.face.util.FileUtil;
 import com.miaxis.face.util.IdCardParser;
 import com.zkteco.android.IDReader.WLTService;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.zz.idcard_hid_driver.IdCardDriver;
-import org.zz.idcard_hid_driver.UsbBase;
-import org.zz.idcard_hid_driver.zzStringTrans;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 public class CardManager {
@@ -203,7 +194,7 @@ public class CardManager {
                 }
             }
         } else {Log.e("readCard:","=="+"失败"+"----re="+re);
-            ToastManager.toast(re+"读卡失败，重新读取");
+//            ToastManager.toast(re+"读卡失败，重新读取");
             throw new Exception("读卡失败");
         }
         listener.onCardRead(CardStatus.ReadCard, idCardRecord);

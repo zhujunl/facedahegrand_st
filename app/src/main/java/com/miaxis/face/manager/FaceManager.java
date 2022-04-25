@@ -70,6 +70,10 @@ public class FaceManager {
     private volatile boolean nova = false;
     private volatile Intermediary intermediaryData;
 
+    private float rectZoom=1;
+    private int rectWidth;
+    private int rectHeight;
+
     private byte[] actionLiveImageData;
     private int actionLiveImageQuality = 0;
     private volatile boolean actionLiveResult = false;
@@ -165,6 +169,15 @@ public class FaceManager {
             if (faceHandleListener != null) {
                 faceHandleListener.onFaceDetect(faceNum[0], faceBuffer);
             }
+            //根据画框位置判断屏幕是否显示完整
+            float startX = rectWidth - faceBuffer[0].x * rectZoom;
+            float startY = faceBuffer[0].y * rectZoom;
+            float stopX = rectWidth - faceBuffer[0].x * rectZoom - faceBuffer[0].width * rectZoom;
+            float stopY = faceBuffer[0].y * rectZoom + faceBuffer[0].height * rectZoom;
+            if (startX>rectWidth||stopX<0||startY<0||stopY>rectHeight){
+                return;
+            }
+
             MXFaceInfoEx mxFaceInfoEx = sortMXFaceInfoEx(faceBuffer);
                 if (faceHandleListener != null) {
                     faceHandleListener.onActionLiveDetect(0, "");
@@ -753,6 +766,12 @@ private String TAG="verify";
         int b = mxFaceInfoEx.keypt_y[1] - mxFaceInfoEx.keypt_y[0];
         double pow = Math.pow(a, 2) + Math.pow(b, 2);
         return Math.sqrt(pow);
+    }
+
+    public void setRect(int rectWidth,int rectHeight,float rectZoom){
+        this.rectZoom=rectZoom;
+        this.rectHeight=rectHeight;
+        this.rectWidth=rectWidth;
     }
 
 }

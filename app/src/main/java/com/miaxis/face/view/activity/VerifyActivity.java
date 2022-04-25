@@ -49,6 +49,7 @@ import com.miaxis.face.manager.CameraManager;
 import com.miaxis.face.manager.CardManager;
 import com.miaxis.face.manager.ConfigManager;
 import com.miaxis.face.manager.DaoManager;
+import com.miaxis.face.manager.FaceManager;
 import com.miaxis.face.manager.GpioManager;
 import com.miaxis.face.manager.RecordManager;
 import com.miaxis.face.manager.ServerManager;
@@ -295,7 +296,7 @@ public class VerifyActivity extends BaseActivity {
         @Override
         public void onCameraOpen(Camera.Size previewSize, String message) {
             if (previewSize == null) {
-                cameraError++;
+                cameraError++;//记录错误次数，发生错误不显示广告弹窗
                 App.getInstance().getThreadExecutor().execute(()->{
                     controlAdvertDialog(true);
                     controlAdvertDialog(false);
@@ -306,11 +307,12 @@ public class VerifyActivity extends BaseActivity {
             } else {
                 runOnUiThread(()->{
                     int rootWidth = flCameraRoot.getWidth();
-                    int rootHeight = flCameraRoot.getHeight() * previewSize.width / previewSize.height;
+                    int rootHeight = flCameraRoot.getHeight() * previewSize.width / previewSize.height;//rootWidth=1280rootHeight=1066
                     resetLayoutParams(tvCamera, rootWidth, rootHeight);
                     resetLayoutParams(rsvRect, rootWidth, rootHeight);
                     rsvRect.setRootSize(rootWidth, rootHeight);
                     rsvRect.setZoomRate((float) rootWidth / CameraManager.PRE_WIDTH);
+                    FaceManager.getInstance().setRect(rootWidth,rootHeight,(float) rootWidth / CameraManager.PRE_WIDTH);
                 });
                 handler.postDelayed(() -> {
                     try {
