@@ -68,9 +68,7 @@ public class LoadingActivity extends BaseActivity {
                 //若未授权则请求权限
                 Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
                 intent.setData(Uri.parse("package:" + getPackageName()));
-                Log.e("Loadin==","startActivityForResult");
                 startActivityForResult(intent, 0);
-                Log.e("Loadin==","startActivityForResult++++++++");
             }
         }
         ButterKnife.bind(this);

@@ -11,7 +11,6 @@ import com.miaxis.face.bean.Config;
 import com.miaxis.face.bean.Intermediary;
 import com.miaxis.face.bean.MxRGBImage;
 import com.miaxis.face.bean.PhotoFaceFeature;
-import com.miaxis.face.constant.Constants;
 import com.miaxis.face.exception.MyException;
 import com.miaxis.face.util.FileUtil;
 import com.miaxis.image.MXImage;
@@ -82,8 +81,17 @@ public class FaceManager {
 
     private OnFaceHandleListener faceHandleListener;
 
+    private Config config;
+
+    private float X=0;
+    private float Y=0;
+
+    private int PITCH=0;
+    private int ROLL=0;
+    private int YAW=0;
+
     public interface OnFaceHandleListener {
-        void onFeatureExtract(MxRGBImage mxRGBImage, MXFaceInfoEx mxFaceInfoEx, byte[] feature,int x,int y,int width,int height);
+        void onFeatureExtract(MxRGBImage mxRGBImage, MXFaceInfoEx mxFaceInfoEx, byte[] feature);
 
         void onFaceDetect(int faceNum, MXFaceInfoEx[] faceInfoExes);
 
@@ -107,11 +115,20 @@ public class FaceManager {
         needNextFeature = true;
         asyncDetectHandler.sendEmptyMessage(0);
         asyncExtractHandler.sendEmptyMessage(0);
+        if (config==null){
+            config=ConfigManager.getInstance().getConfig();
+        }
+        X=0;
+        Y=0;
+        PITCH=0;
+        YAW=0;
+        ROLL=0;
     }
 
     public void stopLoop() {
         detectLoop = false;
         extractLoop = false;
+        needNextFeature = false;
         actionLiveResult = false;
         actionLiveImageQuality = 0;
         actionLiveImageData = null;
@@ -177,22 +194,47 @@ public class FaceManager {
             if (startX>rectWidth||stopX<0||startY<0||stopY>rectHeight){
                 return;
             }
-
-            MXFaceInfoEx mxFaceInfoEx = sortMXFaceInfoEx(faceBuffer);
-                if (faceHandleListener != null) {
-                    faceHandleListener.onActionLiveDetect(0, "");
-                }
+            float reduceX = Math.abs(X-startX);
+            float reduceY = Math.abs(Y-startY);
+            Log.e("人脸监测：", "reduceX="+reduceX+"   reduceY="+reduceY );
+            if(reduceX<config.getHeaderDistance()&&reduceY<config.getHeaderDistance()){
+                MXFaceInfoEx mxFaceInfoEx = sortMXFaceInfoEx(faceBuffer);
                 result = faceQuality(zoomedRgbData, zoomWidth, zoomHeight, 1, new MXFaceInfoEx[]{mxFaceInfoEx});
-                if (result) {
-                    Intermediary intermediary = new Intermediary();
-                    intermediary.width = zoomWidth;
-                    intermediary.height = zoomHeight;
-                    intermediary.mxFaceInfoEx = new MXFaceInfoEx(mxFaceInfoEx);
-                    intermediary.data = zoomedRgbData;
-                    intermediaryData = intermediary;
-                    nova = true;
-//              Log.e("asd", "检测耗时" + (System.currentTimeMillis() - time) + "-----" + mxFaceInfoEx.quality);
+                if(Math.abs(mxFaceInfoEx.pitch)<20&&Math.abs(mxFaceInfoEx.yaw)<20&&Math.abs(mxFaceInfoEx.roll)<20){
+                Log.e("人脸监测：", "PITCH="+Math.abs(mxFaceInfoEx.pitch-PITCH)+"   YAW="+Math.abs(mxFaceInfoEx.yaw-YAW)+
+                        "     ROLL="+Math.abs(mxFaceInfoEx.roll-ROLL)  );
+                    if (Math.abs(mxFaceInfoEx.pitch-PITCH)<config.getHeaderAngle()
+                        &&Math.abs(mxFaceInfoEx.yaw-YAW)<config.getHeaderAngle()
+                        &&Math.abs(mxFaceInfoEx.roll-ROLL)<config.getHeaderAngle()){
+                        Log.e("人脸监测：", "图像模糊=" +mxFaceInfoEx.blur );
+                        if (mxFaceInfoEx.blur<30){
+                            if (result) {
+                                Intermediary intermediary = new Intermediary();
+                                intermediary.width = zoomWidth;
+                                intermediary.height = zoomHeight;
+                                intermediary.mxFaceInfoEx = new MXFaceInfoEx(mxFaceInfoEx);
+                                intermediary.data = zoomedRgbData;
+                                intermediaryData = intermediary;
+                                nova = true;
+                            }
+                        }
+                    }
+                    PITCH=mxFaceInfoEx.pitch;
+                    YAW=mxFaceInfoEx.yaw;
+                    ROLL=mxFaceInfoEx.roll;
+                    if (detectLoop&&faceHandleListener!=null){
+                        faceHandleListener.onFaceTips(null);
+                    }
                 }
+            }else {
+                if (reduceX>60||reduceY>30){
+                    if(detectLoop&&faceHandleListener!=null){
+                        faceHandleListener.onFaceTips("请保持静止状态");
+                    }
+                }
+            }
+            X=startX;
+            Y=startY;
         } else {
             if (faceHandleListener != null) {
                 faceHandleListener.onFaceDetect(0, null);
@@ -201,7 +243,7 @@ public class FaceManager {
             }
         }
     }
-private String TAG="verify";
+
     private void actionLiveDetect(byte[] detectData) throws Exception {
         Log.e("asd", "进入活体");
         byte[] zoomedRgbData = cameraPreviewConvert(detectData,
@@ -225,7 +267,7 @@ private String TAG="verify";
             }}
         Log.e("detectData==","="+detectData.toString());
         MXImage original = new MXImage(detectData, CameraManager.PRE_WIDTH, CameraManager.PRE_HEIGHT, MXImage.FORMAT_YUV);
-//        mxImage = MXImages.crop(original, new Rect(140, 90, 640 - 120, 480 - 90));
+        //        mxImage = MXImages.crop(original, new Rect(140, 90, 640 - 120, 480 - 90));
         MXImage mxImage = MXImages.rotate(original, 180);
         mxImage = MXImages.yuv2BGR(mxImage);
         mxImage = MXImages.scale(mxImage, 0.5f);
@@ -302,22 +344,13 @@ private String TAG="verify";
     private void extract(Intermediary intermediary) throws Exception {
         if (needNextFeature) {
             Log.e("asd", "提特征中"+"_____人脸质量："+intermediary.mxFaceInfoEx.quality);
-            Config config = ConfigManager.getInstance().getConfig();
-            float fw = Constants.pam * intermediary.mxFaceInfoEx.width;
-            float fh = Constants.pam * intermediary.mxFaceInfoEx.height;
-            int x=(int) Math.max(0,intermediary.mxFaceInfoEx.x-fw);
-            int y=(int) Math.max(0,intermediary.mxFaceInfoEx.y-fh);
-            int width=(int) Math.min(intermediary.mxFaceInfoEx.width*(1+2* Constants.pam),zoomWidth);
-            int height=(int) Math.min(intermediary.mxFaceInfoEx.height*(1+2*Constants.pam),zoomHeight);
-            Log.e("asd", "提特征中"+"_____人脸图片：x="+x+",y="+y+",width="+width+",height="+height);
-            if (intermediary.mxFaceInfoEx.quality > config.getQualityScore()&&x+width<=zoomWidth&&y+height<=zoomHeight) {
+            if (intermediary.mxFaceInfoEx.quality > config.getQualityScore()) {
                 byte[] feature = extractFeature(intermediary.data, zoomWidth, zoomHeight, intermediary.mxFaceInfoEx);
                 if (feature != null) {
-                    needNextFeature = false;
                     if (faceHandleListener != null) {
                         faceHandleListener.onFeatureExtract(new MxRGBImage(intermediary.data, zoomWidth, zoomHeight),
                                 intermediary.mxFaceInfoEx,
-                                feature,x,y,width,height);
+                                feature);
                     }
                 }
             } else {
@@ -365,9 +398,9 @@ private String TAG="verify";
     public int initFaceST4(Context context) {
         Log.e("初始化人脸算法","initFaceST4");
         final String sLicence = FileUtil.readLicence();
-//        if (TextUtils.isEmpty(sLicence)) {
-//            return ERR_LICENCE;
-//        }
+        //        if (TextUtils.isEmpty(sLicence)) {
+        //            return ERR_LICENCE;
+        //        }
         mxFaceAPI = new MXFaceAPI();
         mxLiveDetectApi = MXLiveDetectApi.INSTANCE;
         dtTool = new mxImageTool();
@@ -396,6 +429,7 @@ private String TAG="verify";
         if (re == 0) {
             re = mxLiveDetectApi.initialize(FileUtil.getFaceModelPath());
         }
+        Log.e("Facemanager:","算法版本："+mxFaceAPI.mxAlgVersion());
         initThread();
         return re;
     }
@@ -564,11 +598,11 @@ private String TAG="verify";
             return null;
         }
         //镜像后画框位置按照正常坐标系，不镜像的话按照反坐标系也可画框
-//        re = dtTool.ImageFlip(rgbData, rotateWidth[0], rotateHeight[0], 1, rgbData);
-//        if (re != 1) {
-//            Log.e("asd", "镜像失败");
-//            return null;
-//        }
+        //        re = dtTool.ImageFlip(rgbData, rotateWidth[0], rotateHeight[0], 1, rgbData);
+        //        if (re != 1) {
+        //            Log.e("asd", "镜像失败");
+        //            return null;
+        //        }
         // RGB数据压缩到指定宽高
         byte[] zoomedRgbData = new byte[zoomWidth * zoomHeight * 3];
         re = dtTool.Zoom(rgbData, rotateWidth[0], rotateHeight[0], 3, zoomWidth, zoomHeight, zoomedRgbData);

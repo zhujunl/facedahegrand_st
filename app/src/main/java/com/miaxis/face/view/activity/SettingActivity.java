@@ -1,18 +1,14 @@
 package com.miaxis.face.view.activity;
 
-import static com.miaxis.face.constant.Constants.DELAYList;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -27,7 +23,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.miaxis.face.R;
-import com.miaxis.face.view.custom.ClickControlledSpinner;
 import com.miaxis.face.app.App;
 import com.miaxis.face.bean.Config;
 import com.miaxis.face.constant.Constants;
@@ -40,11 +35,11 @@ import com.miaxis.face.manager.TaskManager;
 import com.miaxis.face.manager.ToastManager;
 import com.miaxis.face.net.FaceNetApi;
 import com.miaxis.face.presenter.UpdatePresenter;
-import com.miaxis.face.view.custom.LimitEditText;
-import com.miaxis.face.view.custom.LimitInputTextWatcher;
 import com.miaxis.face.util.MyUtil;
 import com.miaxis.face.util.PatternUtil;
-
+import com.miaxis.face.view.custom.ClickControlledSpinner;
+import com.miaxis.face.view.custom.LimitEditText;
+import com.miaxis.face.view.custom.LimitInputTextWatcher;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,6 +48,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.miaxis.face.constant.Constants.DELAYList;
 
 public class SettingActivity extends BaseActivity {
 
@@ -178,7 +175,10 @@ public class SettingActivity extends BaseActivity {
     RadioGroup rgSequel;
     @BindView(R.id.et_version_delay_time)
     Spinner et_version_delay_time;
-
+    @BindView(R.id.et_header_angle)
+    LimitEditText etheaderAngle;
+    @BindView(R.id.et_face_distance)
+    LimitEditText etfaceDistance;
     private Config config;
     private boolean hasFingerDevice;
 
@@ -343,6 +343,9 @@ public class SettingActivity extends BaseActivity {
         rbAdvertiseLocal.setChecked(config.getAdvertisementMode() == Constants.ADVERTISEMENT_LOCAL);
         rbAdvertiseNet.setChecked(config.getAdvertisementMode() == Constants.ADVERTISEMENT_NET);
         rbAdvertiseNetAndLocal.setChecked(config.getAdvertisementMode() == Constants.ADVERTISEMENT_NET_AND_LOCAL);
+        etheaderAngle.setText(String.valueOf(config.getHeaderAngle()));
+        etfaceDistance.setText(String.valueOf(config.getHeaderDistance()));
+
         App.getInstance().getThreadExecutor().execute(() -> {
             IDCardRecordDao recordDao = DaoManager.getInstance().getDaoSession().getIDCardRecordDao();
             long notUpCount = recordDao.queryBuilder().where(IDCardRecordDao.Properties.Upload.eq(false)).count();
@@ -359,6 +362,8 @@ public class SettingActivity extends BaseActivity {
         etOrgName.setTageListener(tage,etOrgName);
         etPwd.setTageListener(tage,etPwd);
         etAdvertiseDelayTime.setTageListener(tage,etAdvertiseDelayTime);
+        etheaderAngle.setTageListener(tage,etheaderAngle);
+        etfaceDistance.setTageListener(tage,etfaceDistance);
     }
 
     @OnClick(R.id.tv_select_time)
@@ -417,6 +422,25 @@ public class SettingActivity extends BaseActivity {
             ToastManager.toast("保存失败，请设置活体质量阈值");
             return;
         }
+        if (TextUtils.isEmpty(etfaceDistance.getText().toString().trim())){
+            ToastManager.toast("保存失败，请设置人脸可移动范围");
+            return;
+        }
+        if (Float.parseFloat(etfaceDistance.getText().toString().trim())<0){
+            ToastManager.toast("保存失败，设置人脸可移动范围错误");
+            return;
+        }
+        if (TextUtils.isEmpty(etheaderAngle.getText().toString().trim())){
+            ToastManager.toast("保存失败，请设置人脸可移动角度");
+            return;
+        }
+        if (Float.parseFloat(etheaderAngle.getText().toString().trim())<0){
+            ToastManager.toast("保存失败，设置人脸可移动角度错误");
+            return;
+        }
+
+        config.setHeaderDistance(Float.parseFloat(etfaceDistance.getText().toString().trim()));
+        config.setHeaderAngle(Float.parseFloat(etheaderAngle.getText().toString().trim()));
         config.setLivenessQualityScore(Integer.parseInt(etLivenessQualityScore.getText().toString()));
         config.setTitleStr(etTitleStr.getText().toString());
         config.setPassword(etPwd.getText().toString());

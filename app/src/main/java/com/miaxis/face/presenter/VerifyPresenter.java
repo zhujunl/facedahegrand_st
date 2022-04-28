@@ -3,7 +3,6 @@ package com.miaxis.face.presenter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.hardware.Camera;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -11,7 +10,6 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 
-import com.google.gson.Gson;
 import com.miaxis.face.app.App;
 import com.miaxis.face.bean.Config;
 import com.miaxis.face.bean.IDCardRecord;
@@ -290,13 +288,13 @@ public class VerifyPresenter {
 
     private FaceManager.OnFaceHandleListener faceListener = new FaceManager.OnFaceHandleListener() {
         @Override
-        public void onFeatureExtract(MxRGBImage mxRGBImage, MXFaceInfoEx mxFaceInfoEx, byte[] feature,int x,int y,int width,int height) {
+        public void onFeatureExtract(MxRGBImage mxRGBImage, MXFaceInfoEx mxFaceInfoEx, byte[] feature) {
             if (undocumentedFlag) {
                 onUndocumentedFeature(mxRGBImage, mxFaceInfoEx);
             } else if (taskFlag) {
                 onTaskFeatureBack(mxRGBImage, feature);
             } else {
-                onFaceVerify(mxRGBImage, mxFaceInfoEx, feature,x,y,width,height);
+                onFaceVerify(mxRGBImage, mxFaceInfoEx, feature);
             }
         }
 
@@ -348,17 +346,24 @@ public class VerifyPresenter {
 
         @Override
         public void onFaceTips(String msg) {
-//            if (view.get() != null) {
-//                view.get().showFaceTips(msg);
-//            }
+            if (view.get() != null) {
+                view.get().showFaceTips(msg);
+            }
         }
     };
 
-    private void onFaceVerify(MxRGBImage mxRGBImage, MXFaceInfoEx mxFaceInfoEx, byte[] feature,int x,int y,int width,int height) {
+    private void onFaceVerify(MxRGBImage mxRGBImage, MXFaceInfoEx mxFaceInfoEx, byte[] feature) {
         if (idCardRecord != null && idCardRecord.getCardFeature() != null) {
             float faceMatchScore = FaceManager.getInstance().matchFeature(feature, idCardRecord.getCardFeature());
             byte[] fileImage = FaceManager.getInstance().imageEncode(mxRGBImage.getRgbImage(), mxRGBImage.getWidth(), mxRGBImage.getHeight());
             Bitmap faceBitmap = BitmapFactory.decodeByteArray(fileImage, 0, fileImage.length);
+            float fw = Constants.pam * mxFaceInfoEx.width;
+            float fh = Constants.pam * mxFaceInfoEx.height;
+            int x=(int) Math.max(0,mxFaceInfoEx.x-fw);
+            int y=(int) Math.max(0,mxFaceInfoEx.y-fh);
+            int width=(int) Math.min(mxFaceInfoEx.width*(1+2* Constants.pam),faceBitmap.getWidth());
+            int height=(int) Math.min(mxFaceInfoEx.height*(1+2*Constants.pam),faceBitmap.getHeight());
+            Log.e("asd", "人脸比对中"+"_____人脸图片：x="+x+",y="+y+",width="+width+",height="+height);
             Bitmap rectBitmap = Bitmap.createBitmap(faceBitmap, x, y,width, height);//截取
             boolean result = faceMatchScore > config.getVerifyScore();
             FaceManager.getInstance().stopLoop();
@@ -368,6 +373,7 @@ public class VerifyPresenter {
             idCardRecord.setFaceScore(faceMatchScore);
             if (view.get() != null) {
                 view.get().faceVerifyResult(result, rectBitmap, result ? "人脸通过" : "人脸失败");
+                view.get().showFaceTips(null);
             }
             checkMode(result, true);
         } else {

@@ -60,49 +60,55 @@ public class Config implements Serializable {
     private int advertiseDelayTime;
     private Integer version_delay;
     private Integer version_position;
-    @Generated(hash = 1309147223)
-    public Config(long id, String updateUrl, String uploadRecordUrl, String advertisementUrl,
-            String deviceSerialNumber, String account, String clientId, boolean encrypt,
-            int verifyMode, boolean netFlag, boolean resultFlag, boolean sequelFlag,
-            boolean saveLocalFlag, boolean documentFlag, boolean livenessFlag,
-            boolean queryFlag, boolean whiteFlag, boolean blackFlag, int gatherFingerFlag,
-            boolean advertiseFlag, int advertisementMode, float verifyScore, int qualityScore,
-            int livenessQualityScore, String titleStr, String password, String upTime,
-            int intervalTime, String orgName, int advertiseDelayTime, Integer version_delay,
-            Integer version_position) {
-        this.id = id;
-        this.updateUrl = updateUrl;
-        this.uploadRecordUrl = uploadRecordUrl;
-        this.advertisementUrl = advertisementUrl;
-        this.deviceSerialNumber = deviceSerialNumber;
-        this.account = account;
-        this.clientId = clientId;
-        this.encrypt = encrypt;
-        this.verifyMode = verifyMode;
-        this.netFlag = netFlag;
-        this.resultFlag = resultFlag;
-        this.sequelFlag = sequelFlag;
-        this.saveLocalFlag = saveLocalFlag;
-        this.documentFlag = documentFlag;
-        this.livenessFlag = livenessFlag;
-        this.queryFlag = queryFlag;
-        this.whiteFlag = whiteFlag;
-        this.blackFlag = blackFlag;
-        this.gatherFingerFlag = gatherFingerFlag;
-        this.advertiseFlag = advertiseFlag;
-        this.advertisementMode = advertisementMode;
-        this.verifyScore = verifyScore;
-        this.qualityScore = qualityScore;
-        this.livenessQualityScore = livenessQualityScore;
-        this.titleStr = titleStr;
-        this.password = password;
-        this.upTime = upTime;
-        this.intervalTime = intervalTime;
-        this.orgName = orgName;
-        this.advertiseDelayTime = advertiseDelayTime;
-        this.version_delay = version_delay;
-        this.version_position = version_position;
-    }
+
+    private Float headerAngle;
+    private Float headerDistance;
+
+@Generated(hash = 1292882712)
+public Config(long id, String updateUrl, String uploadRecordUrl, String advertisementUrl,
+        String deviceSerialNumber, String account, String clientId, boolean encrypt,
+        int verifyMode, boolean netFlag, boolean resultFlag, boolean sequelFlag,
+        boolean saveLocalFlag, boolean documentFlag, boolean livenessFlag,
+        boolean queryFlag, boolean whiteFlag, boolean blackFlag, int gatherFingerFlag,
+        boolean advertiseFlag, int advertisementMode, float verifyScore, int qualityScore,
+        int livenessQualityScore, String titleStr, String password, String upTime,
+        int intervalTime, String orgName, int advertiseDelayTime, Integer version_delay,
+        Integer version_position, Float headerAngle, Float headerDistance) {
+    this.id = id;
+    this.updateUrl = updateUrl;
+    this.uploadRecordUrl = uploadRecordUrl;
+    this.advertisementUrl = advertisementUrl;
+    this.deviceSerialNumber = deviceSerialNumber;
+    this.account = account;
+    this.clientId = clientId;
+    this.encrypt = encrypt;
+    this.verifyMode = verifyMode;
+    this.netFlag = netFlag;
+    this.resultFlag = resultFlag;
+    this.sequelFlag = sequelFlag;
+    this.saveLocalFlag = saveLocalFlag;
+    this.documentFlag = documentFlag;
+    this.livenessFlag = livenessFlag;
+    this.queryFlag = queryFlag;
+    this.whiteFlag = whiteFlag;
+    this.blackFlag = blackFlag;
+    this.gatherFingerFlag = gatherFingerFlag;
+    this.advertiseFlag = advertiseFlag;
+    this.advertisementMode = advertisementMode;
+    this.verifyScore = verifyScore;
+    this.qualityScore = qualityScore;
+    this.livenessQualityScore = livenessQualityScore;
+    this.titleStr = titleStr;
+    this.password = password;
+    this.upTime = upTime;
+    this.intervalTime = intervalTime;
+    this.orgName = orgName;
+    this.advertiseDelayTime = advertiseDelayTime;
+    this.version_delay = version_delay;
+    this.version_position = version_position;
+    this.headerAngle = headerAngle;
+    this.headerDistance = headerDistance;
+}
     @Generated(hash = 589037648)
     public Config() {
     }
@@ -139,6 +145,8 @@ public class Config implements Serializable {
         setAdvertiseDelayTime(builder.advertiseDelayTime);
         setVersion_delay(builder.version_delay);
         setVersion_position(builder.version_position);
+        setHeaderAngle(builder.headerAngle);
+        setHeaderDistance(builder.headerDistance);
     }
 
     public long getId() {
@@ -382,6 +390,23 @@ public class Config implements Serializable {
         this.version_position = version_position;
     }
 
+
+    public Float getHeaderAngle() {
+        return headerAngle;
+    }
+
+    public void setHeaderAngle(Float headerAngle) {
+        this.headerAngle = headerAngle;
+    }
+
+    public Float getHeaderDistance() {
+        return headerDistance;
+    }
+
+    public void setHeaderDistance(Float headerDistance) {
+        this.headerDistance = headerDistance;
+    }
+
     public static final class Builder {
         private long id;
         private String updateUrl;
@@ -415,6 +440,9 @@ public class Config implements Serializable {
         private int advertiseDelayTime;
         private Integer version_delay;
         private Integer version_position;
+
+        private Float headerAngle;
+        private Float headerDistance;
 
         public Builder() {
         }
@@ -579,6 +607,16 @@ public class Config implements Serializable {
             return  this;
         }
 
+        public Builder headerDistance(Float val){
+            this.headerDistance=val;
+            return this;
+        }
+
+        public Builder headerAngle(Float val){
+            this.headerAngle=val;
+            return this;
+        }
+
         public Config build() {
             return new Config(this);
         }
@@ -619,6 +657,8 @@ public class Config implements Serializable {
                 ", advertiseDelayTime=" + advertiseDelayTime +
                 ", version_delay=" + version_delay +
                 ", version_position=" + version_position +
+                ", headerAngle=" + headerAngle +
+                ", headerDistance=" + headerDistance +
                 '}';
     }
 }

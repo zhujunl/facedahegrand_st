@@ -56,6 +56,8 @@ public class ConfigDao extends AbstractDao<Config, Long> {
         public final static Property AdvertiseDelayTime = new Property(29, int.class, "advertiseDelayTime", false, "ADVERTISE_DELAY_TIME");
         public final static Property Version_delay = new Property(30, Integer.class, "version_delay", false, "VERSION_DELAY");
         public final static Property Version_position = new Property(31, Integer.class, "version_position", false, "VERSION_POSITION");
+        public final static Property HeaderAngle = new Property(32, Float.class, "headerAngle", false, "HEADER_ANGLE");
+        public final static Property HeaderDistance = new Property(33, Float.class, "headerDistance", false, "HEADER_DISTANCE");
     }
 
 
@@ -102,7 +104,9 @@ public class ConfigDao extends AbstractDao<Config, Long> {
                 "\"ORG_NAME\" TEXT," + // 28: orgName
                 "\"ADVERTISE_DELAY_TIME\" INTEGER NOT NULL ," + // 29: advertiseDelayTime
                 "\"VERSION_DELAY\" INTEGER," + // 30: version_delay
-                "\"VERSION_POSITION\" INTEGER);"); // 31: version_position
+                "\"VERSION_POSITION\" INTEGER," + // 31: version_position
+                "\"HEADER_ANGLE\" REAL," + // 32: headerAngle
+                "\"HEADER_DISTANCE\" REAL);"); // 33: headerDistance
     }
 
     /** Drops the underlying database table. */
@@ -194,6 +198,16 @@ public class ConfigDao extends AbstractDao<Config, Long> {
         if (version_position != null) {
             stmt.bindLong(32, version_position);
         }
+ 
+        Float headerAngle = entity.getHeaderAngle();
+        if (headerAngle != null) {
+            stmt.bindDouble(33, headerAngle);
+        }
+ 
+        Float headerDistance = entity.getHeaderDistance();
+        if (headerDistance != null) {
+            stmt.bindDouble(34, headerDistance);
+        }
     }
 
     @Override
@@ -279,6 +293,16 @@ public class ConfigDao extends AbstractDao<Config, Long> {
         if (version_position != null) {
             stmt.bindLong(32, version_position);
         }
+ 
+        Float headerAngle = entity.getHeaderAngle();
+        if (headerAngle != null) {
+            stmt.bindDouble(33, headerAngle);
+        }
+ 
+        Float headerDistance = entity.getHeaderDistance();
+        if (headerDistance != null) {
+            stmt.bindDouble(34, headerDistance);
+        }
     }
 
     @Override
@@ -320,7 +344,9 @@ public class ConfigDao extends AbstractDao<Config, Long> {
             cursor.isNull(offset + 28) ? null : cursor.getString(offset + 28), // orgName
             cursor.getInt(offset + 29), // advertiseDelayTime
             cursor.isNull(offset + 30) ? null : cursor.getInt(offset + 30), // version_delay
-            cursor.isNull(offset + 31) ? null : cursor.getInt(offset + 31) // version_position
+            cursor.isNull(offset + 31) ? null : cursor.getInt(offset + 31), // version_position
+            cursor.isNull(offset + 32) ? null : cursor.getFloat(offset + 32), // headerAngle
+            cursor.isNull(offset + 33) ? null : cursor.getFloat(offset + 33) // headerDistance
         );
         return entity;
     }
@@ -359,6 +385,8 @@ public class ConfigDao extends AbstractDao<Config, Long> {
         entity.setAdvertiseDelayTime(cursor.getInt(offset + 29));
         entity.setVersion_delay(cursor.isNull(offset + 30) ? null : cursor.getInt(offset + 30));
         entity.setVersion_position(cursor.isNull(offset + 31) ? null : cursor.getInt(offset + 31));
+        entity.setHeaderAngle(cursor.isNull(offset + 32) ? null : cursor.getFloat(offset + 32));
+        entity.setHeaderDistance(cursor.isNull(offset + 33) ? null : cursor.getFloat(offset + 33));
      }
     
     @Override

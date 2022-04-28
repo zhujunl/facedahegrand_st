@@ -543,6 +543,36 @@
             <LinearLayout style="@style/SettingItem">
 
                 <TextView style="@style/SettingName"
+                    android:text="人脸范围" />
+
+                <View style="@style/VerticalLine" />
+
+                <com.miaxis.face.view.custom.LimitEditText
+                    android:id="@+id/et_face_distance"
+                    android:tag="false"
+                    android:inputType="numberDecimal"
+                    style="@style/SettingEditItem"/>
+
+            </LinearLayout>
+
+            <LinearLayout style="@style/SettingItem">
+
+                <TextView style="@style/SettingName"
+                    android:text="人脸角度" />
+
+                <View style="@style/VerticalLine" />
+
+                <com.miaxis.face.view.custom.LimitEditText
+                    android:id="@+id/et_header_angle"
+                    android:tag="false"
+                    android:inputType="numberDecimal"
+                    style="@style/SettingEditItem"/>
+
+            </LinearLayout>
+
+            <LinearLayout style="@style/SettingItem">
+
+                <TextView style="@style/SettingName"
                     android:text="质量阈值" />
 
                 <View style="@style/VerticalLine" />

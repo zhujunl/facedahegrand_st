@@ -79,6 +79,8 @@ public class ConfigManager {
                     .advertisementMode(Constants.DEFAULT_ADVERTISEMENT_MODE)
                     .version_delay(Constants.TASK_DELAY)
                     .version_position(2)
+                    .headerDistance(Constants.FACEDISTANCE)
+                    .headerAngle(Constants.HEADERANGLE)
                     .build();
             ConfigModel.saveConfig(config);
         } else {
@@ -92,6 +94,14 @@ public class ConfigManager {
             }
             if(TextUtils.isEmpty(String.valueOf(config.getQualityScore()))||config.getQualityScore()==0){
                 config.setQualityScore(Constants.DEFAULT_QUALITY_SCORE);
+                ConfigModel.saveConfig(config);
+            }
+            if (config.getHeaderDistance()==null){
+                config.setHeaderDistance(Constants.FACEDISTANCE);
+                ConfigModel.saveConfig(config);
+            }
+            if (config.getHeaderAngle()==null){
+                config.setHeaderAngle(Constants.HEADERANGLE);
                 ConfigModel.saveConfig(config);
             }
         }

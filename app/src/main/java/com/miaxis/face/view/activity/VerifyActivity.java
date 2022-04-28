@@ -499,9 +499,9 @@ public class VerifyActivity extends BaseActivity {
     }
 
     public void actionLiveHint(String message) {
-        runOnUiThread(() -> {
-            tvLivenessHint.setText(message);
-        });
+ //       runOnUiThread(() -> {
+ //           tvLivenessHint.setText(message);
+ //       });
     }
 
     public void showFaceTips(String message) {

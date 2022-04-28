@@ -3,9 +3,7 @@ package com.miaxis.face.constant;
 import android.os.Build;
 
 import com.miaxis.face.BuildConfig;
-import com.miaxis.face.bean.Config;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -94,6 +92,8 @@ public class Constants {
     public static final int DEFAULT_INTERVAL = 4;
     public static final String DEFAULT_ORG_NAME = "";
     public static final int DEFAULT_ADVERTISE_DELAY_TIME = 15;
+    public static final Float FACEDISTANCE=10F;
+    public static final Float HEADERANGLE=10F;
     public static final int DEFAULT_ADVERTISEMENT_MODE = ADVERTISEMENT_NET_AND_LOCAL;
 
     public static final int MAX_COUNT = 40000;
