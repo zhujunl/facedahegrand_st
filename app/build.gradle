@@ -7,8 +7,8 @@ android {
         applicationId "com.miaxis.faceid_cw"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 19
-        versionName "1.1.9_Dahe_New_ST_HaiNan"
+        versionCode 20
+        versionName "1.1.10_Dahe_New_ST_HaiNan"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
 

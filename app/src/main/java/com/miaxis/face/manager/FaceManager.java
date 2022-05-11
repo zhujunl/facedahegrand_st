@@ -71,6 +71,7 @@ public class FaceManager {
 
     private float rectZoom=1;
     private int rectWidth;
+    private float heightZoom;
     private int rectHeight;
 
     private byte[] actionLiveImageData;
@@ -187,11 +188,11 @@ public class FaceManager {
                 faceHandleListener.onFaceDetect(faceNum[0], faceBuffer);
             }
             //根据画框位置判断屏幕是否显示完整
-            float startX = rectWidth - faceBuffer[0].x * rectZoom;
+            float startX = faceBuffer[0].x * rectZoom;
             float startY = faceBuffer[0].y * rectZoom;
-            float stopX = rectWidth - faceBuffer[0].x * rectZoom - faceBuffer[0].width * rectZoom;
+            float stopX =  faceBuffer[0].x * rectZoom + faceBuffer[0].width * rectZoom;
             float stopY = faceBuffer[0].y * rectZoom + faceBuffer[0].height * rectZoom;
-            if (startX>rectWidth||stopX<0||startY<0||stopY>rectHeight){
+            if (startX<=0||stopX>rectWidth||startY<=0||stopY>=heightZoom){
                 return;
             }
             float reduceX = Math.abs(X-startX);
@@ -227,7 +228,7 @@ public class FaceManager {
                     }
                 }
             }else {
-                if (reduceX>60||reduceY>30){
+                if (reduceX>(6*config.getHeaderDistance())||reduceY>(3*config.getHeaderDistance())){
                     if(detectLoop&&faceHandleListener!=null){
                         faceHandleListener.onFaceTips("请保持静止状态");
                     }
@@ -802,10 +803,10 @@ public class FaceManager {
         return Math.sqrt(pow);
     }
 
-    public void setRect(int rectWidth,int rectHeight,float rectZoom){
+    public void setRect(int rectWidth,int rectHeight,float heightZoom,float rectZoom){
         this.rectZoom=rectZoom;
-        this.rectHeight=rectHeight;
         this.rectWidth=rectWidth;
+        this.heightZoom= CameraManager.PIC_HEIGHT*heightZoom*rectZoom;
     }
 
 }

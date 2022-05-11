@@ -312,7 +312,7 @@ public class VerifyActivity extends BaseActivity {
                     resetLayoutParams(rsvRect, rootWidth, rootHeight);
                     rsvRect.setRootSize(rootWidth, rootHeight);
                     rsvRect.setZoomRate((float) rootWidth / CameraManager.PRE_WIDTH);
-                    FaceManager.getInstance().setRect(rootWidth,rootHeight,(float) rootWidth / CameraManager.PRE_WIDTH);
+                    FaceManager.getInstance().setRect(rootWidth,flCameraRoot.getHeight(),(float) flCameraRoot.getHeight()/rootHeight,(float) rootWidth / CameraManager.PRE_WIDTH);
                 });
                 handler.postDelayed(() -> {
                     try {
@@ -372,8 +372,14 @@ public class VerifyActivity extends BaseActivity {
                     }
                     advertiseLock.lock();
                     runOnUiThread(()->{
-                        if (!advertiseDialog.isAdded()&&cameraError==0) {
-                            advertiseDialog.show(getSupportFragmentManager(), "ad");
+//                        if (!advertiseDialog.isAdded()&&cameraError==0) {
+//                            advertiseDialog.show(getSupportFragmentManager(), "ad");
+//                        }
+                        if (cameraError==0){
+                            if (advertiseDialog.isAdded()&&null!=getSupportFragmentManager().findFragmentByTag("ad")){
+                                getSupportFragmentManager().beginTransaction().remove(advertiseDialog).commit();
+                            }
+                            advertiseDialog.show(getSupportFragmentManager(),"ad");
                         }
                     });
 //                    try {

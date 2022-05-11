@@ -62,7 +62,7 @@ public class AdvertiseDialogFragment extends BaseDialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        final Dialog dialog = new Dialog(getActivity(), android.R.style.Theme_Holo_Light);
+        final Dialog dialog = new Dialog(getActivity(), android.R.style.Theme_DeviceDefault_NoActionBar_Fullscreen);
         Window window = dialog.getWindow();
         window.setGravity(Gravity.BOTTOM); //可设置dialog的位置
         window.getDecorView().setPadding(0, 0, 0, 0); //消除边距

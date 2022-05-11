@@ -58,6 +58,7 @@ public class CardManager {
     private OnCardReadListener listener;
     private IdCardDriver idCardDriver;
     private byte[] lastCardId = null;
+    private String CardId="";
 
     public void init() {
         idCardDriver = new IdCardDriver(App.getInstance());
@@ -100,7 +101,7 @@ public class CardManager {
                 re = idCardDriver.mxReadCardId(curCardId);
                 switch (re) {
                     case GET_CARD_ID:
-                        if (!Arrays.equals(lastCardId, curCardId)) {
+                        if (!Arrays.equals(lastCardId, curCardId)&&TextUtils.isEmpty(CardId)) {
                             listener.onCardRead(CardStatus.FindCard, null);
                             try {
                                 readCardFull(getCardIdStr(curCardId));
@@ -114,6 +115,7 @@ public class CardManager {
                         break;
                     case NO_CARD:
                         lastCardId = null;
+                        CardId="";
                         listener.onCardRead(CardStatus.NoCard, null);
                         break;
                 }
@@ -623,7 +625,9 @@ public class CardManager {
     public IDCardRecord IdCardParser(byte[] bCardInfo, String cardId){
         IDCardRecord idCardRecord = new IDCardRecord();
         idCardRecord.setCardId(cardId);
-        idCardRecord.setName(IdCardParser.getName(bCardInfo));
+        String id=IdCardParser.getName(bCardInfo);
+        idCardRecord.setName(id);
+        CardId=id;
         if(IdCardParser.getGender(bCardInfo).equals("1")){
             idCardRecord.setSex("男");
         }else {
