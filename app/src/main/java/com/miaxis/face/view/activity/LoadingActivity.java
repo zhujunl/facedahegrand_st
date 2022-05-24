@@ -18,8 +18,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-
-
 import com.miaxis.face.R;
 import com.miaxis.face.app.App;
 import com.miaxis.face.constant.Constants;

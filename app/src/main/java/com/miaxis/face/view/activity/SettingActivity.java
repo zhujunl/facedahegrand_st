@@ -426,7 +426,7 @@ public class SettingActivity extends BaseActivity {
             ToastManager.toast("保存失败，请设置人脸可移动范围");
             return;
         }
-        if (Float.parseFloat(etfaceDistance.getText().toString().trim())<0){
+        if (Float.parseFloat(etfaceDistance.getText().toString().trim())<0||Float.parseFloat(etfaceDistance.getText().toString().trim())>20){
             ToastManager.toast("保存失败，设置人脸可移动范围错误");
             return;
         }
@@ -434,7 +434,7 @@ public class SettingActivity extends BaseActivity {
             ToastManager.toast("保存失败，请设置人脸可移动角度");
             return;
         }
-        if (Float.parseFloat(etheaderAngle.getText().toString().trim())<0){
+        if (Float.parseFloat(etheaderAngle.getText().toString().trim())<0||Float.parseFloat(etheaderAngle.getText().toString().trim())>20){
             ToastManager.toast("保存失败，设置人脸可移动角度错误");
             return;
         }

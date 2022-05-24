@@ -58,7 +58,7 @@ android {
 }
 
 greendao {
-    schemaVersion 17
+    schemaVersion 18
     daoPackage 'com.miaxis.face.greendao.gen'
     targetGenDir 'src/main/java'
 }
