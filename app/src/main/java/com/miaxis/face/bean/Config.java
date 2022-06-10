@@ -1,5 +1,7 @@
 package com.miaxis.face.bean;
 
+import com.miaxis.face.constant.Constants;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
@@ -29,8 +31,8 @@ public class Config implements Serializable {
     private String advertisementUrl;
 
     private String deviceSerialNumber;
-    private String account;
-    private String clientId;
+    private String account= Constants.DEFAULT_ACCOUNT;
+    private String clientId=Constants.DEFAULT_CLIENT_ID;
     private boolean encrypt;
 
     private int verifyMode;
@@ -56,10 +58,10 @@ public class Config implements Serializable {
 
     private String upTime;
     private int intervalTime;
-    private String orgName;
+    private String orgName=Constants.DEFAULT_ORG_NAME;
     private int advertiseDelayTime;
-    private Integer version_delay;
-    private Integer version_position;
+    private Integer version_delay=Constants.TASK_DELAY;
+    private Integer version_position=2;
 
     private Float headerAngle;
     private Float headerDistance;

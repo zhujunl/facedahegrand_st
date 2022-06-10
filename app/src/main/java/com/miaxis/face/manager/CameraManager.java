@@ -96,7 +96,7 @@ public class CameraManager {
             maxHeight = Math.max(size.height, maxHeight);
         }
         ORIENTATION = maxWidth * maxHeight >= (200 * 10000) ? 0 : (!Constants.VERSION?0:180);//处理摄像头，500W不需要旋转
-        if(ORIENTATION==0){
+        if(ORIENTATION==0&&!Constants.VERSION){
             PRE_WIDTH = 800;
             PRE_HEIGHT = 600;
             PIC_WIDTH = 800;
